@@ -1,0 +1,800 @@
+/* ==================== */
+/* Global Styles & Variables */
+/* ==================== */
+:root {
+    --gold-primary: #c5a572;
+    --gold-dark: #a88c5a;
+    --gold-light: #d4b890;
+    --navy-dark: #0a1128;
+    --navy-medium: #1c2541;
+    --navy-light: #3a506b;
+    --text-dark: #1a1a1a;
+    --text-light: #6b7280;
+    --bg-light: #f9fafb;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.text-gold {
+    color: var(--gold-primary);
+}
+
+/* ==================== */
+/* Navigation */
+/* ==================== */
+#mainNav {
+    background: rgba(10, 17, 40, 0.95);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(197, 165, 114, 0.1);
+}
+
+#mainNav.scrolled {
+    background: rgba(10, 17, 40, 0.98);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.brand-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--gold-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.brand-text {
+    text-align: left;
+}
+
+.brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+}
+
+.brand-tagline {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    color: var(--gold-primary);
+    font-weight: 600;
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    position: relative;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--gold-primary);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 70%;
+}
+
+/* ==================== */
+/* Buttons */
+/* ==================== */
+.btn-gold {
+    background: var(--gold-primary);
+    color: white;
+    border: 2px solid var(--gold-primary);
+    padding: 0.6rem 1.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background: var(--gold-dark);
+    border-color: var(--gold-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(197, 165, 114, 0.4);
+}
+
+.btn-outline-gold {
+    background: transparent;
+    color: var(--gold-primary);
+    border: 2px solid var(--gold-primary);
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+    background: var(--gold-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-outline-light {
+    border: 2px solid white;
+    color: white;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+.btn-outline-light:hover {
+    background: white;
+    color: var(--navy-dark);
+}
+
+/* ==================== */
+/* Hero Section */
+/* ==================== */
+.hero-section {
+    position: relative;
+    background-image: url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1920');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(10, 17, 40, 0.7) 0%, rgba(58, 80, 107, 0.6) 100%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-subtitle {
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    color: var(--gold-primary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero-title-gold {
+    color: var(--gold-primary);
+    font-style: italic;
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 3rem;
+    line-height: 1.8;
+}
+
+.hero-buttons {
+    margin-bottom: 5rem;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    50% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+.animate-fade-in-delay {
+    animation: fadeIn 1s ease-out 0.3s both;
+}
+
+.animate-fade-in-delay-2 {
+    animation: fadeIn 1s ease-out 0.6s both;
+}
+
+.animate-fade-in-delay-3 {
+    animation: fadeIn 1s ease-out 0.9s both;
+}
+
+.animate-bounce {
+    animation: bounce 2s ease-in-out infinite;
+}
+
+/* ==================== */
+/* Quick Reservation Bar */
+/* ==================== */
+.quick-reservation {
+    margin-top: -80px;
+    position: relative;
+    z-index: 10;
+    padding-bottom: 3rem;
+}
+
+.reservation-card {
+    background: var(--gold-primary);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.reservation-header {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.reservation-header i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.reservation-form .form-label {
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.search-field {
+    position: relative;
+}
+
+.search-field i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    z-index: 1;
+}
+
+.search-field .form-control,
+.search-field select {
+    padding-left: 45px;
+    height: 55px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.search-field .form-control:focus,
+.search-field select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5);
+}
+
+.btn-search {
+    height: 55px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    background: var(--navy-dark);
+    border: 2px solid var(--navy-dark);
+    color: white;
+}
+
+.btn-search:hover {
+    background: var(--navy-medium);
+    border-color: var(--navy-medium);
+    transform: translateY(-2px);
+}
+
+/* ==================== */
+/* Section Styles */
+/* ==================== */
+.section-subtitle {
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    color: var(--gold-primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--navy-dark);
+    margin-bottom: 1rem;
+}
+
+/* ==================== */
+/* Welcome Section */
+/* ==================== */
+.welcome-section {
+    background: white;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+}
+
+.stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ==================== */
+/* Room Cards */
+/* ==================== */
+.rooms-section {
+    background: var(--bg-light);
+}
+
+.room-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.room-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.room-image {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+}
+
+.room-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.room-card:hover .room-image img {
+    transform: scale(1.1);
+}
+
+.room-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--gold-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.room-body {
+    padding: 2rem;
+}
+
+.room-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--navy-dark);
+    margin-bottom: 1rem;
+}
+
+.room-description {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.room-features {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.room-features span {
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+.room-features i {
+    color: var(--gold-primary);
+    margin-right: 5px;
+}
+
+.room-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.room-price {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.price-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+}
+
+.price-period {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* ==================== */
+/* Amenities Section */
+/* ==================== */
+.amenities-section {
+    background: white;
+}
+
+.amenity-card {
+    text-align: center;
+    padding: 2rem;
+    background: var(--bg-light);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.amenity-card:hover {
+    background: var(--navy-dark);
+    transform: translateY(-5px);
+}
+
+.amenity-card:hover .amenity-icon {
+    background: var(--gold-primary);
+}
+
+.amenity-card:hover .amenity-icon i {
+    color: white;
+}
+
+.amenity-card:hover h4,
+.amenity-card:hover p {
+    color: white;
+}
+
+.amenity-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.amenity-icon i {
+    font-size: 2rem;
+    color: var(--gold-primary);
+}
+
+.amenity-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--navy-dark);
+    margin-bottom: 0.5rem;
+}
+
+.amenity-card p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ==================== */
+/* Gallery Section */
+/* ==================== */
+.gallery-section {
+    background: var(--bg-light);
+}
+
+.gallery-item {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(197, 165, 114, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.gallery-overlay i {
+    color: white;
+    font-size: 2rem;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+/* ==================== */
+/* Footer */
+/* ==================== */
+.luxury-footer {
+    background: var(--navy-dark);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+}
+
+.footer-title {
+    font-family: 'Playfair Display', serif;
+    color: white;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--gold-primary);
+    padding-left: 5px;
+}
+
+.footer-contact {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-contact li {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.footer-contact i {
+    color: var(--gold-primary);
+    margin-right: 10px;
+    margin-top: 3px;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-links a {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(197, 165, 114, 0.2);
+    border-radius: 50%;
+    color: var(--gold-primary);
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    background: var(--gold-primary);
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* ==================== */
+/* Responsive Design */
+/* ==================== */
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .section-title {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+    }
+    
+    .reservation-card {
+        padding: 1.5rem;
+    }
+    
+    .search-field .form-control,
+    .btn-search {
+        height: 50px;
+        font-size: 0.9rem;
+    }
+    
+    .room-features {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .gallery-item {
+        height: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-buttons .me-3 {
+        margin-right: 0 !important;
+    }
+}
+
+/* ==================== */
+/* Loading Animation */
+/* ==================== */
+.loading {
+    text-align: center;
+    padding: 3rem;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3rem;
+    color: var(--gold-primary);
+}
