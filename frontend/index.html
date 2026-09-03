@@ -1,479 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LuxeStay - Hotel & Resort</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LumaStay — considered stays for curious travelers.">
+  <title>LumaStay | Find your next stay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container-fluid px-4 px-lg-5">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <div class="brand-icon">
-                    <i class="fas fa-hotel"></i>
-                </div>
-                <div class="brand-text ms-2">
-                    <div class="brand-name">LuxeStay</div>
-                    <div class="brand-tagline">HOTEL & RESORT</div>
-                </div>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#rooms">Rooms</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#amenities">Amenities</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#gallery">Gallery</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#reviews">Reviews</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                </ul>
-                <div class="navbar-nav">
-                    <a class="btn btn-gold" href="#reservation">Book Now</a>
-                </div>
-            </div>
-        </div>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="LumaStay home">
+      <span class="brand-mark">L</span>
+      <span>Luma<span>Stay</span></span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a class="active" href="#stays">Stays</a>
+      <a href="#experiences">Experiences</a>
+      <a href="#journal">Journal</a>
     </nav>
+    <div class="header-actions">
+      <button class="icon-button" type="button" aria-label="Change language and currency">EN / USD</button>
+      <button class="host-link" type="button">List your property</button>
+      <button class="profile-button" type="button" aria-label="Open account menu"><span class="profile-icon">◉</span><span class="menu-icon">☰</span></button>
+    </div>
+  </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="container">
-            <div class="row align-items-center min-vh-100">
-                <div class="col-lg-12 text-center hero-content">
-                    <p class="hero-subtitle animate-fade-in">WELCOME TO LUXURY</p>
-                    <h1 class="hero-title animate-fade-in-delay">
-                        Experience the Pinnacle<br>
-                        <span class="hero-title-gold">of Hospitality</span>
-                    </h1>
-                    <p class="hero-description animate-fade-in-delay-2">
-                        Where timeless elegance meets modern comfort. Every stay is<br>
-                        a story worth remembering.
-                    </p>
-                    <div class="hero-buttons animate-fade-in-delay-3">
-                        <a href="#reservation" class="btn btn-gold btn-lg me-3">
-                            Reserve Your Stay
-                        </a>
-                        <a href="#rooms" class="btn btn-outline-light btn-lg">
-                            Explore Rooms
-                        </a>
-                    </div>
-                    
-                    <!-- Scroll Down Indicator -->
-                    <div class="scroll-indicator animate-bounce">
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <main id="top">
+    <section class="hero-section row g-0">
+      <div class="hero-copy col-lg-5">
+        <p class="eyebrow">Travel well, stay curious</p>
+        <h1>Stay somewhere<br><em>worth remembering.</em></h1>
+        <p class="hero-subtitle">Handpicked places with a sense of place.<br>Make your next escape feel like yours.</p>
+      </div>
+      <div class="hero-art col-lg-7" aria-label="A sunlit coastal hotel terrace overlooking the sea" role="img">
+        <div class="art-note"><span class="note-dot"></span> Casa Brava · Mallorca</div>
+      </div>
     </section>
 
-    <!-- Quick Reservation Bar -->
-    <section class="quick-reservation" id="reservation">
-        <div class="container-fluid px-4 px-lg-5">
-            <div class="reservation-card">
-                <div class="reservation-header">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Quick Reservation</span>
-                </div>
-                <form id="searchForm" class="reservation-form">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label">Destination</label>
-                            <div class="search-field">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <input type="text" class="form-control" id="cityInput" 
-                                       placeholder="Where are you going?" required>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Check-in</label>
-                            <div class="search-field">
-                                <i class="fas fa-calendar-alt"></i>
-                                <input type="date" class="form-control" id="checkInDate" required>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Check-out</label>
-                            <div class="search-field">
-                                <i class="fas fa-calendar-alt"></i>
-                                <input type="date" class="form-control" id="checkOutDate" required>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Guests</label>
-                            <div class="search-field">
-                                <i class="fas fa-user"></i>
-                                <select class="form-control" id="guestCount">
-                                    <option value="1">1 Guest</option>
-                                    <option value="2" selected>2 Guests</option>
-                                    <option value="3">3 Guests</option>
-                                    <option value="4">4 Guests</option>
-                                    <option value="5">5+ Guests</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-gold w-100 btn-search">
-                                <i class="fas fa-search"></i> Check Availability
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+    <section class="search-panel" aria-label="Search for a stay">
+      <div class="search-field destination-field">
+        <span class="field-icon">⌖</span>
+        <div>
+          <label for="destination">Where</label>
+          <input id="destination" type="text" placeholder="Search destinations" autocomplete="off">
         </div>
+      </div>
+      <div class="search-field">
+        <span class="field-icon">◷</span>
+        <div>
+          <label for="check-in">Check in</label>
+          <input id="check-in" type="text" placeholder="Add dates" onfocus="this.type='date'">
+        </div>
+      </div>
+      <div class="search-field">
+        <span class="field-icon">◷</span>
+        <div>
+          <label for="check-out">Check out</label>
+          <input id="check-out" type="text" placeholder="Add dates" onfocus="this.type='date'">
+        </div>
+      </div>
+      <div class="search-field guests-field">
+        <span class="field-icon">♧</span>
+        <div>
+          <label for="guests">Guests</label>
+          <button class="guest-trigger" id="guests" type="button">2 guests <span>⌄</span></button>
+        </div>
+        <div class="guest-menu" id="guest-menu" aria-hidden="true">
+          <div class="guest-row"><div><strong>Adults</strong><small>Ages 13+</small></div><div class="stepper"><button type="button" data-action="minus" data-target="adults">−</button><span id="adults">2</span><button type="button" data-action="plus" data-target="adults">+</button></div></div>
+          <div class="guest-row"><div><strong>Children</strong><small>Ages 2–12</small></div><div class="stepper"><button type="button" data-action="minus" data-target="children">−</button><span id="children">0</span><button type="button" data-action="plus" data-target="children">+</button></div></div>
+        </div>
+      </div>
+      <button class="search-button" type="button" id="search-button"><span>Search stays</span><b>→</b></button>
     </section>
 
-    <!-- Welcome Section -->
-    <section class="welcome-section py-5">
-        <div class="container py-5">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <div class="welcome-images">
-                        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800" 
-                             alt="Luxury Resort" class="img-fluid rounded-3 shadow-lg">
-                    </div>
-                </div>
-                <div class="col-lg-6 ps-lg-5">
-                    <p class="section-subtitle">DISCOVER OUR STORY</p>
-                    <h2 class="section-title mb-4">Welcome to<br><span class="text-gold">LuxeStay Resort</span></h2>
-                    <p class="text-muted mb-4">
-                        Nestled in a serene paradise, LuxeStay offers an unparalleled blend of luxury and 
-                        comfort. Our resort is designed to provide guests with an unforgettable experience, 
-                        combining world-class amenities with breathtaking natural beauty.
-                    </p>
-                    <p class="text-muted mb-4">
-                        From our elegantly appointed rooms to our gourmet dining options, every detail has 
-                        been carefully crafted to exceed your expectations. Whether you're here for business 
-                        or leisure, we ensure your stay is nothing short of exceptional.
-                    </p>
-                    <div class="row g-4 mb-4">
-                        <div class="col-6">
-                            <div class="stat-item">
-                                <h3 class="stat-number">250+</h3>
-                                <p class="stat-label">Luxury Rooms</p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-item">
-                                <h3 class="stat-number">50+</h3>
-                                <p class="stat-label">Countries Served</p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-item">
-                                <h3 class="stat-number">15+</h3>
-                                <p class="stat-label">Years Experience</p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-item">
-                                <h3 class="stat-number">100K+</h3>
-                                <p class="stat-label">Happy Guests</p>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#about" class="btn btn-dark btn-lg">Learn More</a>
-                </div>
-            </div>
-        </div>
+    <section class="collection-section" id="stays">
+      <div class="section-heading">
+        <div><p class="eyebrow">A little inspiration</p><h2>Stays with a story</h2></div>
+        <a href="#all-stays" class="text-link">Explore all stays <span>↗</span></a>
+      </div>
+      <div class="stay-grid row g-4">
+        <article class="stay-card featured-card col-lg-5">
+          <div class="card-image image-one"><button class="save-button" type="button" aria-label="Save Casa Brava">♡</button><span class="card-tag">Editor's pick</span></div>
+          <div class="card-info"><div><h3>Casa Brava</h3><p>Deià, Mallorca</p></div><strong>€340 <small>/ night</small></strong></div>
+        </article>
+        <article class="stay-card col-lg-3 col-md-6">
+          <div class="card-image image-two"><button class="save-button" type="button" aria-label="Save The Greenhouse">♡</button></div>
+          <div class="card-info"><div><h3>The Greenhouse</h3><p>Sintra, Portugal</p></div><strong>€220 <small>/ night</small></strong></div>
+        </article>
+        <article class="stay-card col-lg-4 col-md-6">
+          <div class="card-image image-three"><button class="save-button" type="button" aria-label="Save Villa Sora">♡</button></div>
+          <div class="card-info"><div><h3>Villa Sora</h3><p>Kyoto, Japan</p></div><strong>€285 <small>/ night</small></strong></div>
+        </article>
+      </div>
     </section>
 
-    <!-- Rooms & Suites Section -->
-    <section class="rooms-section py-5" id="rooms">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <p class="section-subtitle">ACCOMMODATIONS</p>
-                <h2 class="section-title">Our Rooms & Suites</h2>
-                <p class="text-muted">Experience comfort and elegance in every corner</p>
-            </div>
-            <div class="row g-4" id="featuredHotels">
-                <!-- Rooms will be loaded dynamically -->
-                <div class="col-md-4">
-                    <div class="room-card">
-                        <div class="room-image">
-                            <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600" alt="Deluxe Room">
-                            <div class="room-badge">Popular</div>
-                        </div>
-                        <div class="room-body">
-                            <h3 class="room-title">Deluxe Ocean View</h3>
-                            <p class="room-description">Spacious room with stunning ocean views and modern amenities</p>
-                            <div class="room-features">
-                                <span><i class="fas fa-bed"></i> King Bed</span>
-                                <span><i class="fas fa-user-friends"></i> 2 Guests</span>
-                                <span><i class="fas fa-expand"></i> 45 m²</span>
-                            </div>
-                            <div class="room-footer">
-                                <div class="room-price">
-                                    <span class="price-amount">$250</span>
-                                    <span class="price-period">/ night</span>
-                                </div>
-                                <a href="#" class="btn btn-outline-gold">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="room-card">
-                        <div class="room-image">
-                            <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600" alt="Executive Suite">
-                            <div class="room-badge">Luxury</div>
-                        </div>
-                        <div class="room-body">
-                            <h3 class="room-title">Executive Suite</h3>
-                            <p class="room-description">Premium suite with separate living area and panoramic views</p>
-                            <div class="room-features">
-                                <span><i class="fas fa-bed"></i> King Bed</span>
-                                <span><i class="fas fa-user-friends"></i> 3 Guests</span>
-                                <span><i class="fas fa-expand"></i> 75 m²</span>
-                            </div>
-                            <div class="room-footer">
-                                <div class="room-price">
-                                    <span class="price-amount">$450</span>
-                                    <span class="price-period">/ night</span>
-                                </div>
-                                <a href="#" class="btn btn-outline-gold">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="room-card">
-                        <div class="room-image">
-                            <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=600" alt="Presidential Suite">
-                            <div class="room-badge">Premium</div>
-                        </div>
-                        <div class="room-body">
-                            <h3 class="room-title">Presidential Suite</h3>
-                            <p class="room-description">Ultimate luxury with private terrace and exclusive services</p>
-                            <div class="room-features">
-                                <span><i class="fas fa-bed"></i> King Bed</span>
-                                <span><i class="fas fa-user-friends"></i> 4 Guests</span>
-                                <span><i class="fas fa-expand"></i> 120 m²</span>
-                            </div>
-                            <div class="room-footer">
-                                <div class="room-price">
-                                    <span class="price-amount">$850</span>
-                                    <span class="price-period">/ night</span>
-                                </div>
-                                <a href="#" class="btn btn-outline-gold">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <section class="editorial-section row g-0" id="experiences">
+      <div class="editorial-image col-lg-7"></div>
+      <div class="editorial-copy col-lg-5"><p class="eyebrow">The LumaStay standard</p><h2>For the moments<br>in between.</h2><p>From the first coffee to the last sunset, we look for the details that turn a room into a memory.</p><a class="dark-link" href="#about">How we choose <span>→</span></a></div>
     </section>
-
-    <!-- Amenities Section -->
-    <section class="amenities-section py-5" id="amenities">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <p class="section-subtitle">FACILITIES</p>
-                <h2 class="section-title">World-Class Amenities</h2>
-                <p class="text-muted">Everything you need for a perfect stay</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-3 col-sm-6">
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i class="fas fa-swimming-pool"></i>
-                        </div>
-                        <h4>Infinity Pool</h4>
-                        <p>Rooftop infinity pool with panoramic city views</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i class="fas fa-spa"></i>
-                        </div>
-                        <h4>Luxury Spa</h4>
-                        <p>Full-service spa with rejuvenating treatments</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i class="fas fa-dumbbell"></i>
-                        </div>
-                        <h4>Fitness Center</h4>
-                        <p>State-of-the-art gym with personal trainers</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i class="fas fa-utensils"></i>
-                        </div>
-                        <h4>Fine Dining</h4>
-                        <p>Multiple restaurants with world-class cuisine</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i class="fas fa-wifi"></i>
-                        </div>
-                        <h4>Free WiFi</h4>
-                        <p>High-speed internet throughout the property</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i class="fas fa-cocktail"></i>
-                        </div>
-                        <h4>Sky Bar</h4>
-                        <p>Elegant rooftop bar with craft cocktails</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i class="fas fa-concierge-bell"></i>
-                        </div>
-                        <h4>Concierge</h4>
-                        <p>24/7 concierge service for all your needs</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i class="fas fa-car"></i>
-                        </div>
-                        <h4>Valet Parking</h4>
-                        <p>Complimentary valet parking service</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section class="gallery-section py-5" id="gallery">
-        <div class="container-fluid px-0 py-5">
-            <div class="text-center mb-5">
-                <p class="section-subtitle">EXPLORE</p>
-                <h2 class="section-title">Gallery</h2>
-                <p class="text-muted">A glimpse into luxury</p>
-            </div>
-            <div class="row g-0">
-                <div class="col-md-3 col-6">
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600" alt="Gallery">
-                        <div class="gallery-overlay">
-                            <i class="fas fa-search-plus"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600" alt="Gallery">
-                        <div class="gallery-overlay">
-                            <i class="fas fa-search-plus"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600" alt="Gallery">
-                        <div class="gallery-overlay">
-                            <i class="fas fa-search-plus"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600" alt="Gallery">
-                        <div class="gallery-overlay">
-                            <i class="fas fa-search-plus"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="luxury-footer py-5">
-        <div class="container py-4">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <div class="footer-brand mb-3">
-                        <div class="brand-icon">
-                            <i class="fas fa-hotel"></i>
-                        </div>
-                        <div class="brand-text ms-2">
-                            <div class="brand-name">LuxeStay</div>
-                            <div class="brand-tagline">HOTEL & RESORT</div>
-                        </div>
-                    </div>
-                    <p class="text-muted mb-4">
-                        Experience unparalleled luxury and comfort. Your perfect escape awaits.
-                    </p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5 class="footer-title">Quick Links</h5>
-                    <ul class="footer-links">
-                        <li><a href="#rooms">Rooms</a></li>
-                        <li><a href="#amenities">Amenities</a></li>
-                        <li><a href="#gallery">Gallery</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5 class="footer-title">Services</h5>
-                    <ul class="footer-links">
-                        <li><a href="#">Spa & Wellness</a></li>
-                        <li><a href="#">Restaurants</a></li>
-                        <li><a href="#">Events</a></li>
-                        <li><a href="#">Weddings</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-4 mb-4">
-                    <h5 class="footer-title">Contact Us</h5>
-                    <ul class="footer-contact">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Luxury Avenue, Paradise City</li>
-                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
-                        <li><i class="fas fa-envelope"></i> info@luxestay.com</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="my-4" style="border-color: rgba(255,255,255,0.1)">
-            <div class="text-center text-muted">
-                <p class="mb-0">&copy; 2026 LuxeStay Hotel & Resort. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/main.js"></script>
+  </main>
+  <footer class="site-footer" id="journal"><span>© 2024 LumaStay</span><span>Thoughtful stays, everywhere.</span><a href="#contact">Get in touch ↗</a></footer>
+  <div class="toast" id="toast" role="status">Where would you like to go?</div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>
