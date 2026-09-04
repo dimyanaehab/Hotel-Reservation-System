@@ -19,6 +19,12 @@ const confirmedCountElement =
 const cancelledCountElement =
     document.getElementById("cancelled-count");
 
+const bookingsApiUrl = "http://localhost:5007/api";
+const customerHeaders = {
+    "X-Test-User-Id": "1",
+    "X-Test-Role": "User"
+};
+
 // Read bookings saved by booking.js.
 function getSavedBookings() {
     const savedBookings =
@@ -243,8 +249,16 @@ function createBookingCard(booking) {
 }
 
 // Display all bookings.
-function displayBookings() {
-    const bookings = getSavedBookings();
+async function displayBookings() {
+    let bookings;
+    try {
+        const response = await fetch(`${bookingsApiUrl}/me/bookings`, { headers: customerHeaders });
+        if (!response.ok) throw new Error("Could not load your bookings.");
+        bookings = await response.json();
+    } catch (error) {
+        showMessage(error.message, "danger");
+        return;
+    }
 
     updateStatusCounters(bookings);
 
@@ -284,7 +298,7 @@ function addCancelButtonEvents() {
 }
 
 // Temporarily cancel a booking locally.
-function cancelBooking(bookingId) {
+async function cancelBooking(bookingId) {
     const shouldCancel = window.confirm(
         "Are you sure you want to cancel this booking?"
     );
@@ -293,71 +307,18 @@ function cancelBooking(bookingId) {
         return;
     }
 
-    const bookings = getSavedBookings();
-
-    const booking = bookings.find(
-        item => String(item.id) === String(bookingId)
-    );
-
-    if (!booking) {
-        showMessage(
-            "The selected booking could not be found.",
-            "danger"
-        );
-
-        return;
+    try {
+        const response = await fetch(`${bookingsApiUrl}/bookings/${bookingId}/cancel`, {
+            method: "PATCH",
+            headers: customerHeaders
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || "The booking could not be cancelled.");
+        await displayBookings();
+        showMessage("The booking was cancelled successfully.", "success");
+    } catch (error) {
+        showMessage(error.message, "danger");
     }
-
-    if (
-        String(booking.status).toLowerCase() !==
-        "confirmed"
-    ) {
-        showMessage(
-            "Only confirmed bookings can be cancelled.",
-            "warning"
-        );
-
-        return;
-    }
-
-    booking.status = "Cancelled";
-
-    saveBookings(bookings);
-
-    // Update latestBooking if it is the same booking.
-    const latestBookingText =
-        localStorage.getItem("latestBooking");
-
-    if (latestBookingText) {
-        try {
-            const latestBooking =
-                JSON.parse(latestBookingText);
-
-            if (
-                String(latestBooking.id) ===
-                String(bookingId)
-            ) {
-                latestBooking.status = "Cancelled";
-
-                localStorage.setItem(
-                    "latestBooking",
-                    JSON.stringify(latestBooking)
-                );
-            }
-        } catch (error) {
-            console.error(
-                "Could not update latest booking:",
-                error
-            );
-        }
-    }
-
-    displayBookings();
-
-    showMessage(
-        "The booking was cancelled successfully.",
-        "success"
-    );
 }
 
 displayBookings();

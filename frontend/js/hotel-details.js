@@ -193,6 +193,11 @@ function showAvailabilityResult(element, text, title, type, from, to) {
       </div>`;
   }
 
+  const roomTypeId = element.id.replace('availability-', '');
+  const bookingLink = type === 'available' && from && to
+    ? `<a class="btn btn-dark mt-3" href="booking.html?roomTypeId=${encodeURIComponent(roomTypeId)}&checkIn=${encodeURIComponent(from)}&checkOut=${encodeURIComponent(to)}">Book this room</a>`
+    : '';
+
   element.innerHTML = `
     <div class="availability-result ${type}">
       <div class="d-flex gap-2 align-items-start">
@@ -201,6 +206,7 @@ function showAvailabilityResult(element, text, title, type, from, to) {
           <strong class="d-block mb-1">${escapeHtml(title)}</strong>
           <span>${escapeHtml(text)}</span>
           ${dates}
+          ${bookingLink}
         </div>
       </div>
     </div>`;

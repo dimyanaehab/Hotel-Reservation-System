@@ -10,6 +10,12 @@ const pendingBookingsCount =
 const adminBookingsMessage =
     document.getElementById("admin-bookings-message");
 
+const adminBookingsApiUrl = "http://localhost:5007/api";
+const adminHeaders = {
+    "X-Test-User-Id": "1",
+    "X-Test-Role": "Admin"
+};
+
 // Read all temporary bookings.
 function getSavedBookings() {
     const savedBookings =
@@ -176,14 +182,16 @@ function createPendingBookingCard(booking) {
 }
 
 // Display pending bookings.
-function displayPendingBookings() {
-    const allBookings = getSavedBookings();
-
-    const pendingBookings = allBookings.filter(
-        booking =>
-            String(booking.status).toLowerCase() ===
-            "pending"
-    );
+async function displayPendingBookings() {
+    let pendingBookings;
+    try {
+        const response = await fetch(`${adminBookingsApiUrl}/admin/bookings?status=Pending`, { headers: adminHeaders });
+        if (!response.ok) throw new Error("Could not load pending bookings.");
+        pendingBookings = await response.json();
+    } catch (error) {
+        showMessage(error.message, "danger");
+        return;
+    }
 
     pendingBookingsCount.textContent =
         pendingBookings.length;
@@ -301,7 +309,7 @@ function changeBookingStatus(bookingId, newStatus) {
 }
 
 // Confirm a pending booking.
-function confirmBooking(bookingId) {
+async function confirmBooking(bookingId) {
     const shouldConfirm = window.confirm(
         "Are you sure you want to confirm this booking?"
     );
@@ -310,23 +318,11 @@ function confirmBooking(bookingId) {
         return;
     }
 
-    const changed = changeBookingStatus(
-        bookingId,
-        "Confirmed"
-    );
-
-    if (changed) {
-        displayPendingBookings();
-
-        showMessage(
-            "The booking was confirmed successfully.",
-            "success"
-        );
-    }
+    await updateBookingStatus(bookingId, "confirm", "confirmed");
 }
 
 // Reject a pending booking.
-function rejectBooking(bookingId) {
+async function rejectBooking(bookingId) {
     const shouldReject = window.confirm(
         "Are you sure you want to reject this booking?"
     );
@@ -335,18 +331,21 @@ function rejectBooking(bookingId) {
         return;
     }
 
-    const changed = changeBookingStatus(
-        bookingId,
-        "Rejected"
-    );
+    await updateBookingStatus(bookingId, "reject", "rejected");
+}
 
-    if (changed) {
-        displayPendingBookings();
-
-        showMessage(
-            "The booking was rejected successfully.",
-            "success"
-        );
+async function updateBookingStatus(bookingId, action, pastTense) {
+    try {
+        const response = await fetch(`${adminBookingsApiUrl}/admin/bookings/${bookingId}/${action}`, {
+            method: "PATCH",
+            headers: adminHeaders
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || `The booking could not be ${pastTense}.`);
+        await displayPendingBookings();
+        showMessage(`The booking was ${pastTense} successfully.`, "success");
+    } catch (error) {
+        showMessage(error.message, "danger");
     }
 }
 

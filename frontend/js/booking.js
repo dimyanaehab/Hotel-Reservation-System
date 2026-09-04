@@ -18,10 +18,48 @@ const bookingButton = document.getElementById("booking-button");
 const checkOutFeedback =
     document.getElementById("check-out-feedback");
 
+const bookingApiUrl = "http://localhost:5007/api";
+const bookingApiHeaders = {
+    "Content-Type": "application/json",
+    "X-Test-User-Id": "1",
+    "X-Test-Role": "User"
+};
+
+const selectedRoomId = Number(
+    new URLSearchParams(window.location.search).get("roomTypeId")
+);
+if (selectedRoomId > 0) {
+    roomTypeIdInput.value = selectedRoomId;
+}
+
 // Temporary room data.
 // Later, Person 3's hotel/room page will provide this data.
-const roomPricePerNight = Number(roomPriceElement.textContent);
-const maximumGuests = 2;
+let roomPricePerNight = Number(roomPriceElement.textContent);
+let maximumGuests = 2;
+
+async function loadSelectedRoom() {
+    const query = new URLSearchParams(window.location.search);
+    checkInInput.value = query.get("checkIn") || "";
+    checkOutInput.value = query.get("checkOut") || "";
+
+    try {
+        const response = await fetch(`${bookingApiUrl}/room-types/${roomTypeIdInput.value}`);
+        if (!response.ok) throw new Error();
+        const room = await response.json();
+        roomPricePerNight = Number(room.basePrice);
+        maximumGuests = Number(room.capacity);
+        document.getElementById("room-type-name").textContent = room.name;
+        document.getElementById("room-type-name-detail").textContent = room.name;
+        document.getElementById("room-capacity").textContent = `${room.capacity} guests`;
+        roomPriceElement.textContent = room.basePrice;
+        guestsInput.max = room.capacity;
+        summaryRoomPriceElement.textContent = formatPrice(roomPricePerNight);
+        updateCheckOutMinimumDate();
+        updateBookingSummary();
+    } catch {
+        showMessage("The selected room could not be loaded.", "danger");
+    }
+}
 
 // Convert a number to a formatted price.
 function formatPrice(price) {
@@ -216,6 +254,8 @@ checkInInput.min = todayDate;
 summaryRoomPriceElement.textContent =
     formatPrice(roomPricePerNight);
 
+loadSelectedRoom();
+
 // Run when the check-in date changes.
 checkInInput.addEventListener("change", function () {
     hideMessage();
@@ -240,7 +280,7 @@ guestsInput.addEventListener("input", function () {
 });
 
 // Run when the booking form is submitted.
-bookingForm.addEventListener("submit", function (event) {
+bookingForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     hideMessage();
@@ -263,11 +303,6 @@ bookingForm.addEventListener("submit", function (event) {
         return;
     }
 
-    const numberOfNights = calculateNights();
-
-    const totalPrice =
-        numberOfNights * roomPricePerNight;
-
     // This object matches CreateBookingRequestDto in the API.
     const bookingRequest = {
         roomTypeId: Number(roomTypeIdInput.value),
@@ -276,44 +311,24 @@ bookingForm.addEventListener("submit", function (event) {
         numberOfGuests: Number(guestsInput.value)
     };
 
-    // Temporary result used until API integration is available.
-    const temporaryBookingResult = {
-        id: Date.now(),
-        hotelName: "Nile View Hotel",
-        roomTypeName: "Deluxe Room",
-        roomTypeId: bookingRequest.roomTypeId,
-        checkIn: bookingRequest.checkIn,
-        checkOut: bookingRequest.checkOut,
-        numberOfGuests: bookingRequest.numberOfGuests,
-        nights: numberOfNights,
-        totalPrice: totalPrice,
-        status: "Pending",
-        createdAt: new Date().toISOString()
-    };
+    bookingButton.disabled = true;
+    bookingButton.textContent = "Creating booking...";
 
-    console.log("Booking request:", bookingRequest);
-    console.log(
-        "Temporary booking result:",
-        temporaryBookingResult
-    );
-
-    // Save it temporarily in the browser.
-    localStorage.setItem(
-        "latestBooking",
-        JSON.stringify(temporaryBookingResult)
-    );
-
-    // Save the booking in a temporary list for My Bookings.
-    const savedBookings =
-        JSON.parse(localStorage.getItem("myBookings")) || [];
-
-    savedBookings.push(temporaryBookingResult);
-
-    localStorage.setItem(
-        "myBookings",
-        JSON.stringify(savedBookings)
-    );
-
-    // Open the booking confirmation page.
-    window.location.href = "booking-result.html";
+    try {
+        const response = await fetch(`${bookingApiUrl}/bookings`, {
+            method: "POST",
+            headers: bookingApiHeaders,
+            body: JSON.stringify(bookingRequest)
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.message || "The booking could not be created.");
+        }
+        localStorage.setItem("latestBooking", JSON.stringify(result));
+        window.location.href = "booking-result.html";
+    } catch (error) {
+        showMessage(error.message, "danger");
+        bookingButton.disabled = false;
+        bookingButton.textContent = "Confirm Booking";
+    }
 });
