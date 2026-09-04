@@ -1,0 +1,321 @@
+/*
+ * booking.css — LumaStay booking page
+ * All variables and base styles come from style.css.
+ * This file adds only booking-specific layout and components.
+ */
+
+/* ----------------------------------------------------------------
+   Page header
+   ---------------------------------------------------------------- */
+.booking-page-header {
+  padding: 72px 5.5vw 56px;
+  max-width: 760px;
+}
+
+.booking-page-header h1 {
+  font: 600 clamp(2.4rem, 4.5vw, 4rem) / 1.05 'Playfair Display', serif;
+  letter-spacing: -2px;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+
+.booking-page-header h1 em {
+  color: #82917e;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.booking-page-header .eyebrow {
+  margin-bottom: 18px;
+}
+
+.booking-page-header-sub {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------
+   Main layout
+   ---------------------------------------------------------------- */
+.booking-main {
+  width: min(1100px, 89%);
+  margin: 0 auto;
+  padding-bottom: 100px;
+}
+
+.booking-layout {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* ----------------------------------------------------------------
+   Alert (booking-message) — reuses Bootstrap .alert classes.
+   Restyle to match the site palette instead of Bootstrap blues.
+   ---------------------------------------------------------------- */
+#booking-message {
+  border-radius: 3px;
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+#booking-message.alert-success {
+  background: rgba(191, 201, 187, 0.12);
+  border: 1px solid var(--sage);
+  color: var(--dark-sage);
+}
+
+#booking-message.alert-danger {
+  background: rgba(230, 164, 75, 0.1);
+  border: 1px solid var(--sun);
+  color: #b87730;
+}
+
+/* ----------------------------------------------------------------
+   Room aside card
+   ---------------------------------------------------------------- */
+.room-card-luma {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(31, 45, 42, 0.06);
+  position: sticky;
+  top: 100px;
+}
+
+.room-card-image {
+  height: 230px;
+  background:
+    linear-gradient(160deg, var(--dark-sage) 0%, #2a3d37 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.room-card-body {
+  padding: 24px;
+}
+
+.room-selected-tag {
+  display: inline-block;
+  background: rgba(191, 201, 187, 0.25);
+  color: var(--dark-sage);
+  border: 1px solid var(--sage);
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 4px 10px;
+  margin-bottom: 14px;
+}
+
+.room-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.room-card-type {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.room-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+.room-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.room-info-cell {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 12px 14px;
+}
+
+.information-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.room-info-cell strong {
+  font-size: 13px;
+  color: var(--ink);
+}
+
+/* ----------------------------------------------------------------
+   Booking form card
+   ---------------------------------------------------------------- */
+.booking-form-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 40px;
+  box-shadow: 0 8px 24px rgba(31, 45, 42, 0.06);
+}
+
+.booking-form-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin-bottom: 28px;
+}
+
+/* ----------------------------------------------------------------
+   Form fields — reuse auth.css patterns
+   ---------------------------------------------------------------- */
+.booking-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* form-group and form-input are already defined in auth.css */
+
+.mt-form {
+  margin-top: 18px;
+}
+
+/* Make Bootstrap's invalid-feedback work with .form-input */
+.form-input.is-invalid,
+.was-validated .form-input:invalid {
+  border-color: #c4803a;
+}
+
+.invalid-feedback {
+  display: none;
+  font-size: 12px;
+  color: #c4803a;
+  margin-top: 5px;
+}
+
+.was-validated .form-input:invalid ~ .invalid-feedback,
+.form-input.is-invalid ~ .invalid-feedback {
+  display: block;
+}
+
+/* ----------------------------------------------------------------
+   Price summary
+   ---------------------------------------------------------------- */
+.booking-summary {
+  margin-top: 24px;
+  padding: 20px 22px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.summary-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.summary-divider {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 14px 0;
+}
+
+.total-row {
+  margin-bottom: 0;
+  font-size: 15px;
+}
+
+.total-row strong {
+  color: var(--ink);
+}
+
+/* ----------------------------------------------------------------
+   Preview note
+   ---------------------------------------------------------------- */
+.preview-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 14px;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+/* ----------------------------------------------------------------
+   Submit button — .btn-primary is already defined in auth.css.
+   Only add width utility here.
+   ---------------------------------------------------------------- */
+.w-100 {
+  width: 100%;
+}
+
+/* ----------------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .booking-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .room-card-luma {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .booking-page-header {
+    padding: 48px 6% 36px;
+  }
+
+  .booking-form-card {
+    padding: 28px 22px;
+  }
+
+  .booking-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .room-card-image {
+    height: 180px;
+  }
+
+  .room-info-grid {
+    grid-template-columns: 1fr;
+  }
+}

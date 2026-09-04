@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Room | LumaStay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/booking.css">
+</head>
+<body>
+
+  <!-- Site Header — matches homepage & login -->
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="LumaStay home">
+      <span class="brand-mark">L</span>
+      <span>Luma<span>Stay</span></span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="index.html#stays">Stays</a>
+      <a href="index.html#experiences">Experiences</a>
+      <a href="index.html#journal">Journal</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" type="button" aria-label="Change language and currency">EN / USD</button>
+      <a href="my-bookings.html" class="host-link">My Bookings</a>
+      <button class="profile-button" type="button" aria-label="Open account menu">
+        <span class="profile-icon">◉</span>
+        <span class="menu-icon">☰</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <div class="booking-page-header">
+    <p class="eyebrow">Ready to arrive</p>
+    <h1>Complete your <em>booking.</em></h1>
+    <p class="booking-page-header-sub">Choose your dates and confirm your reservation details.</p>
+  </div>
+
+  <!-- Main Content -->
+  <main class="booking-main">
+
+    <!-- Alert message (used by booking.js) -->
+    <div id="booking-message" class="alert d-none" role="alert"></div>
+
+    <div class="booking-layout">
+
+      <!-- Left: Selected Room Card -->
+      <aside class="room-aside">
+        <div class="room-card-luma">
+
+          <div class="room-card-image">
+            <span id="room-type-name">Deluxe Room</span>
+          </div>
+
+          <div class="room-card-body">
+
+            <span class="room-selected-tag">Selected Room</span>
+
+            <h2 class="room-card-title" id="hotel-name">Nile View Hotel</h2>
+
+            <p class="room-card-type" id="room-type-name-detail">Deluxe Room</p>
+
+            <p class="room-card-desc">
+              A comfortable room with a beautiful view,
+              modern furniture and free Wi-Fi.
+            </p>
+
+            <div class="room-info-grid">
+              <div class="room-info-cell">
+                <span class="information-label">Capacity</span>
+                <strong id="room-capacity">2 guests</strong>
+              </div>
+              <div class="room-info-cell">
+                <span class="information-label">Price per night</span>
+                <strong>EGP <span id="room-price">1500</span></strong>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right: Booking Form -->
+      <section class="booking-form-section">
+        <div class="booking-form-card">
+
+          <h2 class="booking-form-title">Booking Information</h2>
+
+          <form id="booking-form" novalidate>
+
+            <!-- Hidden room type ID (used by booking.js) -->
+            <input type="hidden" id="room-type-id" value="2">
+
+            <div class="booking-fields">
+
+              <!-- Check-in -->
+              <div class="form-group">
+                <label for="check-in">Check-in date</label>
+                <input
+                  type="date"
+                  class="form-input"
+                  id="check-in"
+                  required
+                >
+                <div class="invalid-feedback">
+                  Please select a valid check-in date.
+                </div>
+              </div>
+
+              <!-- Check-out -->
+              <div class="form-group">
+                <label for="check-out">Check-out date</label>
+                <input
+                  type="date"
+                  class="form-input"
+                  id="check-out"
+                  required
+                >
+                <div class="invalid-feedback" id="check-out-feedback">
+                  Please select a valid check-out date.
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Number of guests -->
+            <div class="form-group mt-form">
+              <label for="number-of-guests">Number of guests</label>
+              <input
+                type="number"
+                class="form-input"
+                id="number-of-guests"
+                min="1"
+                max="2"
+                value="1"
+                required
+              >
+              <div class="invalid-feedback">
+                This room accepts between 1 and 2 guests.
+              </div>
+            </div>
+
+            <!-- Price Summary -->
+            <div class="booking-summary">
+              <h3 class="summary-title">Price Summary</h3>
+
+              <div class="summary-row">
+                <span>Price per night</span>
+                <span>EGP <span id="summary-room-price">1,500</span></span>
+              </div>
+
+              <div class="summary-row">
+                <span>Number of nights</span>
+                <span id="number-of-nights">0</span>
+              </div>
+
+              <hr class="summary-divider">
+
+              <div class="summary-row total-row">
+                <strong>Total price</strong>
+                <strong>EGP <span id="total-price">0</span></strong>
+              </div>
+            </div>
+
+            <p class="preview-note">
+              This price is a preview. The backend will calculate and confirm the final total.
+            </p>
+
+            <button type="submit" class="btn-primary w-100 mt-form" id="booking-button">
+              Confirm Booking
+            </button>
+
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer — matches homepage -->
+  <footer class="site-footer">
+    <span>© 2026 LumaStay</span>
+    <span>Thoughtful stays, everywhere.</span>
+    <a href="index.html#contact">Get in touch ↗</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/booking.js"></script>
+</body>
+</html>
