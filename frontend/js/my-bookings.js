@@ -19,36 +19,8 @@ const confirmedCountElement =
 const cancelledCountElement =
     document.getElementById("cancelled-count");
 
-const bookingsApiUrl = "http://localhost:5007/api";
-const customerHeaders = {
-    "X-Test-User-Id": "1",
-    "X-Test-Role": "User"
-};
-
-// Read bookings saved by booking.js.
-function getSavedBookings() {
-    const savedBookings =
-        localStorage.getItem("myBookings");
-
-    if (!savedBookings) {
-        return [];
-    }
-
-    try {
-        return JSON.parse(savedBookings);
-    } catch (error) {
-        console.error("Could not read saved bookings:", error);
-        return [];
-    }
-}
-
-// Save the updated booking list.
-function saveBookings(bookings) {
-    localStorage.setItem(
-        "myBookings",
-        JSON.stringify(bookings)
-    );
-}
+const bookingsApiUrl = window.hotelApi.baseUrl;
+const customerHeaders = window.hotelApi.headers("User");
 
 // Format a price.
 function formatPrice(price) {

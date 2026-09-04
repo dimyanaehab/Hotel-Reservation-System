@@ -1,5 +1,5 @@
 // Change this value later if the team uses a different API address.
-const API_BASE = 'http://localhost:5007/api';
+const API_BASE = window.hotelApi.baseUrl;
 const query = new URLSearchParams(window.location.search);
 const hotelId = Number(query.get('hotelId')) || 1;
 

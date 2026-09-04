@@ -4,42 +4,14 @@ const pendingBookingsContainer =
 const noPendingBookings =
     document.getElementById("no-pending-bookings");
 
-const pendingBookingsCount =
-    document.getElementById("pending-bookings-count");
+const pendingBookingsCounts =
+    document.querySelectorAll("#pending-bookings-count");
 
 const adminBookingsMessage =
     document.getElementById("admin-bookings-message");
 
-const adminBookingsApiUrl = "http://localhost:5007/api";
-const adminHeaders = {
-    "X-Test-User-Id": "1",
-    "X-Test-Role": "Admin"
-};
-
-// Read all temporary bookings.
-function getSavedBookings() {
-    const savedBookings =
-        localStorage.getItem("myBookings");
-
-    if (!savedBookings) {
-        return [];
-    }
-
-    try {
-        return JSON.parse(savedBookings);
-    } catch (error) {
-        console.error("Could not read bookings:", error);
-        return [];
-    }
-}
-
-// Save the changed booking list.
-function saveBookings(bookings) {
-    localStorage.setItem(
-        "myBookings",
-        JSON.stringify(bookings)
-    );
-}
+const adminBookingsApiUrl = window.hotelApi.baseUrl;
+const adminHeaders = window.hotelApi.headers("Admin");
 
 // Format a price.
 function formatPrice(price) {
@@ -193,8 +165,9 @@ async function displayPendingBookings() {
         return;
     }
 
-    pendingBookingsCount.textContent =
-        pendingBookings.length;
+    pendingBookingsCounts.forEach(element => {
+        element.textContent = pendingBookings.length;
+    });
 
     if (pendingBookings.length === 0) {
         pendingBookingsContainer.innerHTML = "";
@@ -237,75 +210,6 @@ function addBookingActionEvents() {
             rejectBooking(bookingId);
         });
     });
-}
-
-// Update latestBooking when its status changes.
-function updateLatestBooking(bookingId, newStatus) {
-    const latestBookingText =
-        localStorage.getItem("latestBooking");
-
-    if (!latestBookingText) {
-        return;
-    }
-
-    try {
-        const latestBooking =
-            JSON.parse(latestBookingText);
-
-        if (
-            String(latestBooking.id) ===
-            String(bookingId)
-        ) {
-            latestBooking.status = newStatus;
-
-            localStorage.setItem(
-                "latestBooking",
-                JSON.stringify(latestBooking)
-            );
-        }
-    } catch (error) {
-        console.error(
-            "Could not update latest booking:",
-            error
-        );
-    }
-}
-
-// Change a booking status.
-function changeBookingStatus(bookingId, newStatus) {
-    const bookings = getSavedBookings();
-
-    const booking = bookings.find(
-        item => String(item.id) === String(bookingId)
-    );
-
-    if (!booking) {
-        showMessage(
-            "The selected booking could not be found.",
-            "danger"
-        );
-
-        return false;
-    }
-
-    if (
-        String(booking.status).toLowerCase() !==
-        "pending"
-    ) {
-        showMessage(
-            "This booking has already been processed.",
-            "warning"
-        );
-
-        return false;
-    }
-
-    booking.status = newStatus;
-
-    saveBookings(bookings);
-    updateLatestBooking(bookingId, newStatus);
-
-    return true;
 }
 
 // Confirm a pending booking.

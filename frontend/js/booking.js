@@ -18,11 +18,10 @@ const bookingButton = document.getElementById("booking-button");
 const checkOutFeedback =
     document.getElementById("check-out-feedback");
 
-const bookingApiUrl = "http://localhost:5007/api";
+const bookingApiUrl = window.hotelApi.baseUrl;
 const bookingApiHeaders = {
     "Content-Type": "application/json",
-    "X-Test-User-Id": "1",
-    "X-Test-Role": "User"
+    ...window.hotelApi.headers("User")
 };
 
 const selectedRoomId = Number(
