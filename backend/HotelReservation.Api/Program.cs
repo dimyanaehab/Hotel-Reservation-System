@@ -1,5 +1,7 @@
 using HotelReservation.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using HotelReservation.Api.Services;
+using HotelReservation.Api.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IBookingService, BookingService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
