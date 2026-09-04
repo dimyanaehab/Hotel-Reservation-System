@@ -1,0 +1,80 @@
+.admin-room-sidebar {
+  background: #0a1128;
+  color: white;
+}
+
+.admin-room-brand {
+  color: #d4b890;
+  font-family: "Playfair Display", serif;
+  font-size: 1.35rem;
+  text-decoration: none;
+}
+
+.admin-room-sidebar .nav-link {
+  color: #d5dae5;
+  border-radius: 0.4rem;
+}
+
+.admin-room-sidebar .nav-link:hover,
+.admin-room-sidebar .nav-link.active {
+  color: white;
+  background: rgba(197, 165, 114, 0.22);
+}
+
+.admin-section-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 0.25rem 0.75rem rgba(10, 17, 40, 0.05);
+}
+
+.admin-section-card th,
+.admin-section-card td {
+  padding: 0.9rem;
+}
+
+.inventory-result {
+  min-height: 2.5rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 0.4rem;
+}
+
+.inventory-result.success {
+  background: #e8f7ee;
+  border: 1px solid #a7d7b8;
+  color: #176b3a;
+}
+
+.inventory-result.error {
+  background: #fdecec;
+  border: 1px solid #efb7b7;
+  color: #9b2c2c;
+}
+
+#adminMessage {
+  position: sticky;
+  top: 1rem;
+  z-index: 1020;
+  border-radius: 0.65rem;
+  box-shadow: 0 0.4rem 1rem rgba(10, 17, 40, 0.1);
+}
+
+.table thead th {
+  background: #f7f8fa;
+  color: #4b5563;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.modal-content {
+  border: 0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1rem 3rem rgba(10, 17, 40, 0.2);
+}
+
+@media (max-width: 991px) {
+  .admin-room-sidebar {
+    min-height: auto;
+  }
+}

@@ -1,0 +1,93 @@
+.hotel-hero {
+  background: #f4efe7;
+}
+
+.hotel-hero-image {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+}
+
+.hotel-location {
+  color: #8a6d3b;
+  font-weight: 600;
+}
+
+.hotel-description {
+  max-width: 720px;
+}
+
+.room-card {
+  height: 100%;
+  border: 1px solid #e5ded3;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.room-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.75rem 1.5rem rgba(10, 17, 40, 0.1);
+}
+
+.room-placeholder {
+  height: 180px;
+  display: grid;
+  place-items: center;
+  background: #17213b;
+  color: #d4b890;
+  font-family: "Playfair Display", serif;
+  font-size: 1.5rem;
+}
+
+.availability-message {
+  min-height: 2.5rem;
+  border-radius: 0.75rem;
+}
+
+.availability-result {
+  padding: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+}
+
+.availability-result.available {
+  background: #e8f7ee;
+  border-color: #a7d7b8;
+  color: #176b3a;
+}
+
+.availability-result.unavailable,
+.availability-result.error {
+  background: #fdecec;
+  border-color: #efb7b7;
+  color: #9b2c2c;
+}
+
+.availability-result.warning {
+  background: #fff8e1;
+  border-color: #ead28a;
+  color: #715b18;
+}
+
+.availability-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.availability-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.availability-loading {
+  padding: 0.8rem 0;
+  color: #5f6673;
+}
+
+@media (max-width: 767px) {
+  .hotel-hero-image {
+    height: 240px;
+  }
+}
