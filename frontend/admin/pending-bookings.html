@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pending Bookings | LumaStay Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/bookings.css">
+</head>
+<body class="admin-body">
+
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="sidebar-brand">
+        <span class="brand-mark">L</span>
+        <div class="brand-text">
+          <span class="brand-name">Luma<span>Stay</span></span>
+          <span class="brand-tagline">Admin</span>
+        </div>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="dashboard.html" class="nav-link">
+            <span class="nav-icon">◈</span>
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="hotels.html" class="nav-link">
+            <span class="nav-icon">⌂</span>
+            <span class="nav-text">Properties</span>
+            <span class="nav-badge">12</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="rooms.html" class="nav-link">
+            <span class="nav-icon">▦</span>
+            <span class="nav-text">Rooms</span>
+            <span class="nav-badge">48</span>
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a href="pending-bookings.html" class="nav-link">
+            <span class="nav-icon">◔</span>
+            <span class="nav-text">Bookings</span>
+            <span class="nav-badge warning" id="pending-bookings-count">0</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="../reviews.html" class="nav-link">
+            <span class="nav-icon">★</span>
+            <span class="nav-text">Reviews</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="users.html" class="nav-link">
+            <span class="nav-icon">◉</span>
+            <span class="nav-text">Users</span>
+          </a>
+        </li>
+
+        <li class="nav-divider"></li>
+
+        <li class="nav-item">
+          <a href="settings.html" class="nav-link">
+            <span class="nav-icon">⚙</span>
+            <span class="nav-text">Settings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">
+            <span class="nav-icon">↗</span>
+            <span class="nav-text">View Website</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" id="logoutBtn">
+            <span class="nav-icon">⎋</span>
+            <span class="nav-text">Sign out</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <div class="admin-content">
+
+    <!-- Top Navbar -->
+    <nav class="admin-navbar">
+      <div class="navbar-left">
+        <button class="mobile-toggle" id="mobileToggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="page-header">
+          <h1 class="page-title">Pending Bookings</h1>
+          <p class="page-subtitle">Review and action customer reservation requests</p>
+        </div>
+      </div>
+      <div class="navbar-right">
+        <div class="navbar-search">
+          <input type="text" placeholder="Search..." class="search-input">
+          <span class="search-icon">⌕</span>
+        </div>
+        <button class="navbar-notification">
+          <span class="notification-icon">◔</span>
+          <span class="notification-badge">3</span>
+        </button>
+        <div class="navbar-profile">
+          <div class="profile-avatar">AD</div>
+          <div class="profile-info">
+            <span class="profile-name">Admin User</span>
+            <span class="profile-role">Administrator</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Body -->
+    <div class="dashboard-container">
+
+      <!-- Alert message populated by bookings.js -->
+      <div id="admin-bookings-message" class="admin-alert d-none" role="alert"></div>
+
+      <!-- Page-level summary strip -->
+      <div class="bookings-summary-strip">
+        <div class="summary-strip-left">
+          <span class="summary-strip-label">Awaiting your review</span>
+          <span class="summary-strip-count" id="pending-bookings-count">0</span>
+          <span class="summary-strip-unit">pending requests</span>
+        </div>
+        <a href="dashboard.html" class="btn-outline">← Back to Dashboard</a>
+      </div>
+
+      <!-- Booking cards injected by bookings.js -->
+      <section id="pending-bookings-container" class="row g-4"></section>
+
+      <!-- Empty state shown by bookings.js -->
+      <section id="no-pending-bookings" class="bookings-empty-state d-none">
+        <div class="empty-icon-wrap">
+          <span class="empty-icon">◔</span>
+        </div>
+        <h2 class="empty-title">All caught up</h2>
+        <p class="empty-desc">There are no booking requests waiting for review right now.</p>
+        <a href="dashboard.html" class="btn-primary">Return to Dashboard</a>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/bookings.js"></script>
+</body>
+</html>

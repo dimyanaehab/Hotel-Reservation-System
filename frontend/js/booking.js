@@ -303,12 +303,17 @@ bookingForm.addEventListener("submit", function (event) {
         JSON.stringify(temporaryBookingResult)
     );
 
-    bookingButton.disabled = true;
-    bookingButton.textContent = "Booking Created";
+    // Save the booking in a temporary list for My Bookings.
+    const savedBookings =
+        JSON.parse(localStorage.getItem("myBookings")) || [];
 
-    showMessage(
-        "Your booking was created locally with Pending status. " +
-        "It is not connected to the API yet.",
-        "success"
+    savedBookings.push(temporaryBookingResult);
+
+    localStorage.setItem(
+        "myBookings",
+        JSON.stringify(savedBookings)
     );
+
+    // Open the booking confirmation page.
+    window.location.href = "booking-result.html";
 });
