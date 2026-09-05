@@ -1,6 +1,7 @@
 const guestTrigger = document.querySelector('#guests');
 const guestMenu = document.querySelector('#guest-menu');
 const toast = document.querySelector('#toast');
+const profileButton = document.querySelector('.profile-button');
 
 function updateGuestLabel() {
   const adults = Number(document.querySelector('#adults').textContent);
@@ -43,4 +44,9 @@ document.querySelector('#search-button').addEventListener('click', () => {
   toast.textContent = destination ? `Searching stays in ${destination}...` : 'Where would you like to go?';
   toast.classList.add('visible');
   window.setTimeout(() => toast.classList.remove('visible'), 2600);
+});
+
+profileButton.addEventListener('click', () => {
+  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+  window.location.href = token ? 'my-bookings.html' : 'login.html';
 });
