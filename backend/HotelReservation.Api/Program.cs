@@ -3,22 +3,42 @@ using HotelReservation.Api.Services;
 using HotelReservation.Api.Services.Interfaces;
 using HotelReservation.Api.Authentication;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter the JWT returned by login."
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        }] = Array.Empty<string>()
+    });
+
     if (builder.Environment.IsDevelopment())
     {
         options.AddSecurityDefinition("TestUserId", new OpenApiSecurityScheme
@@ -43,10 +63,41 @@ builder.Services.AddSwaggerGen(options =>
     }
 });
 
+void ConfigureJwt(JwtBearerOptions options)
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            builder.Configuration["Jwt:Key"] ?? "DefaultFallbackSecretKey1234567890!")),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+}
+
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.AddAuthentication("Development")
-        .AddScheme<AuthenticationSchemeOptions, DevelopmentAuthenticationHandler>("Development", null);
+    builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = "DevelopmentOrJwt";
+            options.DefaultChallengeScheme = "DevelopmentOrJwt";
+        })
+        .AddPolicyScheme("DevelopmentOrJwt", null, options =>
+        {
+            options.ForwardDefaultSelector = context =>
+                context.Request.Headers.Authorization.ToString()
+                    .StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+                    ? JwtBearerDefaults.AuthenticationScheme
+                    : "Development";
+        })
+        .AddScheme<AuthenticationSchemeOptions, DevelopmentAuthenticationHandler>(
+            "Development", null)
+        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, ConfigureJwt);
+}
+else
+{
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(ConfigureJwt);
 }
 
 // TEMPORARY DEVELOPMENT CORS
@@ -68,6 +119,7 @@ if (builder.Environment.IsDevelopment())
     });
 }
 
+// Database Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     if (builder.Environment.IsDevelopment())
@@ -103,14 +155,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-
 // TEMPORARY DEVELOPMENT CORS
 if (app.Environment.IsDevelopment())
 {
     app.UseCors("TemporaryDevelopmentCors");
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
