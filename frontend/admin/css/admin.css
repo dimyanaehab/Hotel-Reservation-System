@@ -405,6 +405,18 @@
 
 .profile-role { font-size: 11px; color: var(--muted); }
 
+.booking-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.action-btn.cancel {
+  color: var(--danger);
+  border-color: rgba(197, 98, 90, 0.35);
+}
+
 /* -----------------------------------------------------------------------------
    6. DASHBOARD CONTAINER
    ----------------------------------------------------------------------------- */

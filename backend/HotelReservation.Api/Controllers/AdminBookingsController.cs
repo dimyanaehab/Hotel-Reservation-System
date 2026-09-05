@@ -83,4 +83,33 @@ public class AdminBookingsController : ControllerBase
             });
         }
     }
+
+    [HttpPatch("{id:int}/cancel")]
+    public async Task<ActionResult<AdminBookingResponseDto>> CancelBooking(int id)
+    {
+        return await RunStatusChange(() => _bookingService.CancelBookingAsAdminAsync(id));
+    }
+
+    [HttpPatch("{id:int}/complete")]
+    public async Task<ActionResult<AdminBookingResponseDto>> CompleteBooking(int id)
+    {
+        return await RunStatusChange(() => _bookingService.CompleteBookingAsync(id));
+    }
+
+    private async Task<ActionResult<AdminBookingResponseDto>> RunStatusChange(
+        Func<Task<AdminBookingResponseDto>> action)
+    {
+        try
+        {
+            return Ok(await action());
+        }
+        catch (KeyNotFoundException exception)
+        {
+            return NotFound(new { message = exception.Message });
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Conflict(new { message = exception.Message });
+        }
+    }
 }

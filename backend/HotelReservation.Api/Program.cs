@@ -5,6 +5,7 @@ using HotelReservation.Api.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,6 +93,12 @@ if (app.Environment.IsDevelopment())
     await DevelopmentDataSeeder.SeedAsync(app.Services);
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    string frontendPath = Path.GetFullPath(Path.Combine(
+        app.Environment.ContentRootPath, "..", "..", "frontend"));
+    var frontendFiles = new PhysicalFileProvider(frontendPath);
+    app.UseDefaultFiles(new DefaultFilesOptions { FileProvider = frontendFiles });
+    app.UseStaticFiles(new StaticFileOptions { FileProvider = frontendFiles });
 }
 
 app.UseHttpsRedirection();

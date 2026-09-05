@@ -414,6 +414,100 @@ public class BookingService : IBookingService
     }
 }
 
+    public async Task<AdminBookingResponseDto> CancelBookingAsAdminAsync(int bookingId)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(
+            IsolationLevel.Serializable);
+
+        try
+        {
+            Booking booking = await GetAdminBookingAsync(bookingId);
+
+            if (booking.Status is not (BookingStatus.Pending or BookingStatus.Confirmed))
+            {
+                throw new InvalidOperationException(
+                    "Only pending or confirmed bookings can be cancelled.");
+            }
+
+            await RestoreInventoryAsync(booking);
+            booking.Status = BookingStatus.Cancelled;
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return ToAdminDto(booking);
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<AdminBookingResponseDto> CompleteBookingAsync(int bookingId)
+    {
+        Booking booking = await GetAdminBookingAsync(bookingId);
+
+        if (booking.Status != BookingStatus.Confirmed)
+        {
+            throw new InvalidOperationException("Only confirmed bookings can be completed.");
+        }
+
+        if (booking.CheckOut > DateOnly.FromDateTime(DateTime.UtcNow))
+        {
+            throw new InvalidOperationException(
+                "A booking cannot be completed before its check-out date.");
+        }
+
+        booking.Status = BookingStatus.Completed;
+        await _context.SaveChangesAsync();
+        return ToAdminDto(booking);
+    }
+
+    private async Task<Booking> GetAdminBookingAsync(int bookingId)
+    {
+        Booking? booking = await _context.Bookings
+            .Include(item => item.User)
+            .Include(item => item.Hotel)
+            .Include(item => item.RoomType)
+            .FirstOrDefaultAsync(item => item.Id == bookingId);
+
+        return booking ?? throw new KeyNotFoundException("Booking was not found.");
+    }
+
+    private async Task RestoreInventoryAsync(Booking booking)
+    {
+        List<RoomInventory> records = await _context.RoomInventories
+            .Where(item => item.RoomTypeId == booking.RoomTypeId &&
+                item.Date >= booking.CheckIn && item.Date < booking.CheckOut)
+            .ToListAsync();
+
+        if (records.Count != booking.Nights || records.Any(item => item.SoldRooms <= 0))
+        {
+            throw new InvalidOperationException(
+                "The booking inventory cannot be restored correctly.");
+        }
+
+        records.ForEach(item => item.SoldRooms--);
+    }
+
+    private static AdminBookingResponseDto ToAdminDto(Booking booking) => new()
+    {
+        Id = booking.Id,
+        UserId = booking.UserId,
+        UserName = booking.User.Name,
+        UserEmail = booking.User.Email,
+        HotelId = booking.HotelId,
+        HotelName = booking.Hotel.Name,
+        RoomTypeId = booking.RoomTypeId,
+        RoomTypeName = booking.RoomType.Name,
+        CheckIn = booking.CheckIn,
+        CheckOut = booking.CheckOut,
+        Nights = booking.Nights,
+        NumberOfGuests = booking.NumberOfGuests,
+        TotalPrice = booking.TotalPrice,
+        Status = booking.Status.ToString(),
+        CreatedAt = booking.CreatedAt
+    };
+
     private static void ValidateBookingRequest(
         CreateBookingRequestDto request)
     {

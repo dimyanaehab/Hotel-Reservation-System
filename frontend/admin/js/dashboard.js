@@ -51,10 +51,25 @@ function renderRecentBookings() {
         <td>${formatDate(booking.checkOut)}</td>
         <td>${formatCurrency(booking.totalPrice)}</td>
         <td>${getStatusBadge(booking.status.toUpperCase())}</td>
-        <td>${booking.status.toLowerCase() === "pending" ? `
-            <button class="action-btn confirm" onclick="changeDashboardBooking(${booking.id}, 'confirm')">✓</button>
-            <button class="action-btn reject" onclick="changeDashboardBooking(${booking.id}, 'reject')">✕</button>` : ""}</td>
+        <td><div class="booking-row-actions">${bookingActions(booking)}</div></td>
     </tr>`).join("") : '<tr><td colspan="8" class="text-center py-4">No bookings yet.</td></tr>';
+}
+
+function bookingActions(booking) {
+    const status = booking.status.toLowerCase();
+    if (status === "pending") {
+        return `<button class="action-btn confirm" aria-label="Confirm booking ${booking.id}" title="Confirm" onclick="changeDashboardBooking(${booking.id}, 'confirm')">✓</button>
+            <button class="action-btn reject" aria-label="Reject booking ${booking.id}" title="Reject" onclick="changeDashboardBooking(${booking.id}, 'reject')">✕</button>
+            <button class="action-btn cancel" aria-label="Cancel booking ${booking.id}" title="Cancel" onclick="changeDashboardBooking(${booking.id}, 'cancel')">−</button>`;
+    }
+
+    if (status === "confirmed") {
+        const checkedOut = new Date(`${booking.checkOut}T23:59:59`) <= new Date();
+        return `${checkedOut ? `<button class="action-btn confirm" aria-label="Mark booking ${booking.id} completed" title="Complete stay" onclick="changeDashboardBooking(${booking.id}, 'complete')">✓</button>` : ""}
+            <button class="action-btn cancel" aria-label="Cancel booking ${booking.id}" title="Cancel" onclick="changeDashboardBooking(${booking.id}, 'cancel')">−</button>`;
+    }
+
+    return '<span class="text-secondary">—</span>';
 }
 
 function renderActivity() {
@@ -113,11 +128,12 @@ function renderCharts() {
 }
 
 async function changeDashboardBooking(id, action) {
-    if (!confirm(`${action === "confirm" ? "Confirm" : "Reject"} booking #${id}?`)) return;
+    const labels = { confirm: "Confirm", reject: "Reject", cancel: "Cancel", complete: "Complete" };
+    if (!confirm(`${labels[action]} booking #${id}?`)) return;
     try {
         const response = await fetch(`${dashboardApiUrl}/admin/bookings/${id}/${action}`, { method: "PATCH", headers: dashboardHeaders });
         if (!response.ok) throw new Error(await window.hotelApi.errorMessage(response, "The booking could not be updated."));
-        showToast(`Booking #${id} updated successfully.`, "success");
+        showToast(`Booking #${id} was ${action === "complete" ? "completed" : `${action}ed`}.`, "success");
         await loadDashboard();
     } catch (error) {
         showToast(error.message, "error");

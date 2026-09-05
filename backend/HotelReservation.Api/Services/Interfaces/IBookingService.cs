@@ -24,4 +24,10 @@ public interface IBookingService
 
     Task<AdminBookingResponseDto> RejectBookingAsync(
         int bookingId);
+
+    Task<AdminBookingResponseDto> CancelBookingAsAdminAsync(
+        int bookingId);
+
+    Task<AdminBookingResponseDto> CompleteBookingAsync(
+        int bookingId);
 }

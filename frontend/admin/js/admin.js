@@ -80,9 +80,10 @@ function updateUserProfile() {
 
 // Format currency
 function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-EG', {
         style: 'currency',
-        currency: 'USD'
+        currency: 'EGP',
+        maximumFractionDigits: 0
     }).format(amount);
 }
 
