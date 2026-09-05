@@ -1,6 +1,7 @@
 using HotelReservation.Api.DTOs.RoomInventory;
 using HotelReservation.Api.DTOs.RoomTypes;
 using HotelReservation.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelReservation.Api.Controllers;
@@ -44,7 +45,7 @@ public class RoomTypesController : ControllerBase
         return Ok(roomType);
     }
 
-    // TODO: Add admin authorization after the authentication module is merged.
+    [Authorize(Roles = "Admin")]
     [HttpPost("admin/hotels/{hotelId:int}/room-types")]
     public async Task<ActionResult<RoomTypeDto>> CreateRoomType(
         int hotelId,
@@ -84,7 +85,7 @@ public class RoomTypesController : ControllerBase
             createdRoomType);
     }
 
-    // TODO: Add admin authorization after the authentication module is merged.
+    [Authorize(Roles = "Admin")]
     [HttpPut("admin/room-types/{id:int}")]
     public async Task<ActionResult<RoomTypeDto>> UpdateRoomType(
         int id,
@@ -126,7 +127,7 @@ public class RoomTypesController : ControllerBase
         return Ok(updatedRoomType);
     }
 
-    // TODO: Add admin authorization after the authentication module is merged.
+    [Authorize(Roles = "Admin")]
     [HttpDelete("admin/room-types/{id:int}")]
     public async Task<IActionResult> DeleteRoomType(int id)
     {

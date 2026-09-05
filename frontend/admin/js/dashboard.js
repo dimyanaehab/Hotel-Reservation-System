@@ -6,6 +6,10 @@ let statusChart;
 
 document.addEventListener("DOMContentLoaded", loadDashboard);
 
+document.getElementById("dashboardSearch")?.addEventListener("input", renderRecentBookings);
+document.getElementById("chartRange")?.addEventListener("change", renderCharts);
+document.getElementById("exportBookings")?.addEventListener("click", exportBookings);
+
 async function loadDashboard() {
     try {
         const response = await fetch(`${dashboardApiUrl}/admin/bookings`, { headers: dashboardHeaders });
@@ -42,7 +46,11 @@ function renderStatistics() {
 
 function renderRecentBookings() {
     const table = document.getElementById("recentBookingsTable");
-    const bookings = dashboardBookings.slice(0, 5);
+    const term = document.getElementById("dashboardSearch")?.value.trim().toLowerCase() || "";
+    const bookings = dashboardBookings.filter(booking => [
+        booking.id, booking.userName, booking.userEmail, booking.hotelName,
+        booking.roomTypeName, booking.status
+    ].join(" ").toLowerCase().includes(term)).slice(0, 5);
     table.innerHTML = bookings.length ? bookings.map(booking => `<tr>
         <td>#${booking.id}</td>
         <td><strong>${escapeDashboardHtml(booking.userName)}</strong><br><small>${escapeDashboardHtml(booking.userEmail)}</small></td>
@@ -103,9 +111,12 @@ function renderPendingActions() {
 function renderCharts() {
     const statuses = ["Confirmed", "Pending", "Cancelled", "Completed", "Rejected"];
     const counts = statuses.map(status => dashboardBookings.filter(item => item.status === status).length);
-    const days = Array.from({ length: 7 }, (_, index) => {
+    const range = Number(document.getElementById("chartRange")?.value || 7);
+    const subtitle = document.querySelector('#chartRange')?.closest('.card-header')?.querySelector('.card-subtitle');
+    if (subtitle) subtitle.textContent = `Bookings created during the last ${range} days`;
+    const days = Array.from({ length: range }, (_, index) => {
         const date = new Date();
-        date.setDate(date.getDate() - (6 - index));
+        date.setDate(date.getDate() - (range - 1 - index));
         return date;
     });
     const dailyCounts = days.map(day => dashboardBookings.filter(item => {
@@ -125,6 +136,27 @@ function renderCharts() {
         data: { labels: statuses, datasets: [{ data: counts, backgroundColor: ["#40554d", "#e6a44b", "#c5625a", "#6e7873", "#8b5c85"], borderWidth: 0 }] },
         options: { plugins: { legend: { position: "bottom" } } }
     });
+}
+
+function exportBookings() {
+    if (!dashboardBookings.length) {
+        showToast("There are no bookings to export.", "warning");
+        return;
+    }
+
+    const columns = ["id", "userName", "userEmail", "hotelName", "roomTypeName", "checkIn", "checkOut", "nights", "numberOfGuests", "totalPrice", "status", "createdAt"];
+    const csv = [columns.join(","), ...dashboardBookings.map(booking =>
+        columns.map(column => csvCell(booking[column])).join(","))].join("\r\n");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    link.download = `lumastay-bookings-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    showToast("Bookings exported.", "success");
+}
+
+function csvCell(value) {
+    return `"${String(value ?? "").replaceAll('"', '""')}"`;
 }
 
 async function changeDashboardBooking(id, action) {

@@ -1,11 +1,13 @@
 using HotelReservation.Api.DTOs.RoomInventory;
 using HotelReservation.Api.DTOs.RoomTypes;
 using HotelReservation.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelReservation.Api.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Admin")]
 [Route("api/admin/room-inventory")]
 public class RoomInventoryController : ControllerBase
 {
@@ -16,7 +18,6 @@ public class RoomInventoryController : ControllerBase
         _roomService = roomService;
     }
 
-    // TODO: Add admin authorization after the authentication module is merged.
     [HttpPut]
     public async Task<ActionResult<RoomInventoryDto>> UpdateInventory(
         UpdateRoomInventoryDto dto)

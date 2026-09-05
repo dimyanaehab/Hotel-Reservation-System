@@ -3,28 +3,6 @@ const API_BASE = window.hotelApi.baseUrl;
 const query = new URLSearchParams(window.location.search);
 const hotelId = Number(query.get('hotelId')) || 1;
 
-// TEMPORARY MOCK: Used only when the room API, database, or CORS is unavailable.
-const mockRoomTypes = [
-  {
-    id: 101,
-    hotelId,
-    name: 'Deluxe King Room',
-    capacity: 2,
-    bedType: 'King bed',
-    basePrice: 180,
-    description: 'A comfortable room with a spacious king bed.'
-  },
-  {
-    id: 102,
-    hotelId,
-    name: 'Family Suite',
-    capacity: 4,
-    bedType: 'Two queen beds',
-    basePrice: 260,
-    description: 'Extra space for families and small groups.'
-  }
-];
-
 document.addEventListener('DOMContentLoaded', loadRoomTypes);
 
 async function loadRoomTypes() {
@@ -37,17 +15,14 @@ async function loadRoomTypes() {
     }
 
     const roomTypes = await response.json();
-    renderRoomTypes(roomTypes, false);
+    renderRoomTypes(roomTypes);
   } catch (error) {
-    showPageMessage(
-      "TEMPORARY Development Mode: API unavailable. Temporary sample data is being displayed.",
-      'warning'
-    );
-    renderRoomTypes(mockRoomTypes, true);
+    showPageMessage(error.message || 'Room types could not be loaded.', 'danger');
+    document.getElementById('roomTypes').innerHTML = '';
   }
 }
 
-function renderRoomTypes(roomTypes, isMock) {
+function renderRoomTypes(roomTypes) {
   const container = document.getElementById('roomTypes');
 
   if (roomTypes.length === 0) {
@@ -62,11 +37,10 @@ function renderRoomTypes(roomTypes, isMock) {
         <div class="card-body p-4">
           <div class="d-flex justify-content-between gap-3">
             <h3 class="h4">${escapeHtml(room.name)}</h3>
-            <strong>$${Number(room.basePrice).toFixed(2)} / night</strong>
+            <strong>EGP ${Number(room.basePrice).toLocaleString('en-EG')} / night</strong>
           </div>
           <p class="text-secondary mb-2">${escapeHtml(room.bedType)} · Up to ${room.capacity} guests</p>
           <p>${escapeHtml(room.description || 'No description provided.')}</p>
-          ${isMock ? '<span class="badge text-bg-warning mb-3">Mock room</span>' : ''}
           <div class="row g-2 mt-2">
             <div class="col-md-6">
               <label class="form-label" for="checkIn-${room.id}">Check in</label>
@@ -77,7 +51,7 @@ function renderRoomTypes(roomTypes, isMock) {
               <input class="form-control" id="checkOut-${room.id}" type="date">
             </div>
           </div>
-          <button class="btn btn-dark mt-3" type="button" onclick="checkAvailability(${room.id}, ${isMock}, this)">Check Availability</button>
+          <button class="btn btn-dark mt-3" type="button" onclick="checkAvailability(${room.id}, this)">Check Availability</button>
           <div id="availability-${room.id}" class="availability-message mt-3" aria-live="polite"></div>
         </div>
       </article>
@@ -85,7 +59,7 @@ function renderRoomTypes(roomTypes, isMock) {
   `).join('');
 }
 
-async function checkAvailability(roomTypeId, isMock, button) {
+async function checkAvailability(roomTypeId, button) {
   const from = document.getElementById(`checkIn-${roomTypeId}`).value;
   const to = document.getElementById(`checkOut-${roomTypeId}`).value;
   const message = document.getElementById(`availability-${roomTypeId}`);
@@ -106,18 +80,6 @@ async function checkAvailability(roomTypeId, isMock, button) {
       'Check-out date must be after the check-in date.',
       'Check Your Dates',
       'error'
-    );
-    return;
-  }
-
-  if (isMock) {
-    showAvailabilityResult(
-      message,
-      'TEMPORARY Development Mode: 2 sample rooms available.',
-      '✓ Room Available',
-      'available',
-      from,
-      to
     );
     return;
   }
@@ -173,7 +135,7 @@ async function checkAvailability(roomTypeId, isMock, button) {
   } catch (error) {
     showAvailabilityResult(
       message,
-      "We couldn't check availability right now. Please try again.",
+      error.message || "We couldn't check availability right now. Please try again.",
       'Something Went Wrong',
       'error'
     );

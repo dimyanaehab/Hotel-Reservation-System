@@ -1,17 +1,10 @@
-// Change this value later if the team uses a different API address.
-const API_BASE = 'http://localhost:5007/api';
+const API_BASE = window.hotelApi.baseUrl;
+const adminHeaders = window.hotelApi.headers();
 const query = new URLSearchParams(window.location.search);
 const hotelId = Number(query.get('hotelId')) || 1;
 let roomTypes = [];
-let mockMode = false;
 let roomIdToDelete = null;
 let messageTimer = null;
-
-// TEMPORARY MOCK: Used only when the room API, database, or CORS is unavailable.
-const temporaryRoomTypes = [
-  { id: 101, hotelId, name: 'Deluxe King Room', bedType: 'King bed', capacity: 2, basePrice: 180, description: 'Spacious king room.' },
-  { id: 102, hotelId, name: 'Family Suite', bedType: 'Two queen beds', capacity: 4, basePrice: 260, description: 'Suite for families.' }
-];
 
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('hotelIdLabel').textContent = hotelId;
@@ -35,15 +28,9 @@ async function loadRoomTypes() {
     }
 
     roomTypes = await response.json();
-    mockMode = false;
   } catch (error) {
-    roomTypes = temporaryRoomTypes.map(room => ({ ...room }));
-    mockMode = true;
-    showMessage(
-      'TEMPORARY Development Mode: API unavailable. Temporary sample data is being displayed.',
-      'warning',
-      false
-    );
+    roomTypes = [];
+    showMessage(error.message || 'Room types could not be loaded.', 'danger', false);
   }
 
   renderRoomTypes();
@@ -61,10 +48,10 @@ function renderRoomTypes() {
   tableBody.innerHTML = roomTypes.map(room => `
     <tr>
       <td>${room.id}</td>
-      <td>${escapeHtml(room.name)} ${mockMode ? '<span class="badge text-bg-warning">Mock</span>' : ''}</td>
+      <td>${escapeHtml(room.name)}</td>
       <td>${escapeHtml(room.bedType)}</td>
       <td>${room.capacity}</td>
-      <td>$${Number(room.basePrice).toFixed(2)}</td>
+      <td>${new Intl.NumberFormat('en-EG', { style: 'currency', currency: 'EGP', maximumFractionDigits: 0 }).format(room.basePrice)}</td>
       <td>
         <button class="btn btn-sm btn-outline-primary me-1" type="button" onclick="startEdit(${room.id})">Edit</button>
         <button class="btn btn-sm btn-outline-danger" type="button" onclick="deleteRoomType(${room.id})">Delete</button>
@@ -97,11 +84,6 @@ async function saveRoomType(event) {
     description: document.getElementById('description').value.trim() || null
   };
 
-  if (mockMode) {
-    saveMockRoom(id, dto);
-    return;
-  }
-
   const isEditing = id > 0;
   const saveButton = document.getElementById('saveRoomButton');
   const originalButtonText = saveButton.innerHTML;
@@ -113,7 +95,7 @@ async function saveRoomType(event) {
     setButtonLoading(saveButton, isEditing ? 'Updating...' : 'Saving...');
     const response = await fetch(url, {
       method: isEditing ? 'PUT' : 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...adminHeaders, 'Content-Type': 'application/json' },
       body: JSON.stringify(dto)
     });
 
@@ -128,32 +110,10 @@ async function saveRoomType(event) {
     resetRoomForm();
     await loadRoomTypes();
   } catch (error) {
-    showMessage(
-      isEditing
-        ? 'Room could not be updated. Please check the entered information.'
-        : 'Room could not be added. Please check the entered information.',
-      'danger'
-    );
+    showMessage(error.message || 'The room could not be saved.', 'danger');
   } finally {
     restoreButton(saveButton, originalButtonText);
   }
-}
-
-function saveMockRoom(id, dto) {
-  if (id > 0) {
-    const index = roomTypes.findIndex(room => room.id === id);
-    if (index >= 0) {
-      roomTypes[index] = { ...roomTypes[index], ...dto };
-    }
-  } else {
-    const newId = Math.max(100, ...roomTypes.map(room => room.id)) + 1;
-    roomTypes.push({ id: newId, hotelId, ...dto });
-  }
-
-  showMessage('TEMPORARY Development Mode: Room changes were kept only on this page.', 'warning');
-  resetRoomForm();
-  renderRoomTypes();
-  fillInventoryRoomTypes();
 }
 
 function startEdit(id) {
@@ -200,18 +160,11 @@ async function confirmDeleteRoom() {
   const originalButtonText = deleteButton.innerHTML;
   setButtonLoading(deleteButton, 'Deleting...');
 
-  if (mockMode) {
-    roomTypes = roomTypes.filter(item => item.id !== id);
-    showMessage('TEMPORARY Development Mode: Room was removed only from this page.', 'warning');
-    renderRoomTypes();
-    fillInventoryRoomTypes();
-    closeDeleteModal();
-    restoreButton(deleteButton, originalButtonText);
-    return;
-  }
-
   try {
-    const response = await fetch(`${API_BASE}/admin/room-types/${id}`, { method: 'DELETE' });
+    const response = await fetch(`${API_BASE}/admin/room-types/${id}`, {
+      method: 'DELETE',
+      headers: adminHeaders
+    });
     if (!response.ok) {
       if (response.status === 409) {
         throw new Error('delete-conflict');
@@ -259,12 +212,6 @@ async function saveInventory(event) {
     return;
   }
 
-  if (mockMode) {
-    const availableRooms = dto.totalRooms - dto.soldRooms;
-    showInventoryResult(`TEMPORARY Development Mode: ${availableRooms} room(s) available. Nothing was saved.`, 'success');
-    return;
-  }
-
   const saveButton = document.getElementById('saveInventoryButton');
   const originalButtonText = saveButton.innerHTML;
 
@@ -272,12 +219,12 @@ async function saveInventory(event) {
     setButtonLoading(saveButton, 'Saving...');
     const response = await fetch(`${API_BASE}/admin/room-inventory`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...adminHeaders, 'Content-Type': 'application/json' },
       body: JSON.stringify(dto)
     });
 
     if (!response.ok) {
-      throw new Error('inventory-failed');
+      throw new Error(await readError(response));
     }
 
     const result = await response.json();
@@ -285,7 +232,7 @@ async function saveInventory(event) {
     showMessage('✓ Inventory updated successfully.', 'success');
     showInventoryResult(`${result.availableRooms} ${roomWord} available after saving.`, 'success');
   } catch (error) {
-    showInventoryResult('Inventory could not be saved. Please check the entered information.', 'error');
+    showInventoryResult(error.message || 'Inventory could not be saved.', 'error');
   } finally {
     restoreButton(saveButton, originalButtonText);
   }

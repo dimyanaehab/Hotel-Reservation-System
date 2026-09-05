@@ -296,4 +296,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize tooltips
     initTooltips();
+
+    updateNavigationBookingCount();
 });
+
+async function updateNavigationBookingCount() {
+    const badge = document.getElementById('pending-bookings-count');
+    if (!badge) return;
+
+    try {
+        const response = await fetch(`${window.hotelApi.baseUrl}/admin/bookings?status=Pending`, {
+            headers: window.hotelApi.headers()
+        });
+        if (response.ok) badge.textContent = (await response.json()).length;
+    } catch {
+        badge.textContent = '—';
+    }
+}

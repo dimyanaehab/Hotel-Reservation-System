@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pending Bookings | LumaStay Admin</title>
+  <title>Bookings | LumaStay Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -63,21 +63,8 @@
             <span class="nav-text">Reviews</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="users.html" class="nav-link">
-            <span class="nav-icon">◉</span>
-            <span class="nav-text">Users</span>
-          </a>
-        </li>
 
         <li class="nav-divider"></li>
-
-        <li class="nav-item">
-          <a href="settings.html" class="nav-link">
-            <span class="nav-icon">⚙</span>
-            <span class="nav-text">Settings</span>
-          </a>
-        </li>
         <li class="nav-item">
           <a href="../index.html" class="nav-link">
             <span class="nav-icon">↗</span>
@@ -106,19 +93,15 @@
           <span></span>
         </button>
         <div class="page-header">
-          <h1 class="page-title">Pending Bookings</h1>
-          <p class="page-subtitle">Review and action customer reservation requests</p>
+          <h1 class="page-title">Bookings</h1>
+          <p class="page-subtitle">Review and manage every reservation</p>
         </div>
       </div>
       <div class="navbar-right">
         <div class="navbar-search">
-          <input type="text" placeholder="Search..." class="search-input">
+          <input type="search" id="adminBookingSearch" placeholder="Search bookings..." class="search-input" aria-label="Search bookings">
           <span class="search-icon">⌕</span>
         </div>
-        <button class="navbar-notification">
-          <span class="notification-icon">◔</span>
-
-        </button>
         <div class="navbar-profile">
           <div class="profile-avatar">AD</div>
           <div class="profile-info">
@@ -138,11 +121,22 @@
       <!-- Page-level summary strip -->
       <div class="bookings-summary-strip">
         <div class="summary-strip-left">
-          <span class="summary-strip-label">Awaiting your review</span>
-          <span class="summary-strip-count" id="pending-bookings-count">0</span>
-          <span class="summary-strip-unit">pending requests</span>
+          <span class="summary-strip-label">Showing</span>
+          <span class="summary-strip-count" id="visible-bookings-count">0</span>
+          <span class="summary-strip-unit">reservations</span>
         </div>
-        <a href="dashboard.html" class="btn-outline">← Back to Dashboard</a>
+        <div class="d-flex gap-2 flex-wrap">
+          <label class="visually-hidden" for="bookingStatusFilter">Filter by status</label>
+          <select id="bookingStatusFilter" class="card-select">
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <a href="dashboard.html" class="btn-outline">← Dashboard</a>
+        </div>
       </div>
 
       <!-- Booking cards injected by bookings.js -->
@@ -153,8 +147,8 @@
         <div class="empty-icon-wrap">
           <span class="empty-icon">◔</span>
         </div>
-        <h2 class="empty-title">All caught up</h2>
-        <p class="empty-desc">There are no booking requests waiting for review right now.</p>
+        <h2 class="empty-title">No bookings found</h2>
+        <p class="empty-desc">Try changing the status filter or search text.</p>
         <a href="dashboard.html" class="btn-primary">Return to Dashboard</a>
       </section>
 
