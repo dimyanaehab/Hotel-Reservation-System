@@ -1,29 +1,16 @@
 // ==================== Authentication - LumaStay Theme ====================
-const authApiUrl = `${window.hotelApi?.baseUrl || `${window.location.origin}/api`}/auth`;
-
-async function authError(response, fallback) {
-    const text = await response.text();
-    if (!text) return fallback;
-
-    try {
-        const body = JSON.parse(text);
-        return body.message || body.title || fallback;
-    } catch {
-        return text.replace(/^"|"$/g, '') || fallback;
-    }
-}
 
 // Password Toggle Functionality
 function setupPasswordToggles() {
     const toggleButtons = document.querySelectorAll('.password-toggle');
-    
+
     toggleButtons.forEach(button => {
         button.addEventListener('click', function() {
             const wrapper = this.parentElement;
             const input = wrapper.querySelector('input');
             const showText = this.querySelector('.show-text');
             const hideText = this.querySelector('.hide-text');
-            
+
             if (input.type === 'password') {
                 input.type = 'text';
                 showText.style.display = 'none';
@@ -41,17 +28,17 @@ function setupPasswordToggles() {
 function showAlert(message, type = 'info') {
     const alertContainer = document.getElementById('alertContainer');
     if (!alertContainer) return;
-    
+
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
     alertDiv.innerHTML = `
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
-    
+
     alertContainer.innerHTML = '';
     alertContainer.appendChild(alertDiv);
-    
+
     // Auto remove after 5 seconds
     setTimeout(() => {
         alertDiv.remove();
@@ -81,63 +68,50 @@ const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const rememberMe = document.getElementById('rememberMe').checked;
         const loginBtn = document.getElementById('loginBtn');
-        
+
         // Validate
         if (!isValidEmail(email)) {
             showAlert('Please enter a valid email address', 'danger');
             return;
         }
-        
+
         // Show loading
         showLoading(loginBtn);
-        
-        try {
-            const response = await fetch(`${authApiUrl}/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
 
-            if (!response.ok) {
-                throw new Error(await authError(response, 'Sign in failed.'));
-            }
+        // Simulate API call
+        setTimeout(() => {
+            // Demo mode - create demo user
+            const demoUser = {
+                id: 1,
+                name: email.split('@')[0],
+                email: email,
+                role: email.includes('admin') ? 'ADMIN' : 'USER'
+            };
 
-            const result = await response.json();
-            const otherStorage = rememberMe ? sessionStorage : localStorage;
-            otherStorage.removeItem('authToken');
-            otherStorage.removeItem('user');
-
+            // Store credentials
             if (rememberMe) {
-                localStorage.setItem('authToken', result.token);
-                localStorage.setItem('user', JSON.stringify(result.user));
+                localStorage.setItem('authToken', 'demo-token-' + Date.now());
+                localStorage.setItem('user', JSON.stringify(demoUser));
             } else {
-                sessionStorage.setItem('authToken', result.token);
-                sessionStorage.setItem('user', JSON.stringify(result.user));
+                sessionStorage.setItem('authToken', 'demo-token-' + Date.now());
+                sessionStorage.setItem('user', JSON.stringify(demoUser));
             }
 
             showAlert('Welcome back! Redirecting...', 'success');
-            setTimeout(() => {
-                const returnUrl = new URLSearchParams(location.search).get('returnUrl');
-                if (returnUrl && !returnUrl.includes('://') && !returnUrl.startsWith('//')) {
-                    window.location.href = returnUrl;
-                    return;
-                }
 
-                if (result.user.role === 'ADMIN') {
+            setTimeout(() => {
+                if (demoUser.role === 'ADMIN') {
                     window.location.href = 'admin/dashboard.html';
                 } else {
                     window.location.href = 'index.html';
                 }
-            }, 600);
-        } catch (error) {
-            hideLoading(loginBtn);
-            showAlert(error.message, 'danger');
-        }
+            }, 1000);
+        }, 1500);
     });
 }
 
@@ -146,63 +120,52 @@ const registerForm = document.getElementById('registerForm');
 if (registerForm) {
     registerForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         const agreeTerms = document.getElementById('agreeTerms').checked;
         const registerBtn = document.getElementById('registerBtn');
-        
+
         // Validate
         if (!isValidEmail(email)) {
             showAlert('Please enter a valid email address', 'danger');
             return;
         }
-        
-        if (password.length < 8) {
-            showAlert('Password must be at least 8 characters', 'danger');
+
+        if (password.length < 6) {
+            showAlert('Password must be at least 6 characters', 'danger');
             return;
         }
-        
+
         if (password !== confirmPassword) {
             showAlert('Passwords do not match', 'danger');
             return;
         }
-        
+
         if (!agreeTerms) {
             showAlert('Please agree to the terms and conditions', 'danger');
             return;
         }
-        
+
         // Show loading
         showLoading(registerBtn);
-        
-        try {
-            const response = await fetch(`${authApiUrl}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password })
-            });
 
-            if (!response.ok) {
-                throw new Error(await authError(response, 'Registration failed.'));
-            }
-
+        // Simulate API call
+        setTimeout(() => {
             showAlert('Account created successfully! Redirecting to login...', 'success');
+
             setTimeout(() => {
                 window.location.href = 'login.html';
-            }, 800);
-        } catch (error) {
-            hideLoading(registerBtn);
-            showAlert(error.message, 'danger');
-        }
+            }, 1500);
+        }, 1500);
     });
-    
+
     // Real-time password match validation
     const password = document.getElementById('password');
     const confirmPassword = document.getElementById('confirmPassword');
-    
+
     if (confirmPassword) {
         confirmPassword.addEventListener('input', function() {
             if (this.value && password.value !== this.value) {
@@ -219,17 +182,17 @@ const forgotPasswordForm = document.getElementById('forgotPasswordForm');
 if (forgotPasswordForm) {
     forgotPasswordForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         const email = document.getElementById('email').value;
         const resetBtn = document.getElementById('resetBtn');
-        
+
         if (!isValidEmail(email)) {
             showAlert('Please enter a valid email address', 'danger');
             return;
         }
-        
+
         showLoading(resetBtn);
-        
+
         // Simulate API call
         setTimeout(() => {
             // Show success message
@@ -240,7 +203,7 @@ if (forgotPasswordForm) {
                     <h3>Check your email</h3>
                     <p>We've sent password reset instructions to <strong>${email}</strong></p>
                     <p style="color: var(--muted); font-size: 14px;">
-                        Didn't receive the email? Check your spam folder or 
+                        Didn't receive the email? Check your spam folder or
                         <a href="#" class="text-link" onclick="location.reload()">try again</a>
                     </p>
                     <a href="login.html" class="btn-primary" style="display: inline-block; text-decoration: none; margin-top: 10px;">
@@ -265,14 +228,14 @@ socialButtons.forEach(button => {
 // ==================== Initialize ====================
 document.addEventListener('DOMContentLoaded', function() {
     setupPasswordToggles();
-    
+
     // Check if already logged in
     const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     const currentPage = window.location.pathname.split('/').pop();
-    
+
     if (authToken && (currentPage === 'login.html' || currentPage === 'register.html')) {
         const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
-        
+
         if (user.role === 'ADMIN') {
             window.location.href = 'admin/dashboard.html';
         } else {

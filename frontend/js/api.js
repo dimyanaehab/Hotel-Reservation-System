@@ -1,9 +1,17 @@
 window.hotelApi = {
     baseUrl: "http://localhost:5007/api",
 
-    headers() {
+    headers(role = "User") {
         const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-        return token ? { Authorization: `Bearer ${token}` } : {};
+
+        if (token && !token.startsWith("demo-token-")) {
+            return { Authorization: `Bearer ${token}` };
+        }
+
+        return {
+            "X-Test-User-Id": "1",
+            "X-Test-Role": role
+        };
     },
 
     async errorMessage(response, fallback) {
