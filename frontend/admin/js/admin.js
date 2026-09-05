@@ -51,9 +51,25 @@ if (logoutBtn) {
 function checkAuth() {
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+
+    let expired = true;
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+            expired = !payload.exp || payload.exp * 1000 <= Date.now();
+        } catch {
+            expired = true;
+        }
+    }
     
     // If not authenticated or not admin, redirect to login
-    if (!token || user.role !== 'ADMIN') {
+    if (!token || expired || user.role !== 'ADMIN') {
+        if (expired) {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('authToken');
+            sessionStorage.removeItem('user');
+        }
         window.location.href = '../login.html';
         return false;
     }

@@ -29,17 +29,28 @@ namespace HotelReservation.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto request)
         {
-            // Verify if a user with this email already exists in the database
-            if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+            string email = request.Email.Trim().ToLowerInvariant();
+            string name = request.Name.Trim();
+
+            if (name.Length < 2)
             {
-                return BadRequest("User already exists.");
+                return ValidationProblem(new ValidationProblemDetails(
+                    new Dictionary<string, string[]>
+                    {
+                        ["Name"] = ["Name must contain at least 2 characters."]
+                    }));
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Email.ToLower() == email))
+            {
+                return Conflict(new { message = "An account with this email already exists." });
             }
 
             // Map request data to the User model and securely hash the password using BCrypt
             var user = new User
             {
-                Name = request.Name,
-                Email = request.Email,
+                Name = name,
+                Email = email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Role = UserRole.User // Assign default user role enum
             };
@@ -55,11 +66,11 @@ namespace HotelReservation.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto request)
         {
-            // Find user by email and verify the password hash against the stored record
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            string email = request.Email.Trim().ToLowerInvariant();
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                return Unauthorized("Invalid email or password.");
+                return Unauthorized(new { message = "Invalid email or password." });
             }
 
             // Generate and return a JWT access token for authenticated requests
@@ -90,13 +101,17 @@ namespace HotelReservation.Api.Controllers
             };
 
             // Fetch the secret key from configuration and create a secure HMAC-SHA512 signing credential
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            string keyValue = _configuration["Jwt:Key"]
+                ?? throw new InvalidOperationException("JWT signing key is not configured.");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyValue));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             // Assemble the token with claims, expiration period, and signing credentials
             var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: creds
             );
 

@@ -1,5 +1,5 @@
 // ==================== Authentication - LumaStay Theme ====================
-const authApiUrl = `${window.location.origin}/api/auth`;
+const authApiUrl = `${window.hotelApi?.baseUrl || `${window.location.origin}/api`}/auth`;
 
 async function authError(response, fallback) {
     const text = await response.text();
@@ -122,6 +122,12 @@ if (loginForm) {
 
             showAlert('Welcome back! Redirecting...', 'success');
             setTimeout(() => {
+                const returnUrl = new URLSearchParams(location.search).get('returnUrl');
+                if (returnUrl && !returnUrl.includes('://') && !returnUrl.startsWith('//')) {
+                    window.location.href = returnUrl;
+                    return;
+                }
+
                 if (result.user.role === 'ADMIN') {
                     window.location.href = 'admin/dashboard.html';
                 } else {
@@ -154,8 +160,8 @@ if (registerForm) {
             return;
         }
         
-        if (password.length < 6) {
-            showAlert('Password must be at least 6 characters', 'danger');
+        if (password.length < 8) {
+            showAlert('Password must be at least 8 characters', 'danger');
             return;
         }
         

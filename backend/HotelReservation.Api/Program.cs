@@ -41,13 +41,23 @@ builder.Services.AddSwaggerGen(options =>
 
 void ConfigureJwt(JwtBearerOptions options)
 {
+    string jwtKey = builder.Configuration["Jwt:Key"]
+        ?? throw new InvalidOperationException("JWT signing key is not configured.");
+    string jwtIssuer = builder.Configuration["Jwt:Issuer"]
+        ?? throw new InvalidOperationException("JWT issuer is not configured.");
+    string jwtAudience = builder.Configuration["Jwt:Audience"]
+        ?? throw new InvalidOperationException("JWT audience is not configured.");
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            builder.Configuration["Jwt:Key"] ?? "DefaultFallbackSecretKey1234567890!")),
-        ValidateIssuer = false,
-        ValidateAudience = false
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+        ValidateIssuer = true,
+        ValidIssuer = jwtIssuer,
+        ValidateAudience = true,
+        ValidAudience = jwtAudience,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromMinutes(1)
     };
 }
 
