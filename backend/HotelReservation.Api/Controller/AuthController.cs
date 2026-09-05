@@ -64,7 +64,17 @@ namespace HotelReservation.Api.Controllers
 
             // Generate and return a JWT access token for authenticated requests
             var token = CreateToken(user);
-            return Ok(new { token });
+            return Ok(new
+            {
+                token,
+                user = new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Email,
+                    role = user.Role.ToString().ToUpperInvariant()
+                }
+            });
         }
 
         // Helper method to construct JWT security tokens containing user claims, roles, and signature credentials

@@ -19,8 +19,20 @@ public static class DevelopmentDataSeeder
                 Id = 1,
                 Name = "Swagger Customer",
                 Email = "customer@swagger.test",
-                PasswordHash = "development-only",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Customer123!"),
                 Role = UserRole.User
+            });
+        }
+
+        if (!await context.Users.AnyAsync(user => user.Id == 2))
+        {
+            context.Users.Add(new User
+            {
+                Id = 2,
+                Name = "Swagger Admin",
+                Email = "admin@swagger.test",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+                Role = UserRole.Admin
             });
         }
 

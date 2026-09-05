@@ -1,4 +1,17 @@
 // ==================== Authentication - LumaStay Theme ====================
+const authApiUrl = `${window.location.origin}/api/auth`;
+
+async function authError(response, fallback) {
+    const text = await response.text();
+    if (!text) return fallback;
+
+    try {
+        const body = JSON.parse(text);
+        return body.message || body.title || fallback;
+    } catch {
+        return text.replace(/^"|"$/g, '') || fallback;
+    }
+}
 
 // Password Toggle Functionality
 function setupPasswordToggles() {
@@ -83,35 +96,42 @@ if (loginForm) {
         // Show loading
         showLoading(loginBtn);
         
-        // Simulate API call
-        setTimeout(() => {
-            // Demo mode - create demo user
-            const demoUser = {
-                id: 1,
-                name: email.split('@')[0],
-                email: email,
-                role: email.includes('admin') ? 'ADMIN' : 'USER'
-            };
-            
-            // Store credentials
-            if (rememberMe) {
-                localStorage.setItem('authToken', 'demo-token-' + Date.now());
-                localStorage.setItem('user', JSON.stringify(demoUser));
-            } else {
-                sessionStorage.setItem('authToken', 'demo-token-' + Date.now());
-                sessionStorage.setItem('user', JSON.stringify(demoUser));
+        try {
+            const response = await fetch(`${authApiUrl}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (!response.ok) {
+                throw new Error(await authError(response, 'Sign in failed.'));
             }
-            
+
+            const result = await response.json();
+            const otherStorage = rememberMe ? sessionStorage : localStorage;
+            otherStorage.removeItem('authToken');
+            otherStorage.removeItem('user');
+
+            if (rememberMe) {
+                localStorage.setItem('authToken', result.token);
+                localStorage.setItem('user', JSON.stringify(result.user));
+            } else {
+                sessionStorage.setItem('authToken', result.token);
+                sessionStorage.setItem('user', JSON.stringify(result.user));
+            }
+
             showAlert('Welcome back! Redirecting...', 'success');
-            
             setTimeout(() => {
-                if (demoUser.role === 'ADMIN') {
+                if (result.user.role === 'ADMIN') {
                     window.location.href = 'admin/dashboard.html';
                 } else {
                     window.location.href = 'index.html';
                 }
-            }, 1000);
-        }, 1500);
+            }, 600);
+        } catch (error) {
+            hideLoading(loginBtn);
+            showAlert(error.message, 'danger');
+        }
     });
 }
 
@@ -152,14 +172,25 @@ if (registerForm) {
         // Show loading
         showLoading(registerBtn);
         
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            const response = await fetch(`${authApiUrl}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+
+            if (!response.ok) {
+                throw new Error(await authError(response, 'Registration failed.'));
+            }
+
             showAlert('Account created successfully! Redirecting to login...', 'success');
-            
             setTimeout(() => {
                 window.location.href = 'login.html';
-            }, 1500);
-        }, 1500);
+            }, 800);
+        } catch (error) {
+            hideLoading(registerBtn);
+            showAlert(error.message, 'danger');
+        }
     });
     
     // Real-time password match validation

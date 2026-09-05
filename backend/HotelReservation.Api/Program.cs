@@ -1,8 +1,6 @@
 using HotelReservation.Api.Data;
 using HotelReservation.Api.Services;
 using HotelReservation.Api.Services.Interfaces;
-using HotelReservation.Api.Authentication;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -39,28 +37,6 @@ builder.Services.AddSwaggerGen(options =>
         }] = Array.Empty<string>()
     });
 
-    if (builder.Environment.IsDevelopment())
-    {
-        options.AddSecurityDefinition("TestUserId", new OpenApiSecurityScheme
-        {
-            Type = SecuritySchemeType.ApiKey,
-            In = ParameterLocation.Header,
-            Name = "X-Test-User-Id",
-            Description = "Development only. Use 1 for the seeded customer."
-        });
-        options.AddSecurityDefinition("TestRole", new OpenApiSecurityScheme
-        {
-            Type = SecuritySchemeType.ApiKey,
-            In = ParameterLocation.Header,
-            Name = "X-Test-Role",
-            Description = "Development only. Use User or Admin."
-        });
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            [new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "TestUserId" } }] = Array.Empty<string>(),
-            [new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "TestRole" } }] = Array.Empty<string>()
-        });
-    }
 });
 
 void ConfigureJwt(JwtBearerOptions options)
@@ -75,30 +51,8 @@ void ConfigureJwt(JwtBearerOptions options)
     };
 }
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = "DevelopmentOrJwt";
-            options.DefaultChallengeScheme = "DevelopmentOrJwt";
-        })
-        .AddPolicyScheme("DevelopmentOrJwt", null, options =>
-        {
-            options.ForwardDefaultSelector = context =>
-                context.Request.Headers.Authorization.ToString()
-                    .StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
-                    ? JwtBearerDefaults.AuthenticationScheme
-                    : "Development";
-        })
-        .AddScheme<AuthenticationSchemeOptions, DevelopmentAuthenticationHandler>(
-            "Development", null)
-        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, ConfigureJwt);
-}
-else
-{
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(ConfigureJwt);
-}
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(ConfigureJwt);
 
 // TEMPORARY DEVELOPMENT CORS
 if (builder.Environment.IsDevelopment())
