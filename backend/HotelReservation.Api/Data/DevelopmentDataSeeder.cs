@@ -70,6 +70,25 @@ public static class DevelopmentDataSeeder
             }
         }
 
+        if (!await context.Bookings.AnyAsync(booking => booking.Id == 100))
+        {
+            DateOnly checkOut = DateOnly.FromDateTime(DateTime.UtcNow.Date.AddDays(-1));
+            context.Bookings.Add(new Booking
+            {
+                Id = 100,
+                UserId = 1,
+                HotelId = 1,
+                RoomTypeId = 1,
+                CheckIn = checkOut.AddDays(-2),
+                CheckOut = checkOut,
+                Nights = 2,
+                NumberOfGuests = 1,
+                TotalPrice = 1000m,
+                Status = BookingStatus.Completed,
+                CreatedAt = DateTime.UtcNow.AddDays(-5)
+            });
+        }
+
         await context.SaveChangesAsync();
     }
 }

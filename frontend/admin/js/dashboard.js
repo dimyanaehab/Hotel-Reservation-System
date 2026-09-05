@@ -1,324 +1,131 @@
-// ==================== Dashboard Specific JavaScript ====================
+const dashboardApiUrl = window.hotelApi.baseUrl;
+const dashboardHeaders = window.hotelApi.headers("Admin");
+let dashboardBookings = [];
+let bookingChart;
+let statusChart;
 
-// Dummy data for dashboard
-const dummyData = {
-    stats: {
-        totalHotels: 12,
-        totalBookings: 348,
-        pendingBookings: 8,
-        totalUsers: 1248
-    },
-    recentBookings: [
-        {
-            id: 'BK-2345',
-            guestName: 'John Smith',
-            hotel: 'Grand Plaza Hotel',
-            checkIn: '2026-09-05',
-            checkOut: '2026-09-10',
-            amount: 1250,
-            status: 'PENDING'
-        },
-        {
-            id: 'BK-2344',
-            guestName: 'Sarah Johnson',
-            hotel: 'Seaside Resort',
-            checkIn: '2026-09-08',
-            checkOut: '2026-09-12',
-            amount: 980,
-            status: 'CONFIRMED'
-        },
-        {
-            id: 'BK-2343',
-            guestName: 'Michael Brown',
-            hotel: 'Mountain View Lodge',
-            checkIn: '2026-09-07',
-            checkOut: '2026-09-09',
-            amount: 600,
-            status: 'CONFIRMED'
-        },
-        {
-            id: 'BK-2342',
-            guestName: 'Emily Davis',
-            hotel: 'City Center Hotel',
-            checkIn: '2026-09-10',
-            checkOut: '2026-09-15',
-            amount: 1750,
-            status: 'PENDING'
-        },
-        {
-            id: 'BK-2341',
-            guestName: 'David Wilson',
-            hotel: 'Beach Paradise Resort',
-            checkIn: '2026-09-06',
-            checkOut: '2026-09-08',
-            amount: 450,
-            status: 'CANCELLED'
-        }
-    ],
-    recentActivity: [
-        {
-            icon: 'user-plus',
-            title: 'New user registered',
-            description: 'Alice Cooper joined the platform',
-            time: new Date(Date.now() - 5 * 60 * 1000)
-        },
-        {
-            icon: 'calendar-check',
-            title: 'New booking created',
-            description: 'John Smith booked Grand Plaza Hotel',
-            time: new Date(Date.now() - 15 * 60 * 1000)
-        },
-        {
-            icon: 'hotel',
-            title: 'Hotel added',
-            description: 'Luxury Beach Resort added by admin',
-            time: new Date(Date.now() - 2 * 60 * 60 * 1000)
-        },
-        {
-            icon: 'star',
-            title: 'New review posted',
-            description: 'Sarah Johnson rated Seaside Resort 5 stars',
-            time: new Date(Date.now() - 3 * 60 * 60 * 1000)
-        },
-        {
-            icon: 'times-circle',
-            title: 'Booking cancelled',
-            description: 'David Wilson cancelled reservation',
-            time: new Date(Date.now() - 5 * 60 * 60 * 1000)
-        }
-    ],
-    pendingActions: [
-        {
-            icon: 'clock',
-            title: 'Booking awaiting confirmation',
-            description: 'BK-2345 - Grand Plaza Hotel',
-            time: new Date(Date.now() - 30 * 60 * 1000)
-        },
-        {
-            icon: 'exclamation-circle',
-            title: 'Review pending moderation',
-            description: '2 reviews waiting for approval',
-            time: new Date(Date.now() - 1 * 60 * 60 * 1000)
-        },
-        {
-            icon: 'clock',
-            title: 'Booking awaiting confirmation',
-            description: 'BK-2344 - City Center Hotel',
-            time: new Date(Date.now() - 2 * 60 * 60 * 1000)
-        }
-    ]
-};
+document.addEventListener("DOMContentLoaded", loadDashboard);
 
-// Load statistics
-function loadStatistics() {
-    const stats = dummyData.stats;
-    
-    // Animate numbers
-    animateNumber(document.getElementById('totalHotels'), stats.totalHotels);
-    animateNumber(document.getElementById('totalBookings'), stats.totalBookings);
-    animateNumber(document.getElementById('pendingBookings'), stats.pendingBookings);
-    animateNumber(document.getElementById('totalUsers'), stats.totalUsers);
+async function loadDashboard() {
+    try {
+        const response = await fetch(`${dashboardApiUrl}/admin/bookings`, { headers: dashboardHeaders });
+        if (!response.ok) throw new Error(await window.hotelApi.errorMessage(response, "Could not load dashboard data."));
+        dashboardBookings = await response.json();
+        renderStatistics();
+        renderRecentBookings();
+        renderActivity();
+        renderPendingActions();
+        renderCharts();
+    } catch (error) {
+        const container = document.querySelector(".dashboard-container");
+        const alert = document.createElement("div");
+        alert.className = "alert alert-danger";
+        alert.textContent = error.message;
+        container.prepend(alert);
+    }
 }
 
-// Load recent bookings table
-function loadRecentBookings() {
-    const tableBody = document.getElementById('recentBookingsTable');
-    
-    const html = dummyData.recentBookings.map(booking => `
-        <tr>
-            <td><strong>${booking.id}</strong></td>
-            <td>${booking.guestName}</td>
-            <td>${booking.hotel}</td>
-            <td>${formatDate(booking.checkIn)}</td>
-            <td>${formatDate(booking.checkOut)}</td>
-            <td><strong>${formatCurrency(booking.amount)}</strong></td>
-            <td>${getStatusBadge(booking.status)}</td>
-            <td>
-                ${booking.status === 'PENDING' ? `
-                    <button class="action-btn" onclick="confirmBooking('${booking.id}')" title="Confirm">✓</button>
-                    <button class="action-btn" onclick="rejectBooking('${booking.id}')" title="Reject">✗</button>
-                ` : ''}
-                <button class="action-btn" onclick="viewBooking('${booking.id}')" title="View">→</button>
-            </td>
-        </tr>
-    `).join('');
-    
-    tableBody.innerHTML = html;
+function renderStatistics() {
+    const pending = dashboardBookings.filter(item => item.status.toLowerCase() === "pending");
+    document.getElementById("totalHotels").textContent = new Set(dashboardBookings.map(item => item.hotelId)).size;
+    document.getElementById("totalBookings").textContent = dashboardBookings.length;
+    document.getElementById("pendingBookings").textContent = pending.length;
+    document.getElementById("totalUsers").textContent = new Set(dashboardBookings.map(item => item.userId)).size;
+    document.querySelectorAll(".stats-sample-label").forEach(label => label.textContent = "Live");
+    const trends = document.querySelectorAll(".stats-trend");
+    ["Current", "All time", "Action needed", "Guests"].forEach((text, index) => {
+        if (trends[index]) trends[index].textContent = text;
+    });
+    const badge = document.querySelector('a[href="pending-bookings.html"] .nav-badge');
+    if (badge) badge.textContent = pending.length;
 }
 
-// Load recent activity
-function loadRecentActivity() {
-    const activityList = document.getElementById('activityList');
-    
-    const iconMap = {
-        'user-plus': '◉',
-        'calendar-check': '◔',
-        'hotel': '⌂',
-        'star': '★',
-        'times-circle': '⊗'
-    };
-    
-    const html = dummyData.recentActivity.map(activity => `
-        <div class="activity-item">
-            <div class="activity-icon">
-                ${iconMap[activity.icon] || '◈'}
-            </div>
-            <div class="activity-content">
-                <div class="activity-title">${activity.title}</div>
-                <div class="activity-time">${formatRelativeTime(activity.time)}</div>
+function renderRecentBookings() {
+    const table = document.getElementById("recentBookingsTable");
+    const bookings = dashboardBookings.slice(0, 5);
+    table.innerHTML = bookings.length ? bookings.map(booking => `<tr>
+        <td>#${booking.id}</td>
+        <td><strong>${escapeDashboardHtml(booking.userName)}</strong><br><small>${escapeDashboardHtml(booking.userEmail)}</small></td>
+        <td>${escapeDashboardHtml(booking.hotelName)}</td>
+        <td>${formatDate(booking.checkIn)}</td>
+        <td>${formatDate(booking.checkOut)}</td>
+        <td>${formatCurrency(booking.totalPrice)}</td>
+        <td>${getStatusBadge(booking.status.toUpperCase())}</td>
+        <td>${booking.status.toLowerCase() === "pending" ? `
+            <button class="action-btn confirm" onclick="changeDashboardBooking(${booking.id}, 'confirm')">✓</button>
+            <button class="action-btn reject" onclick="changeDashboardBooking(${booking.id}, 'reject')">✕</button>` : ""}</td>
+    </tr>`).join("") : '<tr><td colspan="8" class="text-center py-4">No bookings yet.</td></tr>';
+}
+
+function renderActivity() {
+    const list = document.getElementById("activityList");
+    const recent = dashboardBookings.slice(0, 5);
+    list.innerHTML = recent.length ? recent.map(booking => `<div class="activity-item">
+        <div class="activity-icon">◔</div>
+        <div class="activity-content">
+            <div class="activity-title">Booking #${booking.id} is ${escapeDashboardHtml(booking.status.toLowerCase())}</div>
+            <div class="activity-time">${formatRelativeTime(booking.createdAt)}</div>
+        </div>
+    </div>`).join("") : '<p class="text-secondary">No recent activity.</p>';
+}
+
+function renderPendingActions() {
+    const list = document.getElementById("pendingList");
+    const pending = dashboardBookings.filter(item => item.status.toLowerCase() === "pending").slice(0, 4);
+    list.innerHTML = pending.length ? pending.map(booking => `<div class="pending-item">
+        <div class="pending-icon">⏱</div>
+        <div class="pending-content">
+            <div class="pending-title">Booking #${booking.id} · ${escapeDashboardHtml(booking.hotelName)}</div>
+            <div class="pending-time">${formatRelativeTime(booking.createdAt)}</div>
+            <div class="pending-actions">
+                <button class="btn-approve" onclick="changeDashboardBooking(${booking.id}, 'confirm')">✓ Approve</button>
+                <button class="btn-reject" onclick="changeDashboardBooking(${booking.id}, 'reject')">Reject</button>
             </div>
         </div>
-    `).join('');
-    
-    activityList.innerHTML = html;
+    </div>`).join("") : '<p class="text-secondary">No pending actions.</p>';
 }
 
-// Load pending actions
-function loadPendingActions() {
-    const pendingList = document.getElementById('pendingList');
-    
-    const iconMap = {
-        'clock': '⏱',
-        'exclamation-circle': '⚠'
-    };
-    
-    const html = dummyData.pendingActions.map(action => `
-        <div class="pending-item">
-            <div class="pending-icon">
-                ${iconMap[action.icon] || '◔'}
-            </div>
-            <div class="pending-content">
-                <div class="pending-title">${action.title}</div>
-                <div class="pending-time">${formatRelativeTime(action.time)}</div>
-                <div class="pending-actions">
-                    <button class="btn-approve">✓ Approve</button>
-                    <button class="btn-reject">View</button>
-                </div>
-            </div>
-        </div>
-    `).join('');
-    
-    pendingList.innerHTML = html;
+function renderCharts() {
+    const statuses = ["Confirmed", "Pending", "Cancelled", "Completed", "Rejected"];
+    const counts = statuses.map(status => dashboardBookings.filter(item => item.status === status).length);
+    const days = Array.from({ length: 7 }, (_, index) => {
+        const date = new Date();
+        date.setDate(date.getDate() - (6 - index));
+        return date;
+    });
+    const dailyCounts = days.map(day => dashboardBookings.filter(item => {
+        const date = new Date(item.createdAt);
+        return date.toDateString() === day.toDateString();
+    }).length);
+
+    bookingChart?.destroy();
+    statusChart?.destroy();
+    bookingChart = new Chart(document.getElementById("bookingChart"), {
+        type: "line",
+        data: { labels: days.map(day => day.toLocaleDateString(undefined, { weekday: "short" })), datasets: [{ data: dailyCounts, borderColor: "#40554d", backgroundColor: "rgba(64,85,77,.08)", fill: true, tension: .4 }] },
+        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+    statusChart = new Chart(document.getElementById("statusChart"), {
+        type: "doughnut",
+        data: { labels: statuses, datasets: [{ data: counts, backgroundColor: ["#40554d", "#e6a44b", "#c5625a", "#6e7873", "#8b5c85"], borderWidth: 0 }] },
+        options: { plugins: { legend: { position: "bottom" } } }
+    });
 }
 
-// Initialize charts
-function initCharts() {
-    // Booking Statistics Chart
-    const bookingCtx = document.getElementById('bookingChart');
-    if (bookingCtx) {
-        new Chart(bookingCtx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Bookings',
-                    data: [12, 19, 15, 25, 22, 30, 28],
-                    borderColor: '#40554d',
-                    backgroundColor: 'rgba(64, 85, 77, 0.08)',
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#40554d',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: '#d8ddd7'
-                        },
-                        ticks: {
-                            color: '#6e7873'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#6e7873'
-                        }
-                    }
-                }
-            }
-        });
-    }
-    
-    // Status Chart
-    const statusCtx = document.getElementById('statusChart');
-    if (statusCtx) {
-        new Chart(statusCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Confirmed', 'Pending', 'Cancelled', 'Completed'],
-                datasets: [{
-                    data: [72, 15, 8, 5],
-                    backgroundColor: [
-                        '#40554d',
-                        '#e6a44b',
-                        '#c5625a',
-                        '#6e7873'
-                    ],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
+async function changeDashboardBooking(id, action) {
+    if (!confirm(`${action === "confirm" ? "Confirm" : "Reject"} booking #${id}?`)) return;
+    try {
+        const response = await fetch(`${dashboardApiUrl}/admin/bookings/${id}/${action}`, { method: "PATCH", headers: dashboardHeaders });
+        if (!response.ok) throw new Error(await window.hotelApi.errorMessage(response, "The booking could not be updated."));
+        showToast(`Booking #${id} updated successfully.`, "success");
+        await loadDashboard();
+    } catch (error) {
+        showToast(error.message, "error");
     }
 }
 
-// Action handlers
-function confirmBooking(bookingId) {
-    if (confirm(`Confirm booking ${bookingId}?`)) {
-        showToast(`Booking ${bookingId} confirmed successfully!`, 'success');
-        // Reload the table
-        setTimeout(() => {
-            loadRecentBookings();
-        }, 1000);
-    }
+function escapeDashboardHtml(value) {
+    const element = document.createElement("div");
+    element.textContent = String(value);
+    return element.innerHTML;
 }
-
-function rejectBooking(bookingId) {
-    if (confirm(`Reject booking ${bookingId}?`)) {
-        showToast(`Booking ${bookingId} rejected!`, 'warning');
-        // Reload the table
-        setTimeout(() => {
-            loadRecentBookings();
-        }, 1000);
-    }
-}
-
-function viewBooking(bookingId) {
-    showToast(`Opening booking ${bookingId}...`, 'info');
-    // Navigate to booking details
-    setTimeout(() => {
-        window.location.href = `booking-details.html?id=${bookingId}`;
-    }, 500);
-}
-
-// Initialize dashboard
-document.addEventListener('DOMContentLoaded', function() {
-    loadStatistics();
-    loadRecentBookings();
-    loadRecentActivity();
-    loadPendingActions();
-    initCharts();
-});
