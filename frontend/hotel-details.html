@@ -22,18 +22,21 @@
       <a href="index.html#experiences">Experiences</a>
       <a href="reviews.html">Reviews</a>
     </nav>
-    <a class="host-link" href="login.html">Sign in</a>
+    <div class="header-actions">
+      <span class="icon-button" aria-label="Language and currency">EN / EGP</span>
+      <a class="host-link" href="login.html">Sign in</a>
+      <button class="profile-button" type="button" aria-label="Open account menu"><span class="profile-icon">◉</span><span class="menu-icon">☰</span></button>
+    </div>
   </header>
 
   <main>
-    <!-- TEMPORARY: Replace this header with Person 2's Hotel Details API later. -->
     <section class="hotel-hero">
       <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80" alt="Hotel exterior" class="hotel-hero-image">
       <div class="container py-5">
-        <span class="badge text-bg-light mb-3">Temporary hotel header</span>
+        <span class="badge text-bg-light mb-3">Hotel overview</span>
         <h1 id="hotelName">LumaStay Hotel</h1>
         <p class="hotel-location" id="hotelLocation">A carefully selected destination</p>
-        <p class="hotel-description" id="hotelDescription">Hotel details will be loaded from Person 2's API when it becomes available.</p>
+        <p class="hotel-description" id="hotelDescription">Explore available room types and choose the dates for your stay.</p>
       </div>
     </section>
 
@@ -54,7 +57,7 @@
   <footer class="site-footer">
     <span>© 2026 LumaStay</span>
     <span>Thoughtful stays, everywhere.</span>
-    <a href="index.html#journal">Explore more stays ↗</a>
+    <a href="reviews.html">Guest reviews ↗</a>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

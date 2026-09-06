@@ -428,11 +428,16 @@
 
 /* Footer */
 .site-footer {
-  background: var(--ink);
-  color: rgba(255, 255, 255, 0.7);
-  padding: 60px 5.5vw 30px;
+  display: flex;
+  justify-content: space-between;
+  background: transparent;
+  color: var(--muted);
+  padding: 26px 5.5vw;
   margin-top: 80px;
+  font-size: 11px;
 }
+
+.site-footer a { color: var(--ink); }
 
 .footer-content {
   display: grid;
