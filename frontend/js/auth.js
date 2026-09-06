@@ -1,5 +1,7 @@
 // ==================== Authentication - LumaStay Theme ====================
 
+const API_BASE_URL = 'https://localhost:7228/api/auth';
+
 // Password Toggle Functionality
 function setupPasswordToggles() {
     const toggleButtons = document.querySelectorAll('.password-toggle');
@@ -58,9 +60,18 @@ function showLoading(button) {
 }
 
 // Hide Loading State
-function hideLoading(button, text) {
+function hideLoading(button) {
     button.disabled = false;
     button.classList.remove('loading');
+}
+
+// Helper: Decode JWT to extract roles
+function parseJwt(token) {
+    try {
+        return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+        return null;
+    }
 }
 
 // ==================== Login Form ====================
@@ -74,44 +85,53 @@ if (loginForm) {
         const rememberMe = document.getElementById('rememberMe').checked;
         const loginBtn = document.getElementById('loginBtn');
 
-        // Validate
         if (!isValidEmail(email)) {
             showAlert('Please enter a valid email address', 'danger');
             return;
         }
 
-        // Show loading
         showLoading(loginBtn);
 
-        // Simulate API call
-        setTimeout(() => {
-            // Demo mode - create demo user
-            const demoUser = {
-                id: 1,
-                name: email.split('@')[0],
-                email: email,
-                role: email.includes('admin') ? 'ADMIN' : 'USER'
-            };
+        try {
+            const response = await fetch(`${API_BASE_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
 
-            // Store credentials
-            if (rememberMe) {
-                localStorage.setItem('authToken', 'demo-token-' + Date.now());
-                localStorage.setItem('user', JSON.stringify(demoUser));
-            } else {
-                sessionStorage.setItem('authToken', 'demo-token-' + Date.now());
-                sessionStorage.setItem('user', JSON.stringify(demoUser));
-            }
+            if (response.ok) {
+                const data = await response.json();
+                const token = data.token;
+                const payload = parseJwt(token);
+                
+                // .NET ClaimTypes.Role maps to this schema string, or falls back to 'role'
+                const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload.role || 'User';
 
-            showAlert('Welcome back! Redirecting...', 'success');
-
-            setTimeout(() => {
-                if (demoUser.role === 'ADMIN') {
-                    window.location.href = 'admin/dashboard.html';
+                if (rememberMe) {
+                    localStorage.setItem('authToken', token);
+                    localStorage.setItem('userRole', role);
                 } else {
-                    window.location.href = 'index.html';
+                    sessionStorage.setItem('authToken', token);
+                    sessionStorage.setItem('userRole', role);
                 }
-            }, 1000);
-        }, 1500);
+
+                showAlert('Welcome back! Redirecting...', 'success');
+
+                setTimeout(() => {
+                    if (role.toUpperCase() === 'ADMIN') {
+                        window.location.href = 'admin/dashboard.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }, 1000);
+            } else {
+                hideLoading(loginBtn);
+                showAlert('Invalid email or password', 'danger');
+            }
+        } catch (error) {
+            hideLoading(loginBtn);
+            showAlert('Network error. Ensure your backend server is running.', 'danger');
+        }
     });
 }
 
@@ -128,7 +148,6 @@ if (registerForm) {
         const agreeTerms = document.getElementById('agreeTerms').checked;
         const registerBtn = document.getElementById('registerBtn');
 
-        // Validate
         if (!isValidEmail(email)) {
             showAlert('Please enter a valid email address', 'danger');
             return;
@@ -149,20 +168,31 @@ if (registerForm) {
             return;
         }
 
-        // Show loading
         showLoading(registerBtn);
 
-        // Simulate API call
-        setTimeout(() => {
-            showAlert('Account created successfully! Redirecting to login...', 'success');
+        try {
+            const response = await fetch(`${API_BASE_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
 
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 1500);
-        }, 1500);
+            if (response.ok) {
+                showAlert('Account created successfully! Redirecting to login...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            } else {
+                hideLoading(registerBtn);
+                const errorData = await response.text();
+                showAlert(errorData || 'Registration failed. User may already exist.', 'danger');
+            }
+        } catch (error) {
+            hideLoading(registerBtn);
+            showAlert('Network error. Ensure your backend server is running.', 'danger');
+        }
     });
 
-    // Real-time password match validation
     const password = document.getElementById('password');
     const confirmPassword = document.getElementById('confirmPassword');
 
@@ -193,9 +223,7 @@ if (forgotPasswordForm) {
 
         showLoading(resetBtn);
 
-        // Simulate API call
         setTimeout(() => {
-            // Show success message
             const authCard = document.querySelector('.auth-card');
             authCard.innerHTML = `
                 <div class="success-message">
@@ -225,21 +253,35 @@ socialButtons.forEach(button => {
     });
 });
 
-// ==================== Initialize ====================
+// ==================== Initialize & Navbar Logic ====================
 document.addEventListener('DOMContentLoaded', function() {
     setupPasswordToggles();
 
-    // Check if already logged in
     const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     const currentPage = window.location.pathname.split('/').pop();
-
+    
+    // Check if on login/register page but already authenticated
     if (authToken && (currentPage === 'login.html' || currentPage === 'register.html')) {
-        const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
-
-        if (user.role === 'ADMIN') {
+        const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+        if (userRole && userRole.toUpperCase() === 'ADMIN') {
             window.location.href = 'admin/dashboard.html';
         } else {
             window.location.href = 'index.html';
         }
+    }
+
+    // Dynamic Navbar Logout Toggle
+    const hostLink = document.querySelector('.host-link');
+    if (authToken && hostLink && hostLink.textContent.includes('Sign in')) {
+        hostLink.textContent = 'Log out';
+        hostLink.href = '#';
+        hostLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userRole');
+            sessionStorage.removeItem('authToken');
+            sessionStorage.removeItem('userRole');
+            window.location.reload();
+        });
     }
 });
