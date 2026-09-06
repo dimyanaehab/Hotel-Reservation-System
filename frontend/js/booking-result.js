@@ -92,8 +92,7 @@ function updateStatusBadge(status) {
 
 // Read the most recently created booking.
 function displayBookingResult() {
-    const savedBooking =
-        localStorage.getItem("latestBooking");
+    const savedBooking = sessionStorage.getItem("latestBooking");
 
     if (!savedBooking) {
         confirmationContent.classList.add("d-none");

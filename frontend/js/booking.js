@@ -323,7 +323,7 @@ bookingForm.addEventListener("submit", async function (event) {
         if (!response.ok) {
             throw new Error(result.message || "The booking could not be created.");
         }
-        localStorage.setItem("latestBooking", JSON.stringify(result));
+        sessionStorage.setItem("latestBooking", JSON.stringify(result));
         window.location.href = "booking-result.html";
     } catch (error) {
         showMessage(error.message, "danger");

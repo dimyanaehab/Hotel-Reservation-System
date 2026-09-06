@@ -49,7 +49,7 @@
             </div>
           </div>
         </div>
-        <button class="btn-primary" data-bs-toggle="modal" data-bs-target="#addReviewModal">
+        <button class="btn-primary" data-auth-only data-bs-toggle="modal" data-bs-target="#addReviewModal">
           Write a review
         </button>
       </div>
@@ -78,7 +78,7 @@
         <div class="empty-icon">💬</div>
         <h3>No reviews yet</h3>
         <p>Be the first to share your experience</p>
-        <button class="btn-primary" data-bs-toggle="modal" data-bs-target="#addReviewModal">
+          <button class="btn-primary" data-auth-only data-bs-toggle="modal" data-bs-target="#addReviewModal">
           Write a review
         </button>
       </div>
@@ -160,6 +160,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/session.js"></script>
   <script src="js/reviews.js"></script>
 </body>
 </html>

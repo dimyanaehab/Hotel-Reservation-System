@@ -52,7 +52,27 @@ if (logoutBtn) {
 // Check if user is authenticated
 function checkAuth() {
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-    const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+    let user = {};
+
+    try {
+        user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+        const encodedPayload = token?.split('.')[1]?.replace(/-/g, '+').replace(/_/g, '/');
+        const payload = encodedPayload
+            ? JSON.parse(atob(encodedPayload.padEnd(Math.ceil(encodedPayload.length / 4) * 4, '=')))
+            : null;
+        if (!payload || (payload.exp && payload.exp * 1000 <= Date.now())) {
+            throw new Error('Session expired');
+        }
+    } catch {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        localStorage.removeItem('userRole');
+        sessionStorage.removeItem('authToken');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('userRole');
+        window.location.href = '../login.html';
+        return false;
+    }
 
     // If not authenticated or not admin, redirect to login
     if (!token || user.role !== 'ADMIN') {
@@ -65,7 +85,12 @@ function checkAuth() {
 
 // Update user profile in navbar
 function updateUserProfile() {
-    const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+    let user = {};
+    try {
+        user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+    } catch {
+        return;
+    }
     
     if (user.name) {
         const profileName = document.querySelector('.profile-name');

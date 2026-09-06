@@ -119,7 +119,10 @@ if (loginForm) {
                     if (role.toUpperCase() === 'ADMIN') {
                         window.location.href = 'admin/dashboard.html';
                     } else {
-                        window.location.href = 'index.html';
+                        const requestedPage = new URLSearchParams(window.location.search).get('returnUrl');
+                        window.location.href = requestedPage && !requestedPage.includes('://') && !requestedPage.startsWith('//')
+                            ? requestedPage
+                            : 'index.html';
                     }
                 }, 1000);
             } else {
@@ -240,19 +243,14 @@ if (forgotPasswordForm) {
     });
 }
 
-// ==================== Social Login Handlers ====================
-const socialButtons = document.querySelectorAll('.btn-social');
-socialButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const provider = this.textContent.trim();
-        showAlert(`${provider} login coming soon!`, 'info');
-    });
-});
-
 // ==================== Initialize & Navbar Logic ====================
 document.addEventListener('DOMContentLoaded', function() {
     setupPasswordToggles();
+
+    // Hide providers that are not backed by an authentication endpoint yet.
+    document.querySelectorAll('.social-buttons, .divider').forEach(element => {
+        element.hidden = true;
+    });
 
     const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     const currentPage = window.location.pathname.split('/').pop();
@@ -267,18 +265,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Dynamic Navbar Logout Toggle
-    const hostLink = document.querySelector('.host-link');
-    if (authToken && hostLink && hostLink.textContent.includes('Sign in')) {
-        hostLink.textContent = 'Log out';
-        hostLink.href = '#';
-        hostLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('userRole');
-            sessionStorage.removeItem('authToken');
-            sessionStorage.removeItem('userRole');
-            window.location.reload();
-        });
-    }
 });

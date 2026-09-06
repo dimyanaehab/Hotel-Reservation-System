@@ -5,6 +5,9 @@ const hotelId = Number(query.get('hotelId')) || 1;
 
 document.addEventListener('DOMContentLoaded', loadRoomTypes);
 
+const reviewsLink = document.querySelector('a[href="reviews.html"]');
+if (reviewsLink) reviewsLink.href = `reviews.html?hotelId=${encodeURIComponent(hotelId)}`;
+
 async function loadRoomTypes() {
   document.getElementById('hotelIdLabel').textContent = hotelId;
 
