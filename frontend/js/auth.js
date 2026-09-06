@@ -153,8 +153,8 @@ if (registerForm) {
             return;
         }
 
-        if (password.length < 6) {
-            showAlert('Password must be at least 6 characters', 'danger');
+        if (password.length < 8) {
+            showAlert('Password must be at least 8 characters', 'danger');
             return;
         }
 
