@@ -1,6 +1,6 @@
 // ==================== Authentication - LumaStay Theme ====================
 
-const API_BASE_URL = 'https://localhost:7228/api/auth';
+const API_BASE_URL = `${window.hotelApi.baseUrl}/auth`;
 
 // Password Toggle Functionality
 function setupPasswordToggles() {
@@ -65,15 +65,6 @@ function hideLoading(button) {
     button.classList.remove('loading');
 }
 
-// Helper: Decode JWT to extract roles
-function parseJwt(token) {
-    try {
-        return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-        return null;
-    }
-}
-
 // ==================== Login Form ====================
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
@@ -102,16 +93,23 @@ if (loginForm) {
             if (response.ok) {
                 const data = await response.json();
                 const token = data.token;
-                const payload = parseJwt(token);
-                
-                // .NET ClaimTypes.Role maps to this schema string, or falls back to 'role'
-                const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload.role || 'User';
+                const user = data.user;
+                const role = user.role;
+
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                localStorage.removeItem('userRole');
+                sessionStorage.removeItem('authToken');
+                sessionStorage.removeItem('user');
+                sessionStorage.removeItem('userRole');
 
                 if (rememberMe) {
                     localStorage.setItem('authToken', token);
+                    localStorage.setItem('user', JSON.stringify(user));
                     localStorage.setItem('userRole', role);
                 } else {
                     sessionStorage.setItem('authToken', token);
+                    sessionStorage.setItem('user', JSON.stringify(user));
                     sessionStorage.setItem('userRole', role);
                 }
 
@@ -126,7 +124,7 @@ if (loginForm) {
                 }, 1000);
             } else {
                 hideLoading(loginBtn);
-                showAlert('Invalid email or password', 'danger');
+                showAlert(await window.hotelApi.errorMessage(response, 'Invalid email or password'), 'danger');
             }
         } catch (error) {
             hideLoading(loginBtn);
@@ -184,8 +182,7 @@ if (registerForm) {
                 }, 1500);
             } else {
                 hideLoading(registerBtn);
-                const errorData = await response.text();
-                showAlert(errorData || 'Registration failed. User may already exist.', 'danger');
+                showAlert(await window.hotelApi.errorMessage(response, 'Registration failed. User may already exist.'), 'danger');
             }
         } catch (error) {
             hideLoading(registerBtn);

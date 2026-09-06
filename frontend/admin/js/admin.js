@@ -38,8 +38,10 @@ if (logoutBtn) {
             // Clear auth data
             localStorage.removeItem('authToken');
             localStorage.removeItem('user');
+            localStorage.removeItem('userRole');
             sessionStorage.removeItem('authToken');
             sessionStorage.removeItem('user');
+            sessionStorage.removeItem('userRole');
             
             // Redirect to login
             window.location.href = '../login.html';
