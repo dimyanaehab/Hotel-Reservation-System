@@ -99,6 +99,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
 });
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 var app = builder.Build();
