@@ -1,0 +1,126 @@
+using HotelReservation.Domain.Enums;
+using HotelReservation.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace HotelReservation.Infrastructure.Data;
+
+public static class DevelopmentDataSeeder
+{
+    public static async Task SeedAsync(IServiceProvider services)
+    {
+        await using AsyncServiceScope scope = services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await context.Database.EnsureCreatedAsync();
+
+        if (!await context.Users.AnyAsync(user => user.Id == 1))
+        {
+            context.Users.Add(new User
+            {
+                Id = 1,
+                Name = "Swagger Customer",
+                Email = "customer@swagger.test",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Customer123!"),
+                Role = UserRole.User
+            });
+        }
+
+        if (!await context.Users.AnyAsync(user => user.Id == 2))
+        {
+            context.Users.Add(new User
+            {
+                Id = 2,
+                Name = "Swagger Admin",
+                Email = "admin@swagger.test",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+                Role = UserRole.Admin
+            });
+        }
+
+        if (!await context.Hotels.AnyAsync(hotel => hotel.Id == 1))
+        {
+            context.Hotels.Add(new Hotel
+            {
+                Id = 1,
+                Name = "Swagger Test Hotel",
+                City = "Riyadh",
+                Address = "Test Address",
+                Stars = 4
+            });
+        }
+
+        if (!await context.RoomTypes.AnyAsync(room => room.Id == 1))
+        {
+            context.RoomTypes.Add(new RoomType
+            {
+                Id = 1,
+                HotelId = 1,
+                Name = "Swagger Deluxe Room",
+                Capacity = 2,
+                BedType = "King",
+                BasePrice = 500m
+            });
+        }
+
+        DateOnly firstDate = DateOnly.FromDateTime(DateTime.UtcNow.Date.AddDays(1));
+        DateOnly lastDate = firstDate.AddDays(60);
+        HashSet<DateOnly> existingDates = (await context.RoomInventories
+            .Where(item => item.RoomTypeId == 1 && item.Date >= firstDate && item.Date < lastDate)
+            .Select(item => item.Date)
+            .ToListAsync()).ToHashSet();
+
+        for (DateOnly date = firstDate; date < lastDate; date = date.AddDays(1))
+        {
+            if (!existingDates.Contains(date))
+            {
+                context.RoomInventories.Add(new RoomInventory
+                {
+                    RoomTypeId = 1,
+                    Date = date,
+                    TotalRooms = 5,
+                    SoldRooms = 0
+                });
+            }
+        }
+
+        if (!await context.Bookings.AnyAsync(booking => booking.Id == 100))
+        {
+            DateOnly checkOut = DateOnly.FromDateTime(DateTime.UtcNow.Date.AddDays(-1));
+            context.Bookings.Add(new Booking
+            {
+                Id = 100,
+                UserId = 1,
+                HotelId = 1,
+                RoomTypeId = 1,
+                CheckIn = checkOut.AddDays(-2),
+                CheckOut = checkOut,
+                Nights = 2,
+                NumberOfGuests = 1,
+                TotalPrice = 1000m,
+                Status = BookingStatus.Completed,
+                CreatedAt = DateTime.UtcNow.AddDays(-5)
+            });
+        }
+
+        if (!await context.Bookings.AnyAsync(booking => booking.Id == 101))
+        {
+            DateOnly checkOut = DateOnly.FromDateTime(DateTime.UtcNow.Date);
+            context.Bookings.Add(new Booking
+            {
+                Id = 101,
+                UserId = 1,
+                HotelId = 1,
+                RoomTypeId = 1,
+                CheckIn = checkOut.AddDays(-1),
+                CheckOut = checkOut,
+                Nights = 1,
+                NumberOfGuests = 1,
+                TotalPrice = 500m,
+                Status = BookingStatus.Confirmed,
+                CreatedAt = DateTime.UtcNow.AddDays(-3)
+            });
+        }
+
+        await context.SaveChangesAsync();
+    }
+}

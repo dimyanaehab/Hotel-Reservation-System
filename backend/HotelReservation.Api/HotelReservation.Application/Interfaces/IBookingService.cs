@@ -1,0 +1,33 @@
+using HotelReservation.Application.DTOs.Bookings;
+using HotelReservation.Domain.Enums;
+
+namespace HotelReservation.Application.Interfaces;
+
+public interface IBookingService
+{
+    Task<BookingResponseDto> CreateBookingAsync(
+        int userId,
+        CreateBookingRequestDto request);
+
+    Task<IReadOnlyList<BookingResponseDto>> GetMyBookingsAsync(
+        int userId);
+
+    Task<BookingResponseDto> CancelBookingAsync(
+        int bookingId,
+        int userId);
+
+    Task<IReadOnlyList<AdminBookingResponseDto>> GetAdminBookingsAsync(
+        BookingStatus? status);
+
+    Task<AdminBookingResponseDto> ConfirmBookingAsync(
+        int bookingId);
+
+    Task<AdminBookingResponseDto> RejectBookingAsync(
+        int bookingId);
+
+    Task<AdminBookingResponseDto> CancelBookingAsAdminAsync(
+        int bookingId);
+
+    Task<AdminBookingResponseDto> CompleteBookingAsync(
+        int bookingId);
+}
