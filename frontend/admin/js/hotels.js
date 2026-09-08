@@ -1,104 +1,8 @@
 // ==================== Hotels Management JavaScript ====================
 
-// Dummy Hotels Data
-let hotelsData = [
-    {
-        id: 1,
-        name: 'Grand Plaza Hotel',
-        city: 'New York',
-        address: '123 Broadway Avenue',
-        description: 'Luxury hotel in the heart of Manhattan with stunning city views and world-class amenities.',
-        stars: 5,
-        thumbnail_url: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600',
-        rooms: 250,
-        status: 'active',
-        created_at: new Date('2024-01-15')
-    },
-    {
-        id: 2,
-        name: 'Seaside Resort & Spa',
-        city: 'Miami',
-        address: '456 Ocean Drive',
-        description: 'Beautiful beachfront resort with private beach access, spa facilities, and oceanview rooms.',
-        stars: 5,
-        thumbnail_url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600',
-        rooms: 180,
-        status: 'active',
-        created_at: new Date('2024-02-10')
-    },
-    {
-        id: 3,
-        name: 'Mountain View Lodge',
-        city: 'Denver',
-        address: '789 Alpine Way',
-        description: 'Cozy mountain retreat with breathtaking views, perfect for nature lovers and adventure seekers.',
-        stars: 4,
-        thumbnail_url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600',
-        rooms: 120,
-        status: 'active',
-        created_at: new Date('2024-03-05')
-    },
-    {
-        id: 4,
-        name: 'City Center Hotel',
-        city: 'Chicago',
-        address: '321 Michigan Avenue',
-        description: 'Modern downtown hotel perfect for business travelers with excellent conference facilities.',
-        stars: 4,
-        thumbnail_url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600',
-        rooms: 200,
-        status: 'active',
-        created_at: new Date('2024-04-20')
-    },
-    {
-        id: 5,
-        name: 'Beach Paradise Resort',
-        city: 'Los Angeles',
-        address: '555 Pacific Coast Highway',
-        description: 'Tropical paradise with infinity pool, private cabanas, and world-class dining options.',
-        stars: 5,
-        thumbnail_url: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600',
-        rooms: 300,
-        status: 'active',
-        created_at: new Date('2024-05-12')
-    },
-    {
-        id: 6,
-        name: 'Historic Downtown Inn',
-        city: 'Boston',
-        address: '888 Commonwealth Ave',
-        description: 'Charming historic hotel with modern amenities and traditional New England hospitality.',
-        stars: 4,
-        thumbnail_url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600',
-        rooms: 90,
-        status: 'active',
-        created_at: new Date('2024-06-08')
-    },
-    {
-        id: 7,
-        name: 'Desert Oasis Resort',
-        city: 'Phoenix',
-        address: '999 Camelback Road',
-        description: 'Luxury desert resort with golf course, multiple pools, and southwestern cuisine.',
-        stars: 5,
-        thumbnail_url: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600',
-        rooms: 220,
-        status: 'inactive',
-        created_at: new Date('2024-07-15')
-    },
-    {
-        id: 8,
-        name: 'Lakefront Lodge',
-        city: 'Seattle',
-        address: '777 Waterfront Way',
-        description: 'Peaceful lakeside retreat with water activities, fishing, and stunning sunset views.',
-        stars: 4,
-        thumbnail_url: 'https://images.unsplash.com/photo-1596436889106-be35e843f974?w=600',
-        rooms: 150,
-        status: 'active',
-        created_at: new Date('2024-08-22')
-    }
-];
+const API_BASE = window.hotelApi.baseUrl;
+const adminHeaders = window.hotelApi.headers();
+let hotelsData = [];
 
 // Current view state
 let currentView = 'grid'; // 'grid' or 'table'
@@ -106,11 +10,30 @@ let filteredHotels = [...hotelsData];
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    loadHotels();
+    fetchHotels();
     initializeSearch();
     initializeForms();
     updateHotelCount();
 });
+
+async function fetchHotels() {
+    try {
+        const response = await fetch(`${API_BASE}/hotels`);
+        if (!response.ok) {
+            throw new Error(await readError(response));
+        }
+
+        hotelsData = (await response.json()).map(normalizeHotel);
+        filteredHotels = [...hotelsData];
+    } catch (error) {
+        hotelsData = [];
+        filteredHotels = [];
+        showToast(error.message || 'Hotels could not be loaded.', 'danger');
+    }
+
+    updateHotelCount();
+    loadHotels();
+}
 
 // Load and display hotels
 function loadHotels() {
@@ -126,6 +49,16 @@ function loadHotels() {
     } else {
         loadTableView();
     }
+}
+
+function normalizeHotel(hotel) {
+    return {
+        ...hotel,
+        thumbnail_url: hotel.thumbnailUrl || '',
+        rooms: hotel.rooms || 0,
+        status: hotel.status || 'active',
+        created_at: hotel.createdAt
+    };
 }
 
 // Load Grid View
@@ -149,7 +82,7 @@ function loadGridView() {
                         <div class="hotel-stars">${'★'.repeat(hotel.stars)}${'☆'.repeat(5-hotel.stars)}</div>
                     </div>
                 </div>
-                <p class="hotel-description">${truncateText(hotel.description, 100)}</p>
+                <p class="hotel-description">${truncateText(hotel.description || '', 100)}</p>
                 <div class="hotel-footer">
                     <div class="hotel-rooms">${hotel.rooms} <span>rooms</span></div>
                     <span class="hotel-status ${hotel.status}">
@@ -303,20 +236,24 @@ function deleteHotel(hotelId) {
     modal.show();
 
     // Set up confirm button
-    document.getElementById('confirmDeleteBtn').onclick = function() {
-        // Remove hotel from array
-        hotelsData = hotelsData.filter(h => h.id !== hotelId);
-        filteredHotels = filteredHotels.filter(h => h.id !== hotelId);
+    document.getElementById('confirmDeleteBtn').onclick = async function() {
+        try {
+            const response = await fetch(`${API_BASE}/admin/hotels/${hotelId}`, {
+                method: 'DELETE',
+                headers: adminHeaders
+            });
 
-        // Close modal
-        modal.hide();
+            if (!response.ok) {
+                throw new Error(await readError(response));
+            }
 
-        // Reload view
-        loadHotels();
-        updateHotelCount();
-
-        // Show success message
-        showToast(`Hotel "${hotel.name}" has been deleted successfully`, 'success');
+            modal.hide();
+            await fetchHotels();
+            updateHotelCount();
+            showToast(`Hotel "${hotel.name}" has been deleted successfully`, 'success');
+        } catch (error) {
+            showToast(error.message || 'The hotel could not be deleted.', 'danger');
+        }
     };
 }
 
@@ -324,73 +261,74 @@ function deleteHotel(hotelId) {
 function initializeForms() {
     // Add Hotel Form
     const addForm = document.getElementById('addHotelForm');
-    addForm.addEventListener('submit', function(e) {
+    addForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        const newHotel = {
-            id: hotelsData.length > 0 ? Math.max(...hotelsData.map(h => h.id)) + 1 : 1,
-            name: document.getElementById('addHotelName').value,
-            city: document.getElementById('addHotelCity').value,
-            address: document.getElementById('addHotelAddress').value,
+        const dto = {
+            name: document.getElementById('addHotelName').value.trim(),
+            city: document.getElementById('addHotelCity').value.trim(),
+            address: document.getElementById('addHotelAddress').value.trim(),
             stars: parseInt(document.getElementById('addHotelStars').value),
-            description: document.getElementById('addHotelDescription').value,
-            thumbnail_url: document.getElementById('addHotelImage').value,
-            rooms: parseInt(document.getElementById('addHotelRooms').value),
-            status: document.getElementById('addHotelStatus').value,
-            created_at: new Date()
+            description: document.getElementById('addHotelDescription').value.trim(),
+            thumbnailUrl: document.getElementById('addHotelImage').value.trim()
         };
 
-        // Add to array
-        hotelsData.unshift(newHotel);
-        filteredHotels = [...hotelsData];
+        try {
+            const response = await fetch(`${API_BASE}/admin/hotels`, {
+                method: 'POST',
+                headers: { ...adminHeaders, 'Content-Type': 'application/json' },
+                body: JSON.stringify(dto)
+            });
 
-        // Close modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addHotelModal'));
-        modal.hide();
+            if (!response.ok) {
+                throw new Error(await readError(response));
+            }
 
-        // Reset form
-        addForm.reset();
-
-        // Reload view
-        loadHotels();
-        updateHotelCount();
-
-        // Show success message
-        showToast(`Hotel "${newHotel.name}" has been added successfully`, 'success');
+            const createdHotel = await response.json();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addHotelModal'));
+            modal.hide();
+            addForm.reset();
+            await fetchHotels();
+            updateHotelCount();
+            showToast(`Hotel "${createdHotel.name}" has been added successfully`, 'success');
+        } catch (error) {
+            showToast(error.message || 'The hotel could not be added.', 'danger');
+        }
     });
 
     // Edit Hotel Form
     const editForm = document.getElementById('editHotelForm');
-    editForm.addEventListener('submit', function(e) {
+    editForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const hotelId = parseInt(document.getElementById('editHotelId').value);
-        const hotelIndex = hotelsData.findIndex(h => h.id === hotelId);
+        const dto = {
+            name: document.getElementById('editHotelName').value.trim(),
+            city: document.getElementById('editHotelCity').value.trim(),
+            address: document.getElementById('editHotelAddress').value.trim(),
+            stars: parseInt(document.getElementById('editHotelStars').value),
+            description: document.getElementById('editHotelDescription').value.trim(),
+            thumbnailUrl: document.getElementById('editHotelImage').value.trim()
+        };
 
-        if (hotelIndex !== -1) {
-            hotelsData[hotelIndex] = {
-                ...hotelsData[hotelIndex],
-                name: document.getElementById('editHotelName').value,
-                city: document.getElementById('editHotelCity').value,
-                address: document.getElementById('editHotelAddress').value,
-                stars: parseInt(document.getElementById('editHotelStars').value),
-                description: document.getElementById('editHotelDescription').value,
-                thumbnail_url: document.getElementById('editHotelImage').value,
-                rooms: parseInt(document.getElementById('editHotelRooms').value),
-                status: document.getElementById('editHotelStatus').value
-            };
+        try {
+            const response = await fetch(`${API_BASE}/admin/hotels/${hotelId}`, {
+                method: 'PUT',
+                headers: { ...adminHeaders, 'Content-Type': 'application/json' },
+                body: JSON.stringify(dto)
+            });
 
-            filteredHotels = [...hotelsData];
+            if (!response.ok) {
+                throw new Error(await readError(response));
+            }
 
-            // Close modal
+            const updatedHotel = await response.json();
             const modal = bootstrap.Modal.getInstance(document.getElementById('editHotelModal'));
             modal.hide();
-
-            // Reload view
-            loadHotels();
-
-            // Show success message
-            showToast(`Hotel "${hotelsData[hotelIndex].name}" has been updated successfully`, 'success');
+            await fetchHotels();
+            showToast(`Hotel "${updatedHotel.name}" has been updated successfully`, 'success');
+        } catch (error) {
+            showToast(error.message || 'The hotel could not be updated.', 'danger');
         }
     });
 }
@@ -413,6 +351,13 @@ function showEmptyState() {
 // Hide empty state
 function hideEmptyState() {
     document.getElementById('emptyState').style.display = 'none';
+}
+
+async function readError(response) {
+    return await window.hotelApi.errorMessage(
+        response,
+        `Request failed with status ${response.status}.`
+    );
 }
 
 // Add CSS for hotel cards
