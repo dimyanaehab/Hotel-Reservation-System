@@ -19,9 +19,24 @@ public class HotelsController : ControllerBase
     [AllowAnonymous]
     [HttpGet("hotels")]
     public async Task<ActionResult<List<HotelResponseDto>>> GetHotels(
-        [FromQuery] string? city)
+        [FromQuery] string? city,
+        [FromQuery] DateOnly? checkIn,
+        [FromQuery] DateOnly? checkOut)
     {
-        List<HotelResponseDto> hotels = await _hotelService.GetAllAsync(city);
+        if (checkIn.HasValue != checkOut.HasValue)
+        {
+            return BadRequest("Both checkIn and checkOut dates are required.");
+        }
+
+        if (checkIn.HasValue && checkIn.Value >= checkOut!.Value)
+        {
+            return BadRequest("The checkIn date must be earlier than the checkOut date.");
+        }
+
+        List<HotelResponseDto> hotels = await _hotelService.GetAllAsync(
+            city,
+            checkIn,
+            checkOut);
 
         return Ok(hotels);
     }

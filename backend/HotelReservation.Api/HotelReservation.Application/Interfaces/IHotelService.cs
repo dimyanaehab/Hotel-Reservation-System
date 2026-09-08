@@ -4,7 +4,10 @@ namespace HotelReservation.Application.Interfaces;
 
 public interface IHotelService
 {
-    Task<List<HotelResponseDto>> GetAllAsync(string? city);
+    Task<List<HotelResponseDto>> GetAllAsync(
+        string? city,
+        DateOnly? checkIn,
+        DateOnly? checkOut);
 
     Task<HotelResponseDto?> GetByIdAsync(int id);
 
