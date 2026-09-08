@@ -59,7 +59,7 @@ function renderReviews() {
         return;
     }
 
-    list.style.display = "block";
+    list.style.display = "flex";
     empty.style.display = "none";
     list.innerHTML = reviews.slice(0, displayedCount).map(createReviewCard).join("");
     more.style.display = displayedCount < reviews.length ? "block" : "none";
