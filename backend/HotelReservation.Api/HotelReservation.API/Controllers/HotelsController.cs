@@ -54,4 +54,58 @@ public class HotelsController : ControllerBase
 
         return Ok(hotel);
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("admin/hotels")]
+    public async Task<ActionResult<HotelResponseDto>> CreateHotel(
+        CreateHotelDto dto)
+    {
+        (HotelResponseDto? hotel, string? error) =
+            await _hotelService.AddAsync(dto);
+
+        if (error is not null)
+        {
+            return BadRequest(error);
+        }
+
+        return Ok(hotel);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("admin/hotels/{id:int}")]
+    public async Task<ActionResult<HotelResponseDto>> UpdateHotel(
+        int id,
+        UpdateHotelDto dto)
+    {
+        HotelResponseDto? existingHotel = await _hotelService.GetByIdAsync(id);
+
+        if (existingHotel is null)
+        {
+            return NotFound("Hotel not found.");
+        }
+
+        (HotelResponseDto? hotel, string? error) =
+            await _hotelService.UpdateAsync(id, dto);
+
+        if (error is not null)
+        {
+            return BadRequest(error);
+        }
+
+        return Ok(hotel);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("admin/hotels/{id:int}")]
+    public async Task<IActionResult> DeleteHotel(int id)
+    {
+        bool deleted = await _hotelService.DeleteAsync(id);
+
+        if (!deleted)
+        {
+            return NotFound("Hotel not found.");
+        }
+
+        return Ok();
+    }
 }
