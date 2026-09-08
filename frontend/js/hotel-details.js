@@ -3,10 +3,37 @@ const API_BASE = window.hotelApi.baseUrl;
 const query = new URLSearchParams(window.location.search);
 const hotelId = Number(query.get('hotelId')) || 1;
 
-document.addEventListener('DOMContentLoaded', loadRoomTypes);
+document.addEventListener('DOMContentLoaded', () => {
+  loadHotelDetails();
+  loadRoomTypes();
+});
 
 const reviewsLink = document.querySelector('a[href="reviews.html"]');
 if (reviewsLink) reviewsLink.href = `reviews.html?hotelId=${encodeURIComponent(hotelId)}`;
+
+async function loadHotelDetails() {
+  try {
+    const response = await fetch(`${API_BASE}/hotels/${hotelId}`);
+    if (!response.ok) {
+      throw new Error(await readError(response));
+    }
+
+    const hotel = await response.json();
+    document.getElementById('hotelName').textContent = hotel.name;
+    document.getElementById('hotelLocation').textContent =
+      [hotel.city, hotel.address].filter(Boolean).join(' · ');
+    document.getElementById('hotelDescription').textContent =
+      hotel.description || 'Explore available room types and choose your dates.';
+
+    if (hotel.thumbnailUrl) {
+      const heroImage = document.querySelector('.hotel-hero-image');
+      heroImage.src = hotel.thumbnailUrl;
+      heroImage.alt = hotel.name || 'Hotel exterior';
+    }
+  } catch (error) {
+    showPageMessage(error.message || 'Hotel details could not be loaded.', 'danger');
+  }
+}
 
 async function loadRoomTypes() {
   document.getElementById('hotelIdLabel').textContent = hotelId;
