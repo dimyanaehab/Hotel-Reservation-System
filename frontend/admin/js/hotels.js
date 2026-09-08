@@ -397,7 +397,10 @@ function initializeForms() {
 
 // Update hotel count in sidebar
 function updateHotelCount() {
-    document.getElementById('hotelCount').textContent = hotelsData.length;
+    const hotelCount = document.getElementById('hotelCount');
+    if (hotelCount) {
+        hotelCount.textContent = hotelsData.length;
+    }
 }
 
 // Show empty state

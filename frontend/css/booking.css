@@ -1,50 +1,64 @@
-/*
- * booking.css — LumaStay booking page
- * All variables and base styles come from style.css.
- * This file adds only booking-specific layout and components.
- */
+/* ==========================================================================
+   booking.css — Booking form (booking.html) + Confirmation (booking-result.html)
+   Depends on style.css for tokens, .btn-primary, .form-input, .alert-*.
+   JS-required IDs: #booking-form #booking-message #room-type-id #check-in
+   #check-out #check-out-feedback #number-of-guests #room-price
+   #summary-room-price #number-of-nights #total-price #booking-button
+   #confirmation-content #no-booking-content #booking-status #booking-id
+   #result-hotel-name #result-room-name #result-check-in #result-check-out
+   #result-nights #result-guests #result-total-price
+   ========================================================================== */
 
-/* ----------------------------------------------------------------
-   Page header
-   ---------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Page header strip (booking.html)
+   -------------------------------------------------------------------------- */
 .booking-page-header {
-  padding: 72px 5.5vw 56px;
-  max-width: 760px;
+  background: var(--charcoal);
+  padding: 48px var(--page-x) 40px;
+  color: var(--white);
 }
-
-.booking-page-header h1 {
-  font: 600 clamp(2.4rem, 4.5vw, 4rem) / 1.05 'Playfair Display', serif;
-  letter-spacing: -2px;
-  margin-bottom: 14px;
-  color: var(--ink);
-}
-
-.booking-page-header h1 em {
-  color: #82917e;
-  font-style: italic;
-  font-weight: 500;
-}
-
 .booking-page-header .eyebrow {
-  margin-bottom: 18px;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 10px;
 }
-
+.booking-page-header h1 {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -.4px;
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+.booking-page-header h1 em { color: var(--gold-2); }
 .booking-page-header-sub {
-  color: var(--muted);
-  font-size: 15px;
-  line-height: 1.65;
+  font-size: 14.5px;
+  color: rgba(255,255,255,.6);
   margin: 0;
 }
 
-/* ----------------------------------------------------------------
-   Main layout
-   ---------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Main layout wrapper
+   -------------------------------------------------------------------------- */
 .booking-main {
-  width: min(1100px, 89%);
-  margin: 0 auto;
-  padding-bottom: 100px;
+  width: min(1100px, 100%);
+  padding-inline: var(--page-x);
+  margin-inline: auto;
+  padding-block: var(--space-7);
 }
 
+/* --------------------------------------------------------------------------
+   Alert (#booking-message)
+   -------------------------------------------------------------------------- */
+#booking-message {
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  margin-bottom: var(--space-5);
+}
+
+/* --------------------------------------------------------------------------
+   Two-column layout
+   -------------------------------------------------------------------------- */
 .booking-layout {
   display: grid;
   grid-template-columns: 2fr 3fr;
@@ -52,403 +66,315 @@
   align-items: start;
 }
 
-/* ----------------------------------------------------------------
-   Alert (booking-message) — reuses Bootstrap .alert classes.
-   Restyle to match the site palette instead of Bootstrap blues.
-   ---------------------------------------------------------------- */
-#booking-message {
-  border-radius: 3px;
-  font-size: 14px;
-  margin-bottom: 28px;
-}
+/* --------------------------------------------------------------------------
+   Left: Room summary card
+   -------------------------------------------------------------------------- */
+.room-aside { position: sticky; top: 80px; }
 
-#booking-message.alert-success {
-  background: rgba(191, 201, 187, 0.12);
-  border: 1px solid var(--sage);
-  color: var(--dark-sage);
-}
-
-#booking-message.alert-danger {
-  background: rgba(230, 164, 75, 0.1);
-  border: 1px solid var(--sun);
-  color: #b87730;
-}
-
-/* ----------------------------------------------------------------
-   Room aside card
-   ---------------------------------------------------------------- */
 .room-card-luma {
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(31, 45, 42, 0.06);
-  position: sticky;
-  top: 100px;
+  box-shadow: var(--shadow-sm);
 }
 
 .room-card-image {
-  height: 230px;
-  background:
-    linear-gradient(160deg, var(--dark-sage) 0%, #2a3d37 100%);
+  height: 220px;
+  background: var(--charcoal);
   display: flex;
   align-items: flex-end;
   padding: 20px;
-  color: white;
-  font-family: 'Playfair Display', serif;
-  font-size: 1.35rem;
+  position: relative;
+  overflow: hidden;
+}
+.room-card-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 25% 70%,
+    rgba(184,149,106,.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.room-card-image span {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: 1.4rem;
   font-weight: 600;
-  letter-spacing: -0.5px;
+  color: var(--gold-2);
+  position: relative;
+  z-index: 1;
 }
 
-.room-card-body {
-  padding: 24px;
-}
+.room-card-body { padding: 22px 22px 24px; }
 
 .room-selected-tag {
   display: inline-block;
-  background: rgba(191, 201, 187, 0.25);
-  color: var(--dark-sage);
-  border: 1px solid var(--sage);
-  border-radius: 2px;
-  font-size: 10px;
+  background: var(--sage-3);
+  color: var(--forest);
+  border: 1px solid var(--sage-2);
+  border-radius: var(--radius);
+  font-size: 10.5px;
   font-weight: 700;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
-  padding: 4px 10px;
-  margin-bottom: 14px;
-}
-
-.room-card-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.35rem;
-  font-weight: 600;
-  letter-spacing: -0.5px;
-  color: var(--ink);
-  margin-bottom: 4px;
-}
-
-.room-card-type {
-  color: var(--muted);
-  font-size: 13px;
+  padding: 3px 10px;
   margin-bottom: 12px;
 }
 
+.room-card-title {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--charcoal);
+  margin-bottom: 4px;
+  letter-spacing: -.3px;
+}
+.room-card-type {
+  font-size: 13px;
+  color: var(--warm-grey);
+  margin-bottom: 10px;
+}
 .room-card-desc {
   font-size: 13px;
-  color: var(--muted);
-  line-height: 1.65;
-  margin-bottom: 20px;
+  color: var(--warm-grey);
+  line-height: 1.6;
+  margin-bottom: 18px;
 }
 
 .room-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 8px;
 }
-
 .room-info-cell {
-  background: var(--paper);
+  background: var(--ivory);
   border: 1px solid var(--line);
-  border-radius: 2px;
-  padding: 12px 14px;
+  border-radius: var(--radius);
+  padding: 10px 12px;
 }
-
 .information-label {
   display: block;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
+  letter-spacing: .07em;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
-  margin-bottom: 5px;
+  color: var(--warm-grey);
+  margin-bottom: 4px;
 }
-
 .room-info-cell strong {
-  font-size: 13px;
-  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--charcoal);
 }
 
-/* ----------------------------------------------------------------
-   Booking form card
-   ---------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Right: Booking form card
+   -------------------------------------------------------------------------- */
 .booking-form-card {
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 3px;
-  padding: 40px;
-  box-shadow: 0 8px 24px rgba(31, 45, 42, 0.06);
+  border-radius: var(--radius-md);
+  padding: 36px 36px 40px;
+  box-shadow: var(--shadow-sm);
 }
-
 .booking-form-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   font-size: 1.5rem;
   font-weight: 600;
-  letter-spacing: -0.5px;
-  color: var(--ink);
-  margin-bottom: 28px;
+  color: var(--charcoal);
+  letter-spacing: -.3px;
+  margin-bottom: 26px;
 }
 
-/* ----------------------------------------------------------------
-   Form fields — reuse auth.css patterns
-   ---------------------------------------------------------------- */
+/* Date row */
 .booking-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
+.mt-form { margin-top: 18px; }
 
-/* form-group and form-input are already defined in auth.css */
-
-.mt-form {
-  margin-top: 18px;
-}
-
-/* Make Bootstrap's invalid-feedback work with .form-input */
-.form-input.is-invalid,
-.was-validated .form-input:invalid {
-  border-color: #c4803a;
-}
-
+/* Inline validation feedback — booking.js sets .was-validated */
 .invalid-feedback {
   display: none;
   font-size: 12px;
-  color: #c4803a;
+  color: var(--status-cancelled-fg);
   margin-top: 5px;
 }
-
 .was-validated .form-input:invalid ~ .invalid-feedback,
-.form-input.is-invalid ~ .invalid-feedback {
-  display: block;
-}
+.form-input.is-invalid ~ .invalid-feedback { display: block; }
+.was-validated .form-input:invalid,
+.form-input.is-invalid { border-color: var(--status-cancelled-fg); }
 
-/* ----------------------------------------------------------------
-   Price summary
-   ---------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Price summary box
+   -------------------------------------------------------------------------- */
 .booking-summary {
   margin-top: 24px;
   padding: 20px 22px;
-  background: var(--paper);
+  background: var(--ivory);
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: var(--radius-md);
 }
-
 .summary-title {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--muted);
+  color: var(--warm-grey);
   margin-bottom: 14px;
 }
-
 .summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
-  color: var(--ink);
-  margin-bottom: 10px;
+  color: var(--charcoal);
+  margin-bottom: 8px;
 }
-
+.summary-row:last-child { margin-bottom: 0; }
 .summary-divider {
   border: none;
   border-top: 1px solid var(--line);
   margin: 14px 0;
 }
-
 .total-row {
-  margin-bottom: 0;
   font-size: 15px;
+  font-weight: 700;
 }
+.total-row strong { color: var(--forest); }
 
-.total-row strong {
-  color: var(--ink);
-}
-
-/* ----------------------------------------------------------------
-   Preview note
-   ---------------------------------------------------------------- */
 .preview-note {
   font-size: 12px;
-  color: var(--muted);
-  margin-top: 14px;
-  margin-bottom: 0;
-  line-height: 1.6;
+  color: var(--warm-grey);
+  margin-top: 12px;
+  line-height: 1.5;
 }
 
-/* ----------------------------------------------------------------
-   Submit button — .btn-primary is already defined in auth.css.
-   Only add width utility here.
-   ---------------------------------------------------------------- */
-.w-100 {
+/* Submit button — full-width, forest green */
+#booking-button {
   width: 100%;
+  margin-top: 20px;
+  background: var(--forest);
+  border: 1.5px solid var(--forest);
+  color: var(--white);
+  padding: 13px 24px;
+  font-size: 14.5px;
+  font-weight: 700;
+  border-radius: var(--radius);
+  transition: background var(--t), transform .15s ease, box-shadow var(--t);
+  cursor: pointer;
+}
+#booking-button:hover {
+  background: var(--forest-2);
+  border-color: var(--forest-2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(45,90,61,.22);
+}
+#booking-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+#booking-button:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 3px;
 }
 
-/* ----------------------------------------------------------------
-   Responsive
-   ---------------------------------------------------------------- */
-@media (max-width: 900px) {
-  .booking-layout {
-    grid-template-columns: 1fr;
-  }
+/* width utility used on booking-result buttons */
+.w-100 { width: 100%; }
 
-  .room-card-luma {
-    position: static;
-  }
-}
-
-@media (max-width: 640px) {
-  .booking-page-header {
-    padding: 48px 6% 36px;
-  }
-
-  .booking-form-card {
-    padding: 28px 22px;
-  }
-
-  .booking-fields {
-    grid-template-columns: 1fr;
-  }
-
-  .room-card-image {
-    height: 180px;
-  }
-
-  .room-info-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-/* ----------------------------------------------------------------
+/* --------------------------------------------------------------------------
    Booking confirmation page (booking-result.html)
-   Uses the same LumaStay variables as the rest of this file.
-   ---------------------------------------------------------------- */
-
+   -------------------------------------------------------------------------- */
 .confirmation-container {
-  width: min(1100px, 89%);
-  margin: 0 auto;
+  background: var(--ivory);
+  min-height: calc(100vh - 64px - 56px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  min-height: calc(100vh - 82px - 60px); /* header + footer */
-  padding: 72px 0 100px;
+  padding: var(--space-7) var(--page-x);
 }
 
 .confirmation-card {
-  width: 100%;
-  max-width: 720px;
-  padding: 50px 48px;
-  text-align: center;
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 3px;
-  box-shadow: 0 8px 24px rgba(31, 45, 42, 0.06);
+  border-radius: var(--radius-md);
+  padding: 48px 44px;
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
 }
 
 /* Success tick */
 .confirmation-icon {
+  width: 64px; height: 64px;
+  margin: 0 auto 22px;
+  background: var(--status-confirmed-bg);
+  border: 1px solid var(--status-confirmed-bd);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 68px;
-  height: 68px;
-  margin: 0 auto 24px;
-  background: rgba(191, 201, 187, 0.25);
-  border: 1px solid var(--sage);
-  border-radius: 50%;
   font-size: 1.6rem;
-  color: var(--dark-sage);
+  color: var(--status-confirmed-fg);
   font-weight: 700;
 }
 
 .confirmation-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
   font-weight: 600;
-  letter-spacing: -1px;
-  color: var(--ink);
-  margin-bottom: 12px;
+  color: var(--charcoal);
+  letter-spacing: -.4px;
+  margin-bottom: 10px;
+  line-height: 1.15;
 }
-
 .confirmation-message {
-  max-width: 520px;
-  margin: 0 auto 22px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 14.5px;
+  color: var(--warm-grey);
+  max-width: 480px;
+  margin: 0 auto 20px;
+  line-height: 1.6;
 }
 
-/* Status badges — these classes are also used by my-bookings.css */
-.status-badge {
-  display: inline-block;
-  padding: 5px 16px;
-  border-radius: 2px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.9px;
-}
-
-.status-pending {
-  background: rgba(230, 164, 75, 0.12);
-  border: 1px solid var(--sun);
-  color: #9a6120;
-}
-
-.status-confirmed {
-  background: rgba(191, 201, 187, 0.2);
-  border: 1px solid var(--sage);
-  color: var(--dark-sage);
-}
-
-.status-cancelled,
-.status-rejected {
-  background: rgba(180, 60, 60, 0.08);
-  border: 1px solid #d4a0a0;
-  color: #7a2020;
-}
-
+/* booking-result.js sets class="status-badge status-pending" etc. */
 .booking-reference {
-  margin: 20px 0;
   font-size: 13px;
-  color: var(--muted);
+  color: var(--warm-grey);
+  margin: 16px 0;
 }
+.booking-reference strong { color: var(--charcoal); font-weight: 700; }
 
-.booking-reference strong {
-  color: var(--ink);
-}
-
-/* Detail grid */
+/* 2-col detail grid */
 .confirmation-details {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  margin-top: 28px;
+  margin-top: 24px;
   text-align: left;
 }
-
 .detail-item {
-  padding: 14px 16px;
-  background: var(--paper);
+  padding: 13px 15px;
+  background: var(--ivory);
   border: 1px solid var(--line);
-  border-radius: 2px;
+  border-radius: var(--radius);
 }
-
 .detail-label {
   display: block;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
+  letter-spacing: .07em;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
+  color: var(--warm-grey);
   margin-bottom: 5px;
 }
-
 .detail-item strong {
-  font-size: 13px;
-  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--charcoal);
 }
 
 /* Total price bar */
@@ -456,24 +382,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px;
-  padding: 18px 20px;
-  background: var(--paper);
+  margin-top: 10px;
+  padding: 16px 18px;
+  background: var(--ivory);
   border: 1px solid var(--line);
-  border-radius: 2px;
+  border-radius: var(--radius);
   font-size: 14px;
-  color: var(--ink);
+  color: var(--charcoal);
 }
-
 .confirmation-total strong {
   font-size: 15px;
+  font-weight: 800;
+  color: var(--forest);
 }
 
 .confirmation-note {
-  margin: 20px 0 0;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.6;
+  font-size: 12.5px;
+  color: var(--warm-grey);
+  margin: 18px 0 0;
+  line-height: 1.55;
 }
 
 /* Action buttons */
@@ -481,56 +408,49 @@
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-top: 28px;
+  margin-top: 26px;
   flex-wrap: wrap;
 }
-
-/* Primary action — reuses .btn-primary from auth.css */
 .confirmation-actions .btn-primary {
-  padding: 14px 28px;
+  background: var(--forest);
+  border-color: var(--forest);
 }
-
-/* Secondary action */
+.confirmation-actions .btn-primary:hover {
+  background: var(--forest-2);
+  border-color: var(--forest-2);
+}
 .confirmation-actions .btn-secondary {
-  padding: 14px 28px;
+  border: 1.5px solid var(--line);
+  color: var(--charcoal);
   background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 2px;
+  padding: 11px 24px;
+  border-radius: var(--radius);
   font-size: 14px;
   font-weight: 700;
-  color: var(--ink);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color var(--t);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
 }
+.confirmation-actions .btn-secondary:hover { border-color: var(--charcoal); }
 
-.confirmation-actions .btn-secondary:hover {
-  border-color: var(--sage);
-  background: var(--paper);
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .booking-layout { grid-template-columns: 1fr; }
+  .room-aside { position: static; }
 }
-
-/* Responsive */
 @media (max-width: 640px) {
-  .confirmation-card {
-    padding: 32px 22px;
-  }
-
-  .confirmation-details {
-    grid-template-columns: 1fr;
-  }
-
-  .confirmation-total {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .confirmation-actions {
-    flex-direction: column;
-  }
-
+  .booking-main { padding-block: var(--space-6); }
+  .booking-form-card { padding: 26px 20px 30px; }
+  .booking-fields { grid-template-columns: 1fr; }
+  .room-info-grid { grid-template-columns: 1fr; }
+  .confirmation-card { padding: 32px 22px; }
+  .confirmation-details { grid-template-columns: 1fr; }
+  .confirmation-total { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .confirmation-actions { flex-direction: column; }
   .confirmation-actions .btn-primary,
-  .confirmation-actions .btn-secondary {
-    width: 100%;
-    text-align: center;
-  }
+  .confirmation-actions .btn-secondary { width: 100%; justify-content: center; }
 }

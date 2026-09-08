@@ -3,110 +3,343 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="LumaStay — considered stays for curious travelers.">
-  <title>LumaStay | Find your next stay</title>
+  <meta name="description" content="LumaStay — discover and book premium hotels with care.">
+  <title>LumaStay | Find Your Next Stay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-
 </head>
 <body>
+
+  <!-- ── HEADER ── -->
   <header class="site-header">
-    <a class="brand" href="#top" aria-label="LumaStay home">
+    <a class="brand" href="index.html" aria-label="LumaStay home">
       <span class="brand-mark">L</span>
       <span>Luma<span>Stay</span></span>
     </a>
     <nav class="main-nav" aria-label="Main navigation">
       <a class="active" href="#stays">Stays</a>
-      <a href="#experiences">Experiences</a>
+      <a href="#destinations">Destinations</a>
       <a href="reviews.html">Reviews</a>
     </nav>
     <div class="header-actions">
       <span class="icon-button" aria-label="Language and currency">EN / EGP</span>
-      <a class="host-link" href="login.html">Sign in</a>
-      <button class="profile-button" type="button" aria-label="Open account menu"><span class="profile-icon">◉</span><span class="menu-icon">☰</span></button>
+      <a href="login.html" class="host-link">Sign in</a>
+      <button class="profile-button" type="button" aria-label="Open account menu">
+        <span class="profile-icon">◉</span>
+        <span class="menu-icon">☰</span>
+      </button>
     </div>
   </header>
 
-  <main id="top">
-    <section class="hero-section row g-0">
-      <div class="hero-copy col-lg-5">
-        <p class="eyebrow">Travel well, stay curious</p>
-        <h1>Stay somewhere<br><em>worth remembering.</em></h1>
-        <p class="hero-subtitle">Handpicked places with a sense of place.<br>Make your next escape feel like yours.</p>
+  <!-- ── HERO + SEARCH ── -->
+  <section class="hero-section" id="top" aria-labelledby="hero-heading">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow" style="color:rgba(255,255,255,.5);margin-bottom:14px">Curated hotels, honest prices</p>
+        <h1 id="hero-heading">Stay somewhere<br><em>worth remembering.</em></h1>
+        <p>Handpicked properties with a sense of place.<br>Book directly, arrive with confidence.</p>
       </div>
-      <div class="hero-art col-lg-7" aria-label="A sunlit coastal hotel terrace overlooking the sea" role="img">
-        <div class="art-note"><span class="note-dot"></span> Casa Brava · Mallorca</div>
+
+      <!-- Search form — IDs required by script.js -->
+      <form class="search-panel" aria-label="Search for a stay" id="searchForm" novalidate>
+
+        <div class="search-field destination-field">
+          <span class="field-icon" aria-hidden="true">⌖</span>
+          <div style="flex:1;min-width:0">
+            <label for="destination">Where are you going?</label>
+            <input id="destination" type="text" placeholder="City or hotel name" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="search-field">
+          <span class="field-icon" aria-hidden="true">◷</span>
+          <div style="flex:1;min-width:0">
+            <label for="check-in">Check in</label>
+            <input id="check-in" type="text" placeholder="Add date"
+              onfocus="this.type='date'"
+              onblur="if(!this.value)this.type='text'">
+          </div>
+        </div>
+
+        <div class="search-field">
+          <span class="field-icon" aria-hidden="true">◷</span>
+          <div style="flex:1;min-width:0">
+            <label for="check-out">Check out</label>
+            <input id="check-out" type="text" placeholder="Add date"
+              onfocus="this.type='date'"
+              onblur="if(!this.value)this.type='text'">
+          </div>
+        </div>
+
+        <div class="search-field guests-field" style="position:relative">
+          <span class="field-icon" aria-hidden="true">♧</span>
+          <div style="flex:1;min-width:0">
+            <label for="guests">Guests</label>
+            <button class="guest-trigger" id="guests" type="button"
+              aria-haspopup="true" aria-expanded="false">
+              2 guests <span>⌄</span>
+            </button>
+          </div>
+
+          <div class="guest-menu" id="guest-menu" aria-hidden="true" role="dialog" aria-label="Guest count">
+            <div class="guest-row">
+              <div>
+                <strong>Adults</strong>
+                <small>Ages 13 or above</small>
+              </div>
+              <div class="stepper">
+                <button type="button" data-action="minus" data-target="adults" aria-label="Remove adult">−</button>
+                <span id="adults">2</span>
+                <button type="button" data-action="plus" data-target="adults" aria-label="Add adult">+</button>
+              </div>
+            </div>
+            <div class="guest-row">
+              <div>
+                <strong>Children</strong>
+                <small>Ages 2 – 12</small>
+              </div>
+              <div class="stepper">
+                <button type="button" data-action="minus" data-target="children" aria-label="Remove child">−</button>
+                <span id="children">0</span>
+                <button type="button" data-action="plus" data-target="children" aria-label="Add child">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="search-button" type="submit" id="search-button" aria-label="Search stays">
+          <span>Search</span>
+          <b aria-hidden="true">→</b>
+        </button>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- subtle divider between hero (dark) and white content -->
+  <div style="height:56px;background:var(--charcoal)"></div>
+
+  <main>
+
+    <!-- ── TRUST STRIP ── -->
+    <div class="features-strip">
+      <ul class="features-list container" role="list">
+        <li class="feature-item"><span class="feature-icon" aria-hidden="true">✓</span>Free cancellation on most rooms</li>
+        <li class="feature-item"><span class="feature-icon" aria-hidden="true">🔒</span>Secure payments</li>
+        <li class="feature-item"><span class="feature-icon" aria-hidden="true">◔</span>24 / 7 support</li>
+        <li class="feature-item"><span class="feature-icon" aria-hidden="true">★</span>Verified guest reviews</li>
+      </ul>
+    </div>
+
+    <!-- ── FEATURED STAYS ── -->
+    <section class="collection-section" id="stays" aria-labelledby="stays-heading">
+      <div class="container">
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow" style="margin-bottom:10px">A little inspiration</p>
+            <h2 id="stays-heading">Stays with a story</h2>
+          </div>
+          <a href="#" class="text-link">Explore all stays <span aria-hidden="true">↗</span></a>
+        </div>
+
+        <div class="stay-grid" role="list">
+
+          <!-- Card 1 — featured -->
+          <article class="stay-card featured-card" role="listitem">
+            <div class="card-image image-one">
+              <button class="save-button" type="button" aria-label="Save Casa Brava to wishlist">♡</button>
+              <span class="card-tag">Editor's pick</span>
+            </div>
+            <div class="card-body">
+              <p class="card-location">Deià, Mallorca</p>
+              <h3 class="card-name">Casa Brava</h3>
+              <div class="card-meta">
+                <div class="card-score">
+                  <span class="score-badge" aria-label="Score 9.2">9.2</span>
+                  <div>
+                    <span class="score-label">Superb</span>
+                    <span class="score-count"> · 1,240 reviews</span>
+                  </div>
+                </div>
+                <div class="card-pricing">
+                  <div class="card-price">EGP 5,400 <small>/ night</small></div>
+                  <div class="card-free-cancel">✓ Free cancellation</div>
+                </div>
+              </div>
+              <div class="card-stars" aria-label="5 stars">★★★★★</div>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="stay-card" role="listitem">
+            <div class="card-image image-two">
+              <button class="save-button" type="button" aria-label="Save The Greenhouse to wishlist">♡</button>
+            </div>
+            <div class="card-body">
+              <p class="card-location">Sintra, Portugal</p>
+              <h3 class="card-name">The Greenhouse</h3>
+              <div class="card-meta">
+                <div class="card-score">
+                  <span class="score-badge" aria-label="Score 8.8">8.8</span>
+                  <div>
+                    <span class="score-label">Excellent</span>
+                    <span class="score-count"> · 876 reviews</span>
+                  </div>
+                </div>
+                <div class="card-pricing">
+                  <div class="card-price">EGP 3,500 <small>/ night</small></div>
+                  <div class="card-free-cancel">✓ Free cancellation</div>
+                </div>
+              </div>
+              <div class="card-stars" aria-label="4 stars">★★★★☆</div>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="stay-card" role="listitem">
+            <div class="card-image image-three">
+              <button class="save-button" type="button" aria-label="Save Villa Sora to wishlist">♡</button>
+              <span class="card-tag">Limited offer</span>
+            </div>
+            <div class="card-body">
+              <p class="card-location">Kyoto, Japan</p>
+              <h3 class="card-name">Villa Sora</h3>
+              <div class="card-meta">
+                <div class="card-score">
+                  <span class="score-badge" aria-label="Score 9.5">9.5</span>
+                  <div>
+                    <span class="score-label">Exceptional</span>
+                    <span class="score-count"> · 502 reviews</span>
+                  </div>
+                </div>
+                <div class="card-pricing">
+                  <div class="card-price">EGP 4,550 <small>/ night</small></div>
+                  <div class="card-free-cancel">✓ Free cancellation</div>
+                </div>
+              </div>
+              <div class="card-stars" aria-label="5 stars">★★★★★</div>
+            </div>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="stay-card" role="listitem">
+            <div class="card-image image-four">
+              <button class="save-button" type="button" aria-label="Save Nile Grand Hotel to wishlist">♡</button>
+            </div>
+            <div class="card-body">
+              <p class="card-location">Cairo, Egypt</p>
+              <h3 class="card-name">Nile Grand Hotel</h3>
+              <div class="card-meta">
+                <div class="card-score">
+                  <span class="score-badge" aria-label="Score 8.5">8.5</span>
+                  <div>
+                    <span class="score-label">Very Good</span>
+                    <span class="score-count"> · 2,140 reviews</span>
+                  </div>
+                </div>
+                <div class="card-pricing">
+                  <div class="card-price">EGP 2,200 <small>/ night</small></div>
+                  <div class="card-free-cancel">✓ Free cancellation</div>
+                </div>
+              </div>
+              <div class="card-stars" aria-label="4 stars">★★★★☆</div>
+            </div>
+          </article>
+
+        </div><!-- /.stay-grid -->
       </div>
     </section>
 
-    <section class="search-panel" aria-label="Search for a stay">
-      <div class="search-field destination-field">
-        <span class="field-icon">⌖</span>
-        <div>
-          <label for="destination">Where</label>
-          <input id="destination" type="text" placeholder="Search destinations" autocomplete="off">
+    <!-- ── DESTINATIONS ── -->
+    <section class="dest-section" id="destinations" aria-labelledby="dest-heading">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow" style="margin-bottom:10px">Popular right now</p>
+            <h2 id="dest-heading">Top destinations</h2>
+          </div>
         </div>
-      </div>
-      <div class="search-field">
-        <span class="field-icon">◷</span>
-        <div>
-          <label for="check-in">Check in</label>
-          <input id="check-in" type="text" placeholder="Add dates" onfocus="this.type='date'">
+        <div class="dest-grid">
+          <div class="dest-tile">
+            <img src="https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=400&q=75" alt="Dubai skyline" loading="lazy">
+            <div class="dest-tile-label">Dubai</div>
+          </div>
+          <div class="dest-tile">
+            <img src="https://images.unsplash.com/photo-1541336032412-2048a678540d?w=400&q=75" alt="Paris city" loading="lazy">
+            <div class="dest-tile-label">Paris</div>
+          </div>
+          <div class="dest-tile">
+            <img src="https://images.unsplash.com/photo-1555992336-03a23c7b20ee?w=400&q=75" alt="Istanbul" loading="lazy">
+            <div class="dest-tile-label">Istanbul</div>
+          </div>
+          <div class="dest-tile">
+            <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&q=75" alt="Maldives" loading="lazy">
+            <div class="dest-tile-label">Maldives</div>
+          </div>
+          <div class="dest-tile">
+            <img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&q=75" alt="London" loading="lazy">
+            <div class="dest-tile-label">London</div>
+          </div>
+          <div class="dest-tile">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75" alt="Rome" loading="lazy">
+            <div class="dest-tile-label">Rome</div>
+          </div>
         </div>
-      </div>
-      <div class="search-field">
-        <span class="field-icon">◷</span>
-        <div>
-          <label for="check-out">Check out</label>
-          <input id="check-out" type="text" placeholder="Add dates" onfocus="this.type='date'">
-        </div>
-      </div>
-      <div class="search-field guests-field">
-        <span class="field-icon">♧</span>
-        <div>
-          <label for="guests">Guests</label>
-          <button class="guest-trigger" id="guests" type="button">2 guests <span>⌄</span></button>
-        </div>
-        <div class="guest-menu" id="guest-menu" aria-hidden="true">
-          <div class="guest-row"><div><strong>Adults</strong><small>Ages 13+</small></div><div class="stepper"><button type="button" data-action="minus" data-target="adults">−</button><span id="adults">2</span><button type="button" data-action="plus" data-target="adults">+</button></div></div>
-          <div class="guest-row"><div><strong>Children</strong><small>Ages 2–12</small></div><div class="stepper"><button type="button" data-action="minus" data-target="children">−</button><span id="children">0</span><button type="button" data-action="plus" data-target="children">+</button></div></div>
-        </div>
-      </div>
-      <button class="search-button" type="button" id="search-button"><span>Search stays</span><b>→</b></button>
-    </section>
-
-    <section class="collection-section" id="stays">
-      <div class="section-heading">
-        <div><p class="eyebrow">A little inspiration</p><h2>Stays with a story</h2></div>
-        <a href="#all-stays" class="text-link">Explore all stays <span>↗</span></a>
-      </div>
-      <div class="stay-grid row g-4">
-        <article class="stay-card featured-card col-lg-5">
-          <div class="card-image image-one"><button class="save-button" type="button" aria-label="Save Casa Brava">♡</button><span class="card-tag">Editor's pick</span></div>
-          <div class="card-info"><div><h3>Casa Brava</h3><p>Deià, Mallorca</p></div><strong>€340 <small>/ night</small></strong></div>
-        </article>
-        <article class="stay-card col-lg-3 col-md-6">
-          <div class="card-image image-two"><button class="save-button" type="button" aria-label="Save The Greenhouse">♡</button></div>
-          <div class="card-info"><div><h3>The Greenhouse</h3><p>Sintra, Portugal</p></div><strong>€220 <small>/ night</small></strong></div>
-        </article>
-        <article class="stay-card col-lg-4 col-md-6">
-          <div class="card-image image-three"><button class="save-button" type="button" aria-label="Save Villa Sora">♡</button></div>
-          <div class="card-info"><div><h3>Villa Sora</h3><p>Kyoto, Japan</p></div><strong>€285 <small>/ night</small></strong></div>
-        </article>
       </div>
     </section>
 
-    <section class="editorial-section row g-0" id="experiences">
-      <div class="editorial-image col-lg-7"></div>
-      <div class="editorial-copy col-lg-5"><p class="eyebrow">The LumaStay standard</p><h2>For the moments<br>in between.</h2><p>From the first coffee to the last sunset, we look for the details that turn a room into a memory.</p><a class="dark-link" href="#stays">Browse stays <span>→</span></a></div>
+    <!-- ── WHY LUMASTAY ── -->
+    <section class="why-section" aria-labelledby="why-heading">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow" style="margin-bottom:10px">Our promise</p>
+            <h2 id="why-heading">Why book with LumaStay?</h2>
+          </div>
+        </div>
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="why-icon" aria-hidden="true">💸</div>
+            <h3 class="why-title">Best Price Guarantee</h3>
+            <p class="why-desc">Find a cheaper price elsewhere and we'll match it — no questions asked.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon" aria-hidden="true">🔓</div>
+            <h3 class="why-title">Free Cancellation</h3>
+            <p class="why-desc">Plans change. Most rooms can be cancelled for free up to 24 hours before check-in.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon" aria-hidden="true">★</div>
+            <h3 class="why-title">Verified Reviews</h3>
+            <p class="why-desc">Every review comes from a guest who actually stayed — so you know it's real.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon" aria-hidden="true">◔</div>
+            <h3 class="why-title">24 / 7 Support</h3>
+            <p class="why-desc">Our team is available around the clock to help with anything you need.</p>
+          </div>
+        </div>
+      </div>
     </section>
+
   </main>
-  <footer class="site-footer"><span>© 2026 LumaStay</span><span>Thoughtful stays, everywhere.</span><a href="reviews.html">Guest reviews ↗</a></footer>
-  <div class="toast" id="toast" role="status">Where would you like to go?</div>
+
+  <!-- ── FOOTER ── -->
+  <footer class="site-footer">
+    <span>© 2026 LumaStay</span>
+    <span>Thoughtful stays, everywhere.</span>
+    <a href="reviews.html">Guest reviews ↗</a>
+  </footer>
+
+  <!-- Toast — id required by script.js -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/session.js"></script>
   <script src="js/script.js"></script>
 </body>

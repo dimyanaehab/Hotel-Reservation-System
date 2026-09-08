@@ -49,6 +49,33 @@
   }
 
   function renderNavigation(session) {
+    const header = document.querySelector('.site-header');
+    const nav = header?.querySelector('.main-nav');
+    const actions = header?.querySelector('.header-actions');
+    if (header && nav && actions && !header.querySelector('.mobile-nav-toggle')) {
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'mobile-nav-toggle';
+      toggle.setAttribute('aria-label', 'Open navigation');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = '☰';
+      actions.appendChild(toggle);
+      const closeNav = () => {
+        header.classList.remove('nav-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.textContent = '☰';
+      };
+      toggle.addEventListener('click', event => {
+        event.stopPropagation();
+        const open = header.classList.toggle('nav-open');
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.textContent = open ? '×' : '☰';
+      });
+      nav.addEventListener('click', closeNav);
+      document.addEventListener('keydown', event => event.key === 'Escape' && closeNav());
+      document.addEventListener('click', event => !header.contains(event.target) && closeNav());
+    }
+
     document.querySelectorAll('.host-link').forEach(link => {
       link.textContent = session ? 'My Bookings' : 'Sign in';
       link.href = session ? 'my-bookings.html' : loginUrl();

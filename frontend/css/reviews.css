@@ -1,558 +1,383 @@
-/* Reviews Page - LumaStay Theme */
+/* ==========================================================================
+   reviews.css — Guest Reviews page
+   Depends on style.css for tokens, .btn-primary, .form-input, .alert-*.
+   JS-required: #totalReviews #reviewsList #emptyState #loadMoreBtn
+   #loadMoreContainer #sortReviews #addReviewModal #reviewForm #hotelSelect
+   #starRating #ratingValue #reviewComment #reviewsMessage
+   .filter-btn (active class toggled) .reviews-container .score-number .star
+   .review-card .review-header .review-avatar .review-meta .reviewer-name
+   .verified-badge .review-rating .review-date .review-comment
+   ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   Page hero
+   -------------------------------------------------------------------------- */
 .page-hero {
-  padding: 120px 5.5vw 80px;
-  background: linear-gradient(180deg, rgba(191,201,187,.08) 0%, transparent 100%);
+  background: var(--charcoal);
+  padding: 72px var(--page-x) 64px;
+  position: relative;
+  overflow: hidden;
 }
-
+.page-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 75% 50%,
+    rgba(184,149,106,.07) 0%, transparent 60%);
+  pointer-events: none;
+}
 .page-hero-content {
-  max-width: 800px;
+  max-width: 700px;
+  position: relative;
+  z-index: 1;
 }
-
+.page-hero .eyebrow {
+  color: rgba(255,255,255,.45);
+  margin-bottom: 14px;
+}
 .page-hero h1 {
-  font: 600 clamp(2.5rem, 4vw, 3.5rem)/.98 'Playfair Display', serif;
-  letter-spacing: -2px;
-  margin-bottom: 20px;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -.5px;
+  margin-bottom: 14px;
+  line-height: 1.1;
 }
-
-.page-hero h1 em {
-  color: var(--dark-sage);
-  font-style: italic;
-  font-weight: 500;
-}
-
+.page-hero h1 em { color: var(--gold-2); font-style: italic; }
 .hero-subtitle {
-  color: var(--muted);
   font-size: 15px;
+  color: rgba(255,255,255,.6);
   line-height: 1.6;
+  max-width: 480px;
 }
 
+/* --------------------------------------------------------------------------
+   Reviews container
+   -------------------------------------------------------------------------- */
 .reviews-container {
   max-width: 900px;
-  margin: 0 auto;
-  padding: 60px 5.5vw;
+  margin-inline: auto;
+  padding: 56px var(--page-x) 80px;
 }
 
+/* --------------------------------------------------------------------------
+   Header — score + write-button
+   -------------------------------------------------------------------------- */
 .reviews-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 30px;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: 26px 28px;
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 3px;
-  margin-bottom: 30px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-xs);
 }
 
-.rating-summary {
-  flex: 1;
-}
-
+.rating-summary { flex: 1; }
 .overall-score {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
 }
-
 .score-number {
-  font-family: 'Playfair Display', serif;
-  font-size: 4rem;
-  font-weight: 700;
-  color: var(--ink);
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: 3.8rem;
+  font-weight: 600;
+  color: var(--charcoal);
   line-height: 1;
 }
-
 .score-details .stars {
-  color: var(--sun);
-  font-size: 20px;
+  color: var(--gold);
+  font-size: 19px;
   letter-spacing: 2px;
   margin-bottom: 5px;
 }
-
-.half-star {
-  opacity: 0.5;
-}
-
+.half-star { opacity: .45; }
 .score-text {
-  color: var(--muted);
-  font-size: 14px;
+  font-size: 13.5px;
+  color: var(--warm-grey);
   margin: 0;
 }
+.score-text span { font-weight: 700; color: var(--charcoal); }
 
-.score-text span {
-  font-weight: 600;
-  color: var(--ink);
-}
-
+/* --------------------------------------------------------------------------
+   Filter + sort bar
+   -------------------------------------------------------------------------- */
 .filter-section {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px 30px;
+  justify-content: space-between;
+  padding: 16px 22px;
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 3px;
-  margin-bottom: 30px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-5);
+  gap: var(--space-4);
   flex-wrap: wrap;
-  gap: 15px;
+  box-shadow: var(--shadow-xs);
 }
-
 .filter-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
-
 .filter-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--warm-grey);
+}
+.filter-btn {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
   font-size: 13px;
   font-weight: 600;
-  color: var(--ink);
-}
-
-.filter-btn {
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink);
+  color: var(--charcoal);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background var(--t), border-color var(--t), color var(--t);
 }
-
-.filter-btn:hover {
-  border-color: var(--sage);
-  background: rgba(191, 201, 187, 0.05);
-}
-
+.filter-btn:hover { border-color: var(--warm-grey-2); }
 .filter-btn.active {
-  background: var(--ink);
-  color: white;
-  border-color: var(--ink);
+  background: var(--charcoal);
+  border-color: var(--charcoal);
+  color: var(--white);
 }
+.filter-btn:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
 
 .sort-select {
-  padding: 8px 16px;
-  border: 1px solid var(--line);
-  border-radius: 2px;
+  padding: 8px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
   font-size: 13px;
-  font-weight: 500;
-  color: var(--ink);
+  font-weight: 600;
+  color: var(--charcoal);
   background: var(--white);
   cursor: pointer;
-  min-width: 150px;
+  min-width: 160px;
+  transition: border-color var(--t);
 }
-
 .sort-select:focus {
   outline: none;
-  border-color: var(--dark-sage);
+  border-color: var(--forest);
+  box-shadow: 0 0 0 3px rgba(45,90,61,.1);
 }
 
+/* --------------------------------------------------------------------------
+   Reviews list
+   -------------------------------------------------------------------------- */
 .reviews-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
+/* --------------------------------------------------------------------------
+   Review card — injected by reviews.js
+   -------------------------------------------------------------------------- */
 .review-card {
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 3px;
-  padding: 30px;
-  transition: all 0.2s ease;
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--t);
 }
-
-.review-card:hover {
-  box-shadow: 0 4px 16px rgba(31, 45, 42, 0.08);
-}
+.review-card:hover { box-shadow: var(--shadow-sm); }
 
 .review-header {
   display: flex;
   align-items: flex-start;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 14px;
+  margin-bottom: 16px;
 }
-
 .review-avatar {
-  width: 50px;
-  height: 50px;
+  width: 46px; height: 46px;
   border-radius: 50%;
-  flex-shrink: 0;
-  background: var(--sage);
+  background: var(--sage-2);
+  color: var(--charcoal);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  color: var(--ink);
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
 }
-
-.review-meta {
-  flex: 1;
-}
-
+.review-meta { flex: 1; }
 .reviewer-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--charcoal);
   margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
 }
-
-.review-property {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.review-rating {
-  color: var(--sun);
-  font-size: 14px;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-}
-
-.review-date {
-  font-size: 12px;
-  color: var(--muted);
-}
-
 .verified-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  background: rgba(191, 201, 187, 0.15);
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--dark-sage);
-  margin-left: 8px;
+  gap: 3px;
+  padding: 2px 8px;
+  background: var(--sage-3);
+  border: 1px solid var(--sage-2);
+  border-radius: var(--radius);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--forest);
+  letter-spacing: .04em;
 }
-
+.review-rating {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 2px;
+  margin-bottom: 3px;
+}
+.review-date {
+  font-size: 12px;
+  color: var(--warm-grey);
+}
 .review-comment {
-  color: var(--ink);
+  font-size: 14px;
+  color: var(--charcoal);
   line-height: 1.7;
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
-.review-actions {
-  display: flex;
-  gap: 20px;
-  padding-top: 15px;
-  border-top: 1px solid var(--line);
-}
-
-.review-action {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: color 0.2s ease;
-  padding: 0;
-}
-
-.review-action:hover {
-  color: var(--ink);
-}
-
-.review-response {
-  margin-top: 15px;
-  padding: 20px;
-  background: rgba(191, 201, 187, 0.05);
-  border-left: 2px solid var(--sage);
-  border-radius: 2px;
-}
-
-.response-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.response-badge {
-  padding: 3px 8px;
-  background: var(--dark-sage);
-  color: white;
-  border-radius: 2px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.response-author {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.response-text {
-  color: var(--ink);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 80px 20px;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-}
-
-.empty-icon {
-  font-size: 60px;
-  margin-bottom: 20px;
-  opacity: 0.5;
-}
-
-.empty-state h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: var(--ink);
-}
-
-.empty-state p {
-  color: var(--muted);
-  font-size: 14px;
-  margin-bottom: 25px;
-}
-
-.btn-secondary {
-  padding: 12px 28px;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background: var(--ink);
-  color: white;
-  border-color: var(--ink);
-}
-
-/* Modal Styles */
-.modal-content {
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  box-shadow: 0 20px 40px rgba(31, 45, 42, 0.15);
-}
-
-.modal-header {
-  border-bottom: 1px solid var(--line);
-  padding: 24px 30px;
-}
-
-.modal-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.modal-body {
-  padding: 30px;
-}
-
-.modal-footer {
-  border-top: none;
-  padding: 0;
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.form-input {
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  font-size: 14px;
-  color: var(--ink);
-  background: var(--white);
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.2s ease;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--dark-sage);
-  box-shadow: 0 0 0 3px rgba(64, 85, 77, 0.1);
-}
-
-.star-rating {
-  display: flex;
-  gap: 8px;
-  font-size: 32px;
-  color: #d8ddd7;
-}
-
-.star-rating .star {
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.star-rating .star:hover,
-.star-rating .star.active {
-  color: var(--sun);
-  transform: scale(1.1);
-}
-
-/* Footer */
-.site-footer {
-  display: flex;
-  justify-content: space-between;
-  background: transparent;
-  color: var(--muted);
-  padding: 26px 5.5vw;
-  margin-top: 80px;
-  font-size: 11px;
-}
-
-.site-footer a { color: var(--ink); }
-
-.footer-content {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 40px;
-  margin-bottom: 40px;
-}
-
-.footer-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.footer-section .brand {
-  margin-bottom: 10px;
-}
-
-.footer-section p {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
-}
-
-.footer-section h4 {
-  color: white;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-
-.footer-section a {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.footer-section a:hover {
-  color: white;
-}
-
-.footer-bottom {
-  padding-top: 30px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
-}
-
-.footer-bottom p {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 13px;
   margin: 0;
 }
 
-/* Responsive Design */
-@media (max-width: 968px) {
-  .reviews-header {
-    flex-direction: column;
-    gap: 20px;
-    align-items: flex-start;
-  }
+/* --------------------------------------------------------------------------
+   Load more
+   -------------------------------------------------------------------------- */
+#loadMoreContainer { text-align: center; margin-top: var(--space-6); }
 
-  .filter-section {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .footer-content {
-    grid-template-columns: 1fr 1fr;
-  }
+/* --------------------------------------------------------------------------
+   Empty state
+   -------------------------------------------------------------------------- */
+.empty-state {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 64px 32px;
+  text-align: center;
+  box-shadow: var(--shadow-xs);
+}
+.empty-icon {
+  font-size: 3.2rem;
+  margin-bottom: 16px;
+  opacity: .4;
+  line-height: 1;
+}
+.empty-state h3 {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: var(--charcoal);
+  margin-bottom: 8px;
+}
+.empty-state p {
+  font-size: 14px;
+  color: var(--warm-grey);
+  margin-bottom: 22px;
+  max-width: 320px;
+  margin-inline: auto;
+  line-height: 1.6;
 }
 
-@media (max-width: 576px) {
-  .page-hero {
-    padding: 100px 20px 60px;
-  }
+/* --------------------------------------------------------------------------
+   Secondary button (.btn-secondary used by reviews.html)
+   -------------------------------------------------------------------------- */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 24px;
+  background: transparent;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: border-color var(--t), box-shadow var(--t);
+  text-decoration: none;
+}
+.btn-secondary:hover { border-color: var(--charcoal); box-shadow: var(--shadow-xs); }
+.btn-secondary:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
 
-  .reviews-container {
-    padding: 40px 20px;
-  }
+/* --------------------------------------------------------------------------
+   Modal — Bootstrap .modal overrides
+   -------------------------------------------------------------------------- */
+.modal-content {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  background: var(--white);
+}
+.modal-header {
+  border-bottom: 1px solid var(--line);
+  padding: 22px 26px;
+}
+.modal-title {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--charcoal);
+  letter-spacing: -.3px;
+}
+.modal-body { padding: 24px 26px; }
+.modal-footer {
+  border-top: none;
+  padding: 0 26px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
 
-  .reviews-header,
-  .filter-section,
-  .review-card {
-    padding: 20px;
-  }
+/* Form inside modal */
+.modal-body .form-group { margin-bottom: 18px; }
 
-  .score-number {
-    font-size: 3rem;
-  }
+/* --------------------------------------------------------------------------
+   Star rating widget
+   -------------------------------------------------------------------------- */
+.star-rating { display: flex; gap: 6px; }
+.star {
+  font-size: 26px;
+  cursor: pointer;
+  color: var(--line);
+  transition: color var(--t), transform .12s ease;
+  line-height: 1;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.star:hover,
+.star.active { color: var(--gold); transform: scale(1.15); }
+.star:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; border-radius: 2px; }
 
-  .overall-score {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
+/* --------------------------------------------------------------------------
+   Inline alert in reviews page
+   -------------------------------------------------------------------------- */
+#reviewsMessage {
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  margin-bottom: var(--space-4);
+}
 
-  .filter-group {
-    width: 100%;
-  }
-
-  .filter-btn {
-    flex: 1;
-  }
-
-  .sort-select {
-    width: 100%;
-  }
-
-  .footer-content {
-    grid-template-columns: 1fr;
-  }
-
-  .modal-body {
-    padding: 20px;
-  }
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .reviews-header { flex-direction: column; align-items: flex-start; }
+  .filter-section { flex-direction: column; align-items: flex-start; }
+  .sort-select { width: 100%; }
+}
+@media (max-width: 500px) {
+  .reviews-container { padding-block: 36px; }
+  .review-card { padding: 20px; }
 }

@@ -1,157 +1,123 @@
-/*
- * my-bookings.css — LumaStay My Bookings page
- * All CSS variables come from style.css (:root).
- * auth.css supplies .btn-primary and .form-input.
- * This file styles only my-bookings.html components.
- */
+/* ==========================================================================
+   my-bookings.css — My Bookings page
+   Depends on style.css for tokens, badges, alerts.
+   JS-required IDs: #bookings-message #all-count #pending-count
+   #confirmed-count #cancelled-count #bookings-container #empty-bookings
+   JS-generated classes: .booking-card .booking-card-header .booking-card-body
+   .booking-number .booking-hotel-name .booking-room-name .booking-details
+   .booking-detail .booking-price .booking-actions .booking-status
+   .status-pending .status-confirmed .status-cancelled .status-rejected
+   .cancel-booking-button
+   ========================================================================== */
 
-/* ----------------------------------------------------------------
+/* --------------------------------------------------------------------------
    Page header
-   ---------------------------------------------------------------- */
+   -------------------------------------------------------------------------- */
 .bookings-page-header {
-  padding: 72px 5.5vw 56px;
-  max-width: 760px;
+  background: var(--charcoal);
+  padding: 48px var(--page-x) 40px;
 }
-
-.bookings-page-header h1 {
-  font: 600 clamp(2.4rem, 4.5vw, 4rem) / 1.05 'Playfair Display', serif;
-  letter-spacing: -2px;
-  color: var(--ink);
-  margin-bottom: 14px;
-}
-
-.bookings-page-header h1 em {
-  color: #82917e;
-  font-style: italic;
-  font-weight: 500;
-}
-
 .bookings-page-header .eyebrow {
-  margin-bottom: 18px;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 10px;
 }
-
+.bookings-page-header h1 {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -.4px;
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+.bookings-page-header h1 em { color: var(--gold-2); }
 .bookings-page-header p {
-  color: var(--muted);
-  font-size: 15px;
-  line-height: 1.65;
+  font-size: 14.5px;
+  color: rgba(255,255,255,.6);
   margin: 0;
 }
 
-/* ----------------------------------------------------------------
-   Main wrapper
-   ---------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Main content wrapper
+   -------------------------------------------------------------------------- */
 .bookings-main {
-  width: min(1200px, 92%);
-  margin: 0 auto;
-  padding-bottom: 100px;
+  width: min(1200px, 100%);
+  padding-inline: var(--page-x);
+  margin-inline: auto;
+  padding-block: var(--space-7);
 }
 
-/* ----------------------------------------------------------------
-   Alert (bookings-message) — Bootstrap .alert classes are applied
-   by my-bookings.js; remap colours to the site palette.
-   ---------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Alert (#bookings-message) — my-bookings.js adds alert-success / alert-danger
+   -------------------------------------------------------------------------- */
 #bookings-message {
-  border-radius: 3px;
-  font-size: 14px;
-  margin-bottom: 28px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  margin-bottom: var(--space-5);
 }
 
-#bookings-message.alert-success {
-  background: rgba(191, 201, 187, 0.12);
-  border: 1px solid var(--sage);
-  color: var(--dark-sage);
-}
-
-#bookings-message.alert-danger {
-  background: rgba(230, 164, 75, 0.1);
-  border: 1px solid var(--sun);
-  color: #b87730;
-}
-
-#bookings-message.alert-warning {
-  background: rgba(230, 164, 75, 0.08);
-  border: 1px solid var(--sun);
-  color: #9a6120;
-}
-
-/* ----------------------------------------------------------------
-   Status summary cards
-   ---------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Status summary counter strip
+   -------------------------------------------------------------------------- */
 .status-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  margin-bottom: 48px;
+  margin-bottom: var(--space-6);
 }
-
 .status-summary-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 22px;
   background: var(--white);
   border: 1px solid var(--line);
   border-left: 3px solid var(--line);
-  border-radius: 3px;
-  box-shadow: 0 2px 8px rgba(31, 45, 42, 0.04);
-  transition: box-shadow 0.2s ease;
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--t);
 }
-
-.status-summary-card:hover {
-  box-shadow: 0 4px 16px rgba(31, 45, 42, 0.08);
-}
-
+.status-summary-card:hover { box-shadow: var(--shadow-sm); }
 .status-summary-card span {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
+  color: var(--warm-grey);
 }
-
 .status-summary-card strong {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.9rem;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: 2rem;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--charcoal);
   line-height: 1;
 }
+.pending-summary   { border-left-color: var(--status-pending-fg); }
+.confirmed-summary { border-left-color: var(--status-confirmed-fg); }
+.cancelled-summary { border-left-color: var(--status-cancelled-fg); }
 
-/* Accent left-border per status */
-.pending-summary   { border-left-color: var(--sun); }
-.confirmed-summary { border-left-color: var(--dark-sage); }
-.cancelled-summary { border-left-color: #b87070; }
+/* --------------------------------------------------------------------------
+   Bookings container — my-bookings.js injects col-md-6 col-xl-4 wrappers
+   -------------------------------------------------------------------------- */
+#bookings-container { /* Bootstrap .row.g-4 handles layout */ }
 
-/* ----------------------------------------------------------------
-   Bookings grid
-   my-bookings.js wraps each card in <div class="col-md-6 col-xl-4">
-   and #bookings-container has class="row g-4" in the HTML, so
-   Bootstrap's column system handles the layout. No extra grid needed.
-   ---------------------------------------------------------------- */
-
-/* Ensure the card inside fills its column */
-#bookings-container .booking-card {
-  width: 100%;
-  height: 100%;
-}
-
-/* ----------------------------------------------------------------
-   Booking card — class names generated by my-bookings.js
-   ---------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Booking card — all class names generated by my-bookings.js
+   -------------------------------------------------------------------------- */
 .booking-card {
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 3px;
-  box-shadow: 0 4px 16px rgba(31, 45, 42, 0.05);
+  border-radius: var(--radius-md);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   height: 100%;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: box-shadow var(--t), transform var(--t);
 }
-
 .booking-card:hover {
-  box-shadow: 0 8px 28px rgba(31, 45, 42, 0.1);
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
@@ -159,211 +125,159 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--ivory);
   border-bottom: 1px solid var(--line);
-  background: var(--paper);
-}
-
-.booking-card-body {
-  padding: 22px 20px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
 }
 
 .booking-number {
   font-size: 11px;
   font-weight: 700;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
+  color: var(--warm-grey);
+}
+
+/* .booking-status uses the shared .status-* classes from style.css */
+.booking-status {
+  /* size adjustments for card context */
+  padding: 3px 9px;
+  font-size: 10px;
+}
+
+.booking-card-body {
+  padding: 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .booking-hotel-name {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   font-size: 1.15rem;
   font-weight: 600;
-  letter-spacing: -0.3px;
-  color: var(--ink);
-  margin: 0 0 4px;
+  color: var(--charcoal);
+  margin-bottom: 3px;
+  letter-spacing: -.2px;
+  line-height: 1.25;
 }
-
 .booking-room-name {
   font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 18px;
+  color: var(--warm-grey);
+  margin-bottom: 16px;
 }
 
-/* Detail cells grid */
+/* 2 × 2 detail grid */
 .booking-details {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
   margin-bottom: 0;
 }
-
 .booking-detail {
-  padding: 10px 12px;
-  background: var(--paper);
+  padding: 9px 11px;
+  background: var(--ivory);
   border: 1px solid var(--line);
-  border-radius: 2px;
+  border-radius: var(--radius);
 }
-
 .booking-detail span {
   display: block;
   font-size: 10px;
   font-weight: 700;
+  letter-spacing: .07em;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: var(--muted);
+  color: var(--warm-grey);
   margin-bottom: 4px;
 }
-
 .booking-detail strong {
   font-size: 13px;
-  color: var(--ink);
+  font-weight: 700;
+  color: var(--charcoal);
 }
 
-/* Total price row */
+/* Price row */
 .booking-price {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px solid var(--line);
   font-size: 13px;
-  color: var(--muted);
+  color: var(--warm-grey);
 }
-
 .booking-price strong {
   font-size: 14px;
-  color: var(--ink);
+  font-weight: 800;
+  color: var(--charcoal);
 }
 
-/* Action area */
-.booking-actions {
-  margin-top: 16px;
-}
+/* Actions area */
+.booking-actions { margin-top: 14px; }
 
-/* Cancel button — my-bookings.js renders .btn.btn-outline-danger.cancel-booking-button.
-   Override Bootstrap danger colours with site palette. */
-.cancel-booking-button {
+/* Cancel button — my-bookings.js: .btn.btn-outline-danger.cancel-booking-button */
+.cancel-booking-button,
+.btn.cancel-booking-button,
+.btn-outline-danger.cancel-booking-button {
   display: block;
   width: 100%;
-  padding: 11px 16px;
+  padding: 10px 16px;
   background: transparent;
-  border: 1px solid #c09090;
-  border-radius: 2px;
+  border: 1.5px solid var(--status-cancelled-bd);
+  border-radius: var(--radius);
   font-size: 13px;
   font-weight: 700;
-  color: #7a2020;
+  color: var(--status-cancelled-fg);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background var(--t), border-color var(--t);
   text-align: center;
 }
-
-.cancel-booking-button:hover {
-  background: rgba(180, 60, 60, 0.06);
-  border-color: #a06060;
-  color: #5a1010;
+.cancel-booking-button:hover,
+.btn.cancel-booking-button:hover {
+  background: var(--status-cancelled-bg);
+  border-color: var(--status-cancelled-fg);
+}
+.cancel-booking-button:focus-visible {
+  outline: 2px solid var(--status-cancelled-fg);
+  outline-offset: 2px;
 }
 
-/* ----------------------------------------------------------------
-   Status badges — shared with booking.css (.status-badge is
-   defined there). These colour variants are repeated here so
-   my-bookings.html works without importing booking.css.
-   ---------------------------------------------------------------- */
-.booking-status {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 2px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.9px;
-}
-
-.status-pending {
-  background: rgba(230, 164, 75, 0.12);
-  border: 1px solid var(--sun);
-  color: #9a6120;
-}
-
-.status-confirmed {
-  background: rgba(191, 201, 187, 0.2);
-  border: 1px solid var(--sage);
-  color: var(--dark-sage);
-}
-
-.status-cancelled,
-.status-rejected {
-  background: rgba(180, 60, 60, 0.08);
-  border: 1px solid #d4a0a0;
-  color: #7a2020;
-}
-
-/* ----------------------------------------------------------------
-   Empty state
-   ---------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Empty state (#empty-bookings)
+   -------------------------------------------------------------------------- */
 .empty-bookings {
-  padding: 80px 40px;
-  text-align: center;
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 3px;
-  box-shadow: 0 4px 16px rgba(31, 45, 42, 0.05);
+  border-radius: var(--radius-md);
+  padding: 72px 40px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
 }
-
 .empty-bookings h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: 1.7rem;
   font-weight: 600;
-  letter-spacing: -0.5px;
-  color: var(--ink);
-  margin-bottom: 12px;
+  color: var(--charcoal);
+  margin-bottom: 10px;
 }
-
 .empty-bookings p {
-  color: var(--muted);
   font-size: 14px;
-  line-height: 1.65;
-  max-width: 340px;
-  margin: 0 auto 28px;
+  color: var(--warm-grey);
+  max-width: 380px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
 }
 
-/* .btn-primary on the "Find a Hotel" button comes from auth.css */
-
-/* ----------------------------------------------------------------
+/* --------------------------------------------------------------------------
    Responsive
-   ---------------------------------------------------------------- */
-@media (max-width: 1024px) {
-  .status-summary-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .status-summary-grid { grid-template-columns: repeat(2, 1fr); }
 }
-
-@media (max-width: 640px) {
-  .bookings-page-header {
-    padding: 48px 6% 36px;
-  }
-
-  .status-summary-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .status-summary-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 16px 18px;
-  }
-
-  .status-summary-card strong {
-    font-size: 1.6rem;
-  }
-
-  .booking-details {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 540px) {
+  .status-summary-grid { grid-template-columns: 1fr 1fr; }
+  .status-summary-card { padding: 14px 16px; }
+  .status-summary-card strong { font-size: 1.6rem; }
+  .booking-details { grid-template-columns: 1fr; }
 }

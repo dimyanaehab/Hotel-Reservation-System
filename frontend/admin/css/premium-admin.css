@@ -1,0 +1,21 @@
+/* LumaStay Admin — premium companion theme */
+:root { --ink:#102a24; --paper:#f5f1e9; --white:#fffdf8; --sun:#b58a4b; --sage:#91a99b; --dark-sage:#21483e; --line:#d9d7ce; --radius:9px; --shadow-sm:0 4px 16px rgba(16,42,36,.07); --shadow-md:0 14px 35px rgba(16,42,36,.1); }
+body,.admin-body { background:var(--paper)!important; color:#19231f!important; }
+.admin-sidebar,.admin-room-sidebar { background:var(--ink)!important; border:0!important; }
+.sidebar-brand .brand-mark { border-radius:50%!important; background:var(--sun)!important; }
+.nav-item.active .nav-link { background:rgba(145,169,155,.2)!important; }
+.admin-topbar,.topbar { background:rgba(255,253,248,.94)!important; border-bottom:1px solid var(--line)!important; backdrop-filter:blur(12px); }
+.stat-card,.panel,.table-card,.content-card,.room-card,.inventory-card,.hotel-card,.card { background:var(--white)!important; border:1px solid var(--line)!important; border-radius:12px!important; box-shadow:var(--shadow-sm)!important; }
+.stat-card:hover,.hotel-card:hover,.room-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md)!important; }
+.btn-primary,.action-primary,.btn-add { background:var(--dark-sage)!important; border-color:var(--dark-sage)!important; color:white!important; border-radius:7px!important; }
+.btn-primary:hover,.action-primary:hover,.btn-add:hover { background:var(--ink)!important; }
+.btn-outline-primary { color:var(--dark-sage)!important; border-color:var(--dark-sage)!important; }
+input,select,textarea,.form-control,.form-select { background:var(--white)!important; border-color:var(--line)!important; border-radius:7px!important; }
+input:focus,select:focus,textarea:focus,.form-control:focus,.form-select:focus { border-color:var(--dark-sage)!important; box-shadow:0 0 0 3px rgba(33,72,62,.13)!important; }
+.table { --bs-table-bg:transparent; --bs-table-hover-bg:#f1eee6; }
+.table thead th { color:#647069!important; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; border-bottom-color:var(--line)!important; }
+.modal-content { background:var(--white)!important; border:1px solid var(--line)!important; border-radius:12px!important; box-shadow:var(--shadow-md)!important; }
+.badge,.status-badge { border-radius:999px!important; }
+:focus-visible { outline:3px solid rgba(181,138,75,.62)!important; outline-offset:3px; }
+@media (max-width:991px) { .admin-room-sidebar { width:260px!important; max-width:86vw; } }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
