@@ -146,8 +146,6 @@
                                         <th>Property</th>
                                         <th>Location</th>
                                         <th>Rating</th>
-                                        <th>Rooms</th>
-                                        <th>Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -168,6 +166,12 @@
                 <button class="btn-primary" data-bs-toggle="modal" data-bs-target="#addHotelModal">
                     + Add property
                 </button>
+            </div>
+            <div id="errorState" class="empty-state" style="display: none;">
+                <div class="empty-icon">!</div>
+                <h3>Hotels could not be loaded</h3>
+                <p>Failed to load hotels. Please try again.</p>
+                <button class="btn-primary" type="button" onclick="fetchHotels()">Try again</button>
             </div>
         </div>
     </div>
@@ -226,21 +230,6 @@
                             <input type="url" class="form-input" id="addHotelImage" required
                                    placeholder="https://example.com/image.jpg">
                             <small class="form-hint">Enter a valid image URL</small>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="addHotelRooms" class="form-label">Number of rooms</label>
-                                <input type="number" class="form-input" id="addHotelRooms" required
-                                       min="1" placeholder="10">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="addHotelStatus" class="form-label">Status</label>
-                                <select class="form-input" id="addHotelStatus" required>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
                         </div>
 
                         <div class="modal-footer">
@@ -305,20 +294,6 @@
                         <div class="mb-3">
                             <label for="editHotelImage" class="form-label">Image URL</label>
                             <input type="url" class="form-input" id="editHotelImage" required>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editHotelRooms" class="form-label">Number of rooms</label>
-                                <input type="number" class="form-input" id="editHotelRooms" required min="1">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editHotelStatus" class="form-label">Status</label>
-                                <select class="form-input" id="editHotelStatus" required>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
                         </div>
 
                         <div class="modal-footer">

@@ -24,6 +24,7 @@ async function loadHotelDetails() {
       [hotel.city, hotel.address].filter(Boolean).join(' · ');
     document.getElementById('hotelDescription').textContent =
       hotel.description || 'Explore available room types and choose your dates.';
+    document.querySelector('.hotel-hero-content').classList.remove('d-none');
 
     if (hotel.thumbnailUrl) {
       const heroImage = document.querySelector('.hotel-hero-image');
@@ -31,8 +32,19 @@ async function loadHotelDetails() {
       heroImage.alt = hotel.name || 'Hotel exterior';
     }
   } catch (error) {
+    clearHotelDetails();
     showPageMessage(error.message || 'Hotel details could not be loaded.', 'danger');
   }
+}
+
+function clearHotelDetails() {
+  document.querySelector('.hotel-hero-content').classList.add('d-none');
+  const heroImage = document.querySelector('.hotel-hero-image');
+  heroImage.removeAttribute('src');
+  heroImage.alt = '';
+  document.getElementById('hotelName').textContent = '';
+  document.getElementById('hotelLocation').textContent = '';
+  document.getElementById('hotelDescription').textContent = '';
 }
 
 async function loadRoomTypes() {

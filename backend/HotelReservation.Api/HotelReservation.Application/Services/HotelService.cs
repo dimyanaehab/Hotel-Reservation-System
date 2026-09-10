@@ -26,7 +26,7 @@ public class HotelService : IHotelService
             .AsNoTracking()
             .Where(hotel =>
                 string.IsNullOrEmpty(cityFilter) ||
-                hotel.City == cityFilter)
+                hotel.City.ToLower().Contains(cityFilter.ToLower()))
             .OrderBy(hotel => hotel.Name);
 
         if (!checkIn.HasValue || !checkOut.HasValue)
@@ -46,19 +46,30 @@ public class HotelService : IHotelService
                 .ToListAsync();
         }
 
-        List<Hotel> hotels = await hotelsQuery
-            .Include(hotel => hotel.RoomTypes)
-            .ThenInclude(roomType => roomType.RoomInventories
-                .Where(inventory =>
-                    inventory.Date >= checkIn.Value &&
-                    inventory.Date < checkOut.Value))
-            .ToListAsync();
-
-        return hotels
+        int nights = checkOut.Value.DayNumber - checkIn.Value.DayNumber;
+        return await hotelsQuery
             .Where(hotel => hotel.RoomTypes.Any(roomType =>
-                HasAvailability(roomType, checkIn.Value, checkOut.Value)))
-            .Select(MapHotel)
-            .ToList();
+                _context.RoomInventories.Count(inventory =>
+                    inventory.RoomTypeId == roomType.Id &&
+                    inventory.Date >= checkIn.Value &&
+                    inventory.Date < checkOut.Value) == nights &&
+                !_context.RoomInventories.Any(inventory =>
+                    inventory.RoomTypeId == roomType.Id &&
+                    inventory.Date >= checkIn.Value &&
+                    inventory.Date < checkOut.Value &&
+                    inventory.SoldRooms >= inventory.TotalRooms)))
+            .Select(hotel => new HotelResponseDto
+            {
+                Id = hotel.Id,
+                Name = hotel.Name,
+                City = hotel.City,
+                Address = hotel.Address,
+                Description = hotel.Description,
+                Stars = hotel.Stars,
+                ThumbnailUrl = hotel.ThumbnailUrl,
+                CreatedAt = hotel.CreatedAt
+            })
+            .ToListAsync();
     }
 
     public async Task<HotelResponseDto?> GetByIdAsync(int id)
@@ -166,31 +177,6 @@ public class HotelService : IHotelService
         }
 
         return null;
-    }
-
-    private static bool HasAvailability(
-        Domain.Entities.RoomType roomType,
-        DateOnly from,
-        DateOnly to)
-    {
-        int minimumAvailableRooms = int.MaxValue;
-
-        for (DateOnly date = from; date < to; date = date.AddDays(1))
-        {
-            RoomInventory? inventory = roomType.RoomInventories
-                .FirstOrDefault(row => row.Date == date);
-
-            int availableRooms = inventory is null
-                ? 0
-                : inventory.TotalRooms - inventory.SoldRooms;
-
-            if (availableRooms < minimumAvailableRooms)
-            {
-                minimumAvailableRooms = availableRooms;
-            }
-        }
-
-        return minimumAvailableRooms > 0;
     }
 
     private static HotelResponseDto MapHotel(Hotel hotel)

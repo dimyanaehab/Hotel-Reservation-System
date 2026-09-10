@@ -66,8 +66,26 @@ function renderHotels(hotels) {
   }
 
   hotelList.innerHTML = hotels.map((hotel, index) => createHotelCard(hotel, index)).join('');
+  hotelList.querySelectorAll('.stay-card').forEach((card) => {
+    const navigateToHotel = () => {
+      window.location.href = `hotel-details.html?hotelId=${encodeURIComponent(card.dataset.hotelId)}`;
+    };
+    card.addEventListener('click', (event) => {
+      if (!event.target.closest('.save-button')) {
+        navigateToHotel();
+      }
+    });
+    card.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        navigateToHotel();
+      }
+    });
+  });
   hotelList.querySelectorAll('.save-button').forEach((button) => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       button.classList.toggle('saved');
       button.textContent = button.classList.contains('saved') ? '♥' : '♡';
     });
@@ -85,7 +103,7 @@ function createHotelCard(hotel, index) {
     : '';
 
   return `
-    <article class="stay-card${index === 0 ? ' featured-card' : ''}" role="listitem">
+    <article class="stay-card${index === 0 ? ' featured-card' : ''}" role="link" tabindex="0" data-hotel-id="${hotel.id}">
       <div class="card-image ${imageClass}"${thumbnail}>
         <button class="save-button" type="button" aria-label="Save ${name} to wishlist">♡</button>
       </div>

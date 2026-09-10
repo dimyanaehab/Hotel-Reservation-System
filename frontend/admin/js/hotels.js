@@ -3,6 +3,7 @@
 const API_BASE = window.hotelApi.baseUrl;
 const adminHeaders = window.hotelApi.headers();
 let hotelsData = [];
+let hotelsLoadError = false;
 
 // Current view state
 let currentView = 'grid'; // 'grid' or 'table'
@@ -17,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function fetchHotels() {
+    hotelsLoadError = false;
+    showLoadingState();
+
     try {
         const response = await fetch(`${API_BASE}/hotels`);
         if (!response.ok) {
@@ -28,6 +32,7 @@ async function fetchHotels() {
     } catch (error) {
         hotelsData = [];
         filteredHotels = [];
+        hotelsLoadError = true;
         showToast(error.message || 'Hotels could not be loaded.', 'danger');
     }
 
@@ -37,6 +42,11 @@ async function fetchHotels() {
 
 // Load and display hotels
 function loadHotels() {
+    if (hotelsLoadError) {
+        showErrorState();
+        return;
+    }
+
     if (filteredHotels.length === 0) {
         showEmptyState();
         return;
@@ -55,8 +65,6 @@ function normalizeHotel(hotel) {
     return {
         ...hotel,
         thumbnail_url: hotel.thumbnailUrl || '',
-        rooms: hotel.rooms || 0,
-        status: hotel.status || 'active',
         created_at: hotel.createdAt
     };
 }
@@ -71,23 +79,20 @@ function loadGridView() {
 
     grid.innerHTML = filteredHotels.map(hotel => `
         <div class="hotel-card">
-            <img src="${hotel.thumbnail_url}" alt="${hotel.name}" class="hotel-image">
+            <img src="${escapeAttribute(hotel.thumbnail_url)}" alt="${escapeHtml(hotel.name)}" class="hotel-image">
             <div class="hotel-content">
                 <div class="hotel-header">
                     <div>
-                        <h3 class="hotel-name">${hotel.name}</h3>
-                        <div class="hotel-location">📍 ${hotel.city}</div>
+                        <h3 class="hotel-name">${escapeHtml(hotel.name)}</h3>
+                        <div class="hotel-location">📍 ${escapeHtml(hotel.city)}</div>
                     </div>
                     <div class="hotel-rating">
                         <div class="hotel-stars">${'★'.repeat(hotel.stars)}${'☆'.repeat(5-hotel.stars)}</div>
                     </div>
                 </div>
-                <p class="hotel-description">${truncateText(hotel.description || '', 100)}</p>
+                <p class="hotel-description">${escapeHtml(truncateText(hotel.description || '', 100))}</p>
                 <div class="hotel-footer">
-                    <div class="hotel-rooms">${hotel.rooms} <span>rooms</span></div>
-                    <span class="hotel-status ${hotel.status}">
-                        ${hotel.status}
-                    </span>
+                    <span>${hotel.stars} star${hotel.stars === 1 ? '' : 's'}</span>
                 </div>
                 <div class="hotel-actions">
                     <button class="hotel-action-btn" onclick="editHotel(${hotel.id})">
@@ -114,20 +119,14 @@ function loadTableView() {
     tbody.innerHTML = filteredHotels.map(hotel => `
         <tr>
             <td>
-                <img src="${hotel.thumbnail_url}" alt="${hotel.name}" class="hotel-table-image">
+                <img src="${escapeAttribute(hotel.thumbnail_url)}" alt="${escapeHtml(hotel.name)}" class="hotel-table-image">
             </td>
             <td>
-                <div class="hotel-table-name">${hotel.name}</div>
-                <div class="hotel-table-address">${hotel.address}</div>
+                <div class="hotel-table-name">${escapeHtml(hotel.name)}</div>
+                <div class="hotel-table-address">${escapeHtml(hotel.address)}</div>
             </td>
-            <td>${hotel.city}</td>
+            <td>${escapeHtml(hotel.city)}</td>
             <td>${'★'.repeat(hotel.stars)}${'☆'.repeat(5-hotel.stars)}</td>
-            <td>${hotel.rooms} rooms</td>
-            <td>
-                <span class="status-badge status-${hotel.status}">
-                    ${hotel.status}
-                </span>
-            </td>
             <td>
                 <div class="hotel-table-actions">
                     <button class="table-action-btn" onclick="editHotel(${hotel.id})" title="Edit">
@@ -195,11 +194,7 @@ function initializeSearch() {
 
 // View hotel details
 function viewHotel(hotelId) {
-    const hotel = hotelsData.find(h => h.id === hotelId);
-    if (hotel) {
-        showToast(`Viewing details for ${hotel.name}`, 'info');
-        // In a real app, redirect to hotel details page
-    }
+    window.location.href = `../hotel-details.html?hotelId=${encodeURIComponent(hotelId)}`;
 }
 
 // Edit hotel
@@ -215,9 +210,6 @@ function editHotel(hotelId) {
     document.getElementById('editHotelStars').value = hotel.stars;
     document.getElementById('editHotelDescription').value = hotel.description;
     document.getElementById('editHotelImage').value = hotel.thumbnail_url;
-    document.getElementById('editHotelRooms').value = hotel.rooms;
-    document.getElementById('editHotelStatus').value = hotel.status;
-
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('editHotelModal'));
     modal.show();
@@ -346,11 +338,30 @@ function showEmptyState() {
     document.getElementById('hotelsGrid').style.display = 'none';
     document.getElementById('hotelsTable').style.display = 'none';
     document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('errorState').style.display = 'none';
 }
 
 // Hide empty state
 function hideEmptyState() {
     document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('errorState').style.display = 'none';
+}
+
+function showLoadingState() {
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('errorState').style.display = 'none';
+    const grid = document.getElementById('hotelsGrid');
+    const table = document.getElementById('hotelsTable');
+    grid.style.display = 'grid';
+    table.style.display = 'none';
+    grid.innerHTML = '<div class="text-secondary" role="status">Loading hotels...</div>';
+}
+
+function showErrorState() {
+    document.getElementById('hotelsGrid').style.display = 'none';
+    document.getElementById('hotelsTable').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('errorState').style.display = 'block';
 }
 
 async function readError(response) {
@@ -358,6 +369,16 @@ async function readError(response) {
         response,
         `Request failed with status ${response.status}.`
     );
+}
+
+function escapeHtml(value) {
+    const element = document.createElement('div');
+    element.textContent = String(value ?? '');
+    return element.innerHTML;
+}
+
+function escapeAttribute(value) {
+    return escapeHtml(value).replaceAll('`', '&#096;');
 }
 
 // Add CSS for hotel cards

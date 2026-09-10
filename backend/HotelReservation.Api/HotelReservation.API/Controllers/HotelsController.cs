@@ -77,18 +77,16 @@ public class HotelsController : ControllerBase
         int id,
         UpdateHotelDto dto)
     {
-        HotelResponseDto? existingHotel = await _hotelService.GetByIdAsync(id);
-
-        if (existingHotel is null)
-        {
-            return NotFound("Hotel not found.");
-        }
-
         (HotelResponseDto? hotel, string? error) =
             await _hotelService.UpdateAsync(id, dto);
 
         if (error is not null)
         {
+            if (error == "Hotel not found.")
+            {
+                return NotFound(error);
+            }
+
             return BadRequest(error);
         }
 
