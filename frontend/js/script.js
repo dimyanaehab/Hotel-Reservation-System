@@ -128,10 +128,10 @@ function renderDestinations(hotels) {
 const destinationImages = {
   riyadh: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=85',
   dubai: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=85',
-  'abu dhabi': 'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=800&q=85',
+  'abu dhabi': 'https://images.unsplash.com/photo-1512632578888-169bb3cd3e?w=800&q=85',
   jeddah: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&q=85',
   cairo: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800&q=85',
-  muscat: 'https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=800&q=85',
+  muscat: 'https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=800&q=85',
   istanbul: 'https://images.unsplash.com/photo-1555992336-03a23c7b20ee?w=800&q=85',
   london: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=85',
   paris: 'https://images.unsplash.com/photo-1541336032412-2048a678540d?w=800&q=85',
