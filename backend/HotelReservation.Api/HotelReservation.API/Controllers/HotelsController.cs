@@ -21,7 +21,8 @@ public class HotelsController : ControllerBase
     public async Task<ActionResult<List<HotelResponseDto>>> GetHotels(
         [FromQuery] string? city,
         [FromQuery] DateOnly? checkIn,
-        [FromQuery] DateOnly? checkOut)
+        [FromQuery] DateOnly? checkOut,
+        [FromQuery] int? guests)
     {
         if (checkIn.HasValue != checkOut.HasValue)
         {
@@ -33,10 +34,16 @@ public class HotelsController : ControllerBase
             return BadRequest("The checkIn date must be earlier than the checkOut date.");
         }
 
+        if (guests.HasValue && guests.Value < 1)
+        {
+            return BadRequest("Guests must be at least 1.");
+        }
+
         List<HotelResponseDto> hotels = await _hotelService.GetAllAsync(
             city,
             checkIn,
-            checkOut);
+            checkOut,
+            guests);
 
         return Ok(hotels);
     }

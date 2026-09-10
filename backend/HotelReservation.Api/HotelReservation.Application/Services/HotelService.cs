@@ -18,7 +18,8 @@ public class HotelService : IHotelService
     public async Task<List<HotelResponseDto>> GetAllAsync(
         string? city,
         DateOnly? checkIn,
-        DateOnly? checkOut)
+        DateOnly? checkOut,
+        int? guests)
     {
         string? cityFilter = city?.Trim();
 
@@ -26,7 +27,8 @@ public class HotelService : IHotelService
             .AsNoTracking()
             .Where(hotel =>
                 string.IsNullOrEmpty(cityFilter) ||
-                hotel.City.ToLower().Contains(cityFilter.ToLower()))
+                hotel.City.ToLower().Contains(cityFilter.ToLower()) ||
+                hotel.Name.ToLower().Contains(cityFilter.ToLower()))
             .OrderBy(hotel => hotel.Name);
 
         if (!checkIn.HasValue || !checkOut.HasValue)
@@ -49,6 +51,7 @@ public class HotelService : IHotelService
         int nights = checkOut.Value.DayNumber - checkIn.Value.DayNumber;
         return await hotelsQuery
             .Where(hotel => hotel.RoomTypes.Any(roomType =>
+                (!guests.HasValue || roomType.Capacity >= guests.Value) &&
                 _context.RoomInventories.Count(inventory =>
                     inventory.RoomTypeId == roomType.Id &&
                     inventory.Date >= checkIn.Value &&

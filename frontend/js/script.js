@@ -3,10 +3,15 @@ const guestMenu = document.querySelector('#guest-menu');
 const toast = document.querySelector('#toast');
 const hotelList = document.querySelector('#hotel-list');
 const apiBaseUrl = window.hotelApi.baseUrl;
+const checkInInput = document.querySelector('#check-in');
+const checkOutInput = document.querySelector('#check-out');
 
 document.addEventListener('DOMContentLoaded', () => {
   loadHotels();
   document.querySelector('#searchForm').addEventListener('submit', handleSearch);
+  const today = new Date().toISOString().split('T')[0];
+  checkInInput.min = today;
+  checkOutInput.min = today;
 });
 
 function updateGuestLabel() {
@@ -38,12 +43,21 @@ document.addEventListener('click', () => {
   guestMenu.setAttribute('aria-hidden', 'true');
 });
 
-async function loadHotels(city) {
+async function loadHotels({ city = '', checkIn = '', checkOut = '', guests = null } = {}) {
   hotelList.innerHTML = '<p class="text-center" role="status">Loading hotels...</p>';
 
   const url = new URL(`${apiBaseUrl}/hotels`);
   if (city) {
     url.searchParams.set('city', city);
+  }
+  if (checkIn) {
+    url.searchParams.set('checkIn', checkIn);
+  }
+  if (checkOut) {
+    url.searchParams.set('checkOut', checkOut);
+  }
+  if (guests) {
+    url.searchParams.set('guests', guests);
   }
 
   try {
@@ -131,7 +145,27 @@ function createHotelCard(hotel, index) {
 function handleSearch(event) {
   event.preventDefault();
   const destination = document.querySelector('#destination').value.trim();
-  loadHotels(destination);
+  const checkIn = checkInInput.value;
+  const checkOut = checkOutInput.value;
+  const guests = Number(document.querySelector('#adults').textContent) +
+    Number(document.querySelector('#children').textContent);
+
+  if ((checkIn && !checkOut) || (!checkIn && checkOut)) {
+    showSearchError('Please select both check-in and check-out dates.');
+    return;
+  }
+
+  if (checkIn && checkOut && checkIn >= checkOut) {
+    showSearchError('Check-out must be after check-in.');
+    return;
+  }
+
+  loadHotels({ city: destination, checkIn, checkOut, guests });
+  document.querySelector('#stays').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showSearchError(message) {
+  hotelList.innerHTML = `<div class="alert alert-warning" role="alert">${escapeHtml(message)}</div>`;
   document.querySelector('#stays').scrollIntoView({ behavior: 'smooth' });
 }
 

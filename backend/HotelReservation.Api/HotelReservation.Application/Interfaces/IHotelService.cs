@@ -7,7 +7,8 @@ public interface IHotelService
     Task<List<HotelResponseDto>> GetAllAsync(
         string? city,
         DateOnly? checkIn,
-        DateOnly? checkOut);
+        DateOnly? checkOut,
+        int? guests);
 
     Task<HotelResponseDto?> GetByIdAsync(int id);
 
