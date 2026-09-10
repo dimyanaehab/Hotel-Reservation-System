@@ -126,13 +126,18 @@ function renderDestinations(hotels) {
 }
 
 const destinationImages = {
-  cairo: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=400&q=75',
-  dubai: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&q=75',
-  istanbul: 'https://images.unsplash.com/photo-1555992336-03a23c7b20ee?w=400&q=75',
-  london: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&q=75',
-  paris: 'https://images.unsplash.com/photo-1541336032412-2048a678540d?w=400&q=75',
-  rome: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75',
-  default: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=75'
+  riyadh: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=85',
+  dubai: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=85',
+  'abu dhabi': 'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=800&q=85',
+  jeddah: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&q=85',
+  cairo: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800&q=85',
+  muscat: 'https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=800&q=85',
+  istanbul: 'https://images.unsplash.com/photo-1555992336-03a23c7b20ee?w=800&q=85',
+  london: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=85',
+  paris: 'https://images.unsplash.com/photo-1541336032412-2048a678540d?w=800&q=85',
+  rome: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=85',
+  maldives: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800&q=85',
+  default: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=800&q=85'
 };
 
 function renderHotels(hotels) {
