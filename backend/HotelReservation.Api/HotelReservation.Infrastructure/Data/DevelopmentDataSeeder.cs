@@ -406,10 +406,26 @@ public static class DevelopmentDataSeeder
     {
         var list = new List<BookingSpec>();
 
-        // 18 Completed Stays (past dates)
-        int[] completedOffsets = { -45, -40, -36, -32, -28, -25, -22, -19, -16, -14, -12, -10, -8, -6, -5, -4, -3, -2 };
-        int[] completedNights = { 3, 2, 4, 1, 3, 2, 5, 2, 3, 1, 4, 2, 3, 2, 1, 2, 1, 1 };
-        int[] completedGuests = { 2, 1, 3, 2, 4, 1, 2, 2, 3, 1, 4, 2, 2, 1, 2, 1, 2, 1 };
+        // 42 Completed Stays (past dates)
+        int[] completedOffsets =
+        {
+            -75, -70, -66, -62, -58, -54, -50, -46, -45, -42, -40, -38,
+            -36, -34, -32, -30, -28, -26, -25, -24, -22, -20, -19, -18,
+            -16, -14, -12, -10, -8, -6, -5, -4, -3, -2, -1, -82, -88,
+            -94, -100, -106, -112, -118
+        };
+        int[] completedNights =
+        {
+            3, 2, 4, 1, 3, 2, 5, 2, 3, 1, 4, 2, 3, 2, 1, 2, 1, 1,
+            2, 3, 2, 4, 1, 3, 2, 2, 3, 1, 4, 2, 3, 2, 1, 2, 1, 3,
+            2, 4, 2, 3, 1, 2
+        };
+        int[] completedGuests =
+        {
+            2, 1, 3, 2, 4, 1, 2, 2, 3, 1, 4, 2, 2, 1, 2, 1, 2, 1,
+            2, 3, 2, 4, 1, 3, 2, 2, 3, 1, 4, 2, 2, 1, 2, 1, 2, 3,
+            2, 4, 2, 3, 1, 2
+        };
 
         for (int i = 0; i < completedOffsets.Length; i++)
         {
@@ -506,6 +522,30 @@ public static class DevelopmentDataSeeder
             (2, "The hotel design is beautiful, but our air conditioning unit made a humming noise throughout the first night."),
             (4, "Convenient airport access without any runway noise. Great fitness center and prompt wake-up call."),
             (5, "One of the best hotels in the region. The presidential floor lounge was serene and the culinary offerings were first-rate.")
+            ,
+            (4, "A lovely stay with thoughtful service, a quiet room, and an excellent location for exploring the city."),
+            (5, "Everything felt carefully considered, from the welcoming check-in to the beautifully prepared breakfast."),
+            (4, "The room was bright and comfortable, and the team provided genuinely helpful local recommendations."),
+            (3, "A pleasant stay overall with good facilities. A little more variety at breakfast would have made it perfect."),
+            (5, "The location made sightseeing effortless, and the room was a peaceful retreat after busy days out."),
+            (4, "Friendly staff, clean facilities, and a comfortable bed. I would happily return on my next trip."),
+            (5, "The service was warm and professional, and the room had wonderful views over the surrounding area."),
+            (4, "A polished hotel with excellent amenities and quick assistance whenever we needed it."),
+            (5, "Our family had a fantastic stay. The suite was spacious, spotless, and very well arranged."),
+            (3, "Good value and a convenient location. The room was comfortable but the hallway was noisy one evening."),
+            (4, "The atmosphere was relaxing and the staff made us feel welcome from the moment we arrived."),
+            (5, "An unforgettable visit with beautiful design, attentive hospitality, and outstanding food."),
+            (4, "Comfortable accommodation in a great neighborhood. The check-out process was especially easy."),
+            (5, "The room was even better than the photos, with excellent housekeeping and a very comfortable mattress."),
+            (4, "A reliable choice for a city break with helpful staff and plenty of nearby restaurants."),
+            (2, "The stay had several good points, but the bathroom needed maintenance during our visit."),
+            (5, "Perfect for a relaxing holiday. We enjoyed every detail and appreciated the thoughtful welcome."),
+            (4, "Lovely views, clean rooms, and a calm atmosphere. The team handled every request quickly."),
+            (5, "A standout experience with excellent privacy, beautiful surroundings, and genuinely caring service."),
+            (4, "The hotel was well located and the room had everything needed for a comfortable business trip."),
+            (3, "Comfortable and well placed, although the gym was smaller than expected."),
+            (5, "The staff were exceptional and the whole property had a warm, memorable character."),
+            (4, "A very enjoyable stay with delicious food and a room that was cleaned to a high standard.")
         };
 
         int inserted = 0;
