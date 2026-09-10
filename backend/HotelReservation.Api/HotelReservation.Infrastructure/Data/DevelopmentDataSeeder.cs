@@ -229,7 +229,6 @@ public static class DevelopmentDataSeeder
                 Stars = 4,
                 ThumbnailUrl = "https://picsum.photos/seed/roman-piazza-residence/600/400"
             }
-            }
         };
 
         foreach (Hotel hotel in hotels)
