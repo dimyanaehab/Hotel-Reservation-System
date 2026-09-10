@@ -1,7 +1,8 @@
 const reviewsApiUrl = window.hotelApi.baseUrl;
 const reviewHeaders = window.hotelApi.headers("User");
-const hotelId = Number(new URLSearchParams(window.location.search).get("hotelId")) || 1;
+let currentHotelId = Number(new URLSearchParams(window.location.search).get("hotelId")) || 1;
 let currentReviews = [];
+let completedBookings = [];
 let displayedCount = 5;
 let currentFilter = "all";
 let currentSort = "recent";
@@ -22,7 +23,7 @@ async function loadReviews() {
     const list = document.getElementById("reviewsList");
     list.innerHTML = '<p class="text-center">Loading reviews...</p>';
     try {
-        const response = await fetch(`${reviewsApiUrl}/hotels/${hotelId}/reviews`);
+        const response = await fetch(`${reviewsApiUrl}/hotels/${currentHotelId}/reviews`);
         if (!response.ok) throw new Error(await window.hotelApi.errorMessage(response, "Could not load reviews."));
         currentReviews = await response.json();
         renderReviews();
@@ -109,16 +110,33 @@ async function loadCompletedBookings() {
     const select = document.getElementById("hotelSelect");
     try {
         const response = await fetch(`${reviewsApiUrl}/me/bookings`, { headers: reviewHeaders });
-        if (!response.ok) throw new Error();
+        if (!response.ok) {
+            throw new Error(await window.hotelApi.errorMessage(response, "Completed stays could not be loaded."));
+        }
+
         const bookings = (await response.json()).filter(booking =>
-            booking.hotelId === hotelId &&
-            booking.status.toLowerCase() === "completed" &&
-            !currentReviews.some(review => review.bookingId === booking.id)
+            booking.status.toLowerCase() === "completed"
         );
-        select.innerHTML = '<option value="">Choose a completed stay...</option>' +
-            bookings.map(booking => `<option value="${booking.id}">Booking #${booking.id} · ${escapeHtml(booking.hotelName)} · ${escapeHtml(booking.roomTypeName)}</option>`).join("");
-    } catch {
-        select.innerHTML = '<option value="">Completed stays could not be loaded</option>';
+        const hotelIds = [...new Set(bookings.map(booking => booking.hotelId))];
+        const reviewsByHotel = await Promise.all(hotelIds.map(async id => {
+            const reviewsResponse = await fetch(`${reviewsApiUrl}/hotels/${id}/reviews`);
+            if (!reviewsResponse.ok) return [];
+            return reviewsResponse.json();
+        }));
+        const reviewedBookingIds = new Set(
+            reviewsByHotel.flat().map(review => review.bookingId)
+        );
+
+        completedBookings = bookings.filter(booking => !reviewedBookingIds.has(booking.id));
+        select.innerHTML = completedBookings.length
+            ? '<option value="">Choose a completed stay...</option>' +
+              completedBookings.map(booking => `<option value="${booking.id}">${escapeHtml(booking.hotelName)} · ${escapeHtml(booking.roomTypeName)} · Booking #${booking.id}</option>`).join("")
+            : '<option value="">No eligible completed stays found</option>';
+        select.disabled = completedBookings.length === 0;
+    } catch (error) {
+        completedBookings = [];
+        select.disabled = true;
+        select.innerHTML = `<option value="">${escapeHtml(error.message)}</option>`;
     }
 }
 
@@ -126,9 +144,10 @@ function initializeForm() {
     document.getElementById("reviewForm").addEventListener("submit", async event => {
         event.preventDefault();
         const bookingId = Number(document.getElementById("hotelSelect").value);
+        const booking = completedBookings.find(item => item.id === bookingId);
         const rating = Number(document.getElementById("ratingValue").value);
         const comment = document.getElementById("reviewComment").value.trim();
-        if (!bookingId || rating < 1 || comment.length < 10) {
+        if (!booking || rating < 1 || comment.length < 10) {
             showReviewMessage("Choose a completed stay, rating, and a comment of at least 10 characters.", "danger");
             return;
         }
@@ -136,16 +155,19 @@ function initializeForm() {
         const submit = event.target.querySelector('[type="submit"]');
         submit.disabled = true;
         try {
-            const response = await fetch(`${reviewsApiUrl}/hotels/${hotelId}/reviews`, {
+            const response = await fetch(`${reviewsApiUrl}/hotels/${booking.hotelId}/reviews`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", ...reviewHeaders },
                 body: JSON.stringify({ bookingId, rating, comment })
             });
             if (!response.ok) throw new Error(await window.hotelApi.errorMessage(response, "Could not submit review."));
+            currentHotelId = booking.hotelId;
             bootstrap.Modal.getOrCreateInstance(document.getElementById("addReviewModal")).hide();
             event.target.reset();
+            document.getElementById("ratingValue").value = "0";
             document.querySelectorAll(".star").forEach(star => star.textContent = "☆");
             await loadReviews();
+            await loadCompletedBookings();
             showReviewMessage("Your review was submitted successfully.", "success");
         } catch (error) {
             showReviewMessage(error.message, "danger");
