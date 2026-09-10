@@ -86,7 +86,13 @@ if (builder.Environment.IsDevelopment())
 // Database Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    if (builder.Environment.IsDevelopment())
+    string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    if (!string.IsNullOrWhiteSpace(connectionString))
+    {
+        options.UseSqlServer(connectionString);
+    }
+    else if (builder.Environment.IsDevelopment())
     {
         options.UseInMemoryDatabase("HotelReservationSwaggerTests")
             .ConfigureWarnings(warnings => warnings.Ignore(
@@ -94,8 +100,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
     else
     {
-        options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection"));
+        throw new InvalidOperationException(
+            "The DefaultConnection connection string is required outside Development.");
     }
 });
 builder.Services.AddScoped<IBookingService, BookingService>();
