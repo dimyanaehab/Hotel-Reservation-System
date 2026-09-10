@@ -9,9 +9,9 @@
    -------------------------------------------------------------------------- */
 :root {
   /* ── Core palette — deep navy / gold ── */
-  --ivory:         #f4f6fc;   /* page background     */
-  --ivory-2:       #eaeff8;   /* section background  */
-  --ivory-3:       #e0e8f4;   /* deeper tint         */
+  --ivory:         #f7f8fc;   /* page background     */
+  --ivory-2:       #e9eef7;   /* section background  */
+  --ivory-3:       #dce6f3;   /* deeper tint         */
   --charcoal:      #1a1a2e;   /* primary dark        */
   --charcoal-2:    #16213e;   /* rich navy           */
   --charcoal-3:    #0f3460;   /* strong blue         */
@@ -926,6 +926,8 @@ textarea.form-control {
 .collection-section {
   background: var(--white);
   padding: var(--space-7) 0;
+  border-top: 1px solid #eef1f6;
+  border-bottom: 1px solid #eef1f6;
 }
 .section-heading {
   display: flex;
@@ -1068,9 +1070,10 @@ textarea.form-control {
    18. HOMEPAGE — DESTINATION TILES
    -------------------------------------------------------------------------- */
 .dest-section {
-  background: var(--ivory);
+  background: linear-gradient(180deg, var(--ivory-3) 0%, var(--ivory-2) 100%);
   padding: var(--space-7) 0;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid #cbd8e9;
+  border-bottom: 1px solid #cbd8e9;
 }
 .dest-grid {
   display: grid;
@@ -1101,7 +1104,7 @@ textarea.form-control {
    19. HOMEPAGE — WHY SECTION
    -------------------------------------------------------------------------- */
 .why-section {
-  background: var(--ivory-2);
+  background: var(--ivory);
   padding: var(--space-7) 0;
   border-top: 1px solid var(--line);
 }
