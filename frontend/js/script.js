@@ -2,31 +2,22 @@ const guestTrigger = document.querySelector('#guests');
 const guestMenu = document.querySelector('#guest-menu');
 const toast = document.querySelector('#toast');
 const hotelList = document.querySelector('#hotel-list');
+const destinationList = document.querySelector('#destination-list');
 const apiBaseUrl = window.hotelApi.baseUrl;
 const checkInInput = document.querySelector('#check-in');
 const checkOutInput = document.querySelector('#check-out');
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadHotels();
+  const queryCity = new URLSearchParams(window.location.search).get('city')?.trim() || '';
+  loadHotels({ city: queryCity }, !queryCity);
+  if (queryCity) {
+    document.querySelector('#destination').value = queryCity;
+    loadDestinations();
+  }
   document.querySelector('#searchForm').addEventListener('submit', handleSearch);
   const today = new Date().toISOString().split('T')[0];
   checkInInput.min = today;
   checkOutInput.min = today;
-
-  document.querySelectorAll('.dest-tile[data-destination]').forEach((tile) => {
-    const searchDestination = () => {
-      document.querySelector('#destination').value = tile.dataset.destination;
-      document.querySelector('#searchForm').requestSubmit();
-    };
-
-    tile.addEventListener('click', searchDestination);
-    tile.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        searchDestination();
-      }
-    });
-  });
 });
 
 function updateGuestLabel() {
@@ -58,7 +49,7 @@ document.addEventListener('click', () => {
   guestMenu.setAttribute('aria-hidden', 'true');
 });
 
-async function loadHotels({ city = '', checkIn = '', checkOut = '', guests = null } = {}) {
+async function loadHotels({ city = '', checkIn = '', checkOut = '', guests = null } = {}, updateDestinations = false) {
   hotelList.innerHTML = '<p class="text-center" role="status">Loading hotels...</p>';
 
   const url = new URL(`${apiBaseUrl}/hotels`);
@@ -82,11 +73,67 @@ async function loadHotels({ city = '', checkIn = '', checkOut = '', guests = nul
     }
 
     const hotels = await response.json();
+    if (updateDestinations) {
+      renderDestinations(hotels);
+    }
     renderHotels(hotels);
   } catch (error) {
     hotelList.innerHTML = `<div class="alert alert-danger" role="alert">${escapeHtml(error.message || 'Could not load hotels.')}</div>`;
   }
 }
+
+async function loadDestinations() {
+  try {
+    const response = await fetch(`${apiBaseUrl}/hotels`);
+    if (!response.ok) {
+      throw new Error(await window.hotelApi.errorMessage(response, 'Could not load destinations.'));
+    }
+
+    renderDestinations(await response.json());
+  } catch (error) {
+    destinationList.innerHTML = `<p class="text-center text-secondary" role="status">${escapeHtml(error.message || 'Could not load destinations.')}</p>`;
+  }
+}
+
+function renderDestinations(hotels) {
+  const destinations = hotels.reduce((counts, hotel) => {
+    const city = String(hotel.city || '').trim();
+    if (city) {
+      counts[city] = (counts[city] || 0) + 1;
+    }
+    return counts;
+  }, {});
+
+  const topDestinations = Object.entries(destinations)
+    .sort(([, countA], [, countB]) => countB - countA)
+    .slice(0, 6)
+    .map(([city]) => city);
+
+  if (!topDestinations.length) {
+    destinationList.innerHTML = '<p class="text-center text-secondary" role="status">No destinations found.</p>';
+    return;
+  }
+
+  destinationList.innerHTML = topDestinations.map((city, index) => {
+    const image = destinationImages[city.toLowerCase()] || destinationImages.default;
+    const safeCity = escapeHtml(city);
+    return `
+      <a class="dest-tile" href="index.html?city=${encodeURIComponent(city)}" aria-label="View stays in ${safeCity}">
+        <img src="${escapeAttribute(image)}" alt="${safeCity}" loading="lazy">
+        <div class="dest-tile-label">${safeCity}</div>
+      </a>`;
+  }).join('');
+}
+
+const destinationImages = {
+  cairo: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=400&q=75',
+  dubai: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&q=75',
+  istanbul: 'https://images.unsplash.com/photo-1555992336-03a23c7b20ee?w=400&q=75',
+  london: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&q=75',
+  paris: 'https://images.unsplash.com/photo-1541336032412-2048a678540d?w=400&q=75',
+  rome: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75',
+  default: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=75'
+};
 
 function renderHotels(hotels) {
   if (!hotels.length) {
