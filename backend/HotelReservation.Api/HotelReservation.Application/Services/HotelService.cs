@@ -31,6 +31,13 @@ public class HotelService : IHotelService
                 hotel.Name.ToLower().Contains(cityFilter.ToLower()))
             .OrderBy(hotel => hotel.Name);
 
+        if (guests.HasValue)
+        {
+            hotelsQuery = hotelsQuery
+                .Where(hotel => hotel.RoomTypes.Any(roomType =>
+                    roomType.Capacity >= guests.Value));
+        }
+
         if (!checkIn.HasValue || !checkOut.HasValue)
         {
             return await hotelsQuery
@@ -51,7 +58,6 @@ public class HotelService : IHotelService
         int nights = checkOut.Value.DayNumber - checkIn.Value.DayNumber;
         return await hotelsQuery
             .Where(hotel => hotel.RoomTypes.Any(roomType =>
-                (!guests.HasValue || roomType.Capacity >= guests.Value) &&
                 _context.RoomInventories.Count(inventory =>
                     inventory.RoomTypeId == roomType.Id &&
                     inventory.Date >= checkIn.Value &&
