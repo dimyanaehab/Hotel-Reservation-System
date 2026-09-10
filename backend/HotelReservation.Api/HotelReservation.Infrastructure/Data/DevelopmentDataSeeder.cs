@@ -178,6 +178,57 @@ public static class DevelopmentDataSeeder
                 Description = "A comfortable hillside hotel with wide city views and an ideal location for discovering Amman's old town.",
                 Stars = 4,
                 ThumbnailUrl = "https://picsum.photos/seed/amman-citadel-suites/600/400"
+            },
+            new Hotel
+            {
+                Id = 10,
+                Name = "Paris Lantern Hotel",
+                City = "Paris",
+                Address = "18 Rue de Rivoli, Paris",
+                Description = "A charming Parisian hotel near historic boulevards, cafés, and the city's most celebrated landmarks.",
+                Stars = 4,
+                ThumbnailUrl = "https://picsum.photos/seed/paris-lantern-hotel/600/400"
+            },
+            new Hotel
+            {
+                Id = 11,
+                Name = "Bosphorus Courtyard",
+                City = "Istanbul",
+                Address = "16 Akbiyik Street, Sultanahmet",
+                Description = "A welcoming boutique stay close to Istanbul's historic sights, lively markets, and Bosphorus waterfront.",
+                Stars = 4,
+                ThumbnailUrl = "https://picsum.photos/seed/bosphorus-courtyard/600/400"
+            },
+            new Hotel
+            {
+                Id = 12,
+                Name = "Azure Atoll Resort",
+                City = "Maldives",
+                Address = "South Male Atoll",
+                Description = "A peaceful island resort with turquoise water, private villas, and unhurried days by the lagoon.",
+                Stars = 5,
+                ThumbnailUrl = "https://picsum.photos/seed/azure-atoll-resort/600/400"
+            },
+            new Hotel
+            {
+                Id = 13,
+                Name = "Thames House London",
+                City = "London",
+                Address = "27 Southwark Street, London",
+                Description = "A polished London hotel with excellent transport links and easy access to riverside attractions.",
+                Stars = 4,
+                ThumbnailUrl = "https://picsum.photos/seed/thames-house-london/600/400"
+            },
+            new Hotel
+            {
+                Id = 14,
+                Name = "Roman Piazza Residence",
+                City = "Rome",
+                Address = "Via del Corso, Rome",
+                Description = "A warm and elegant residence within walking distance of Rome's piazzas, galleries, and historic streets.",
+                Stars = 4,
+                ThumbnailUrl = "https://picsum.photos/seed/roman-piazza-residence/600/400"
+            }
             }
         };
 
@@ -222,7 +273,17 @@ public static class DevelopmentDataSeeder
             new RoomType { Id = 24, HotelId = 8, Name = "Harbor Family Suite", Capacity = 4, BedType = "King and Sofa Bed", BasePrice = 900m, Description = "A practical suite with room for families and longer stays." },
             new RoomType { Id = 25, HotelId = 9, Name = "Citadel Standard Room", Capacity = 2, BedType = "Queen", BasePrice = 425m, Description = "A comfortable queen room near Amman's historic center." },
             new RoomType { Id = 26, HotelId = 9, Name = "Panorama Deluxe Room", Capacity = 2, BedType = "King", BasePrice = 700m, Description = "A king room with broad views across the city hills." },
-            new RoomType { Id = 27, HotelId = 9, Name = "Citadel Family Suite", Capacity = 4, BedType = "King and Sofa Bed", BasePrice = 1050m, Description = "A spacious suite with a separate sitting area and city views." }
+            new RoomType { Id = 27, HotelId = 9, Name = "Citadel Family Suite", Capacity = 4, BedType = "King and Sofa Bed", BasePrice = 1050m, Description = "A spacious suite with a separate sitting area and city views." },
+            new RoomType { Id = 28, HotelId = 10, Name = "Paris Classic Room", Capacity = 2, BedType = "Queen", BasePrice = 780m, Description = "A refined room with classic Parisian details and a comfortable queen bed." },
+            new RoomType { Id = 29, HotelId = 10, Name = "Left Bank Suite", Capacity = 3, BedType = "King and Sofa Bed", BasePrice = 1350m, Description = "A spacious suite for enjoying a longer stay in the heart of Paris." },
+            new RoomType { Id = 30, HotelId = 11, Name = "Sultanahmet Deluxe Room", Capacity = 2, BedType = "King", BasePrice = 620m, Description = "A comfortable king room near Istanbul's historic district." },
+            new RoomType { Id = 31, HotelId = 11, Name = "Bosphorus Family Suite", Capacity = 4, BedType = "King and Sofa Bed", BasePrice = 980m, Description = "A generous suite with space for families exploring Istanbul." },
+            new RoomType { Id = 32, HotelId = 12, Name = "Lagoon Villa", Capacity = 2, BedType = "King", BasePrice = 1800m, Description = "A private villa with direct access to a calm turquoise lagoon." },
+            new RoomType { Id = 33, HotelId = 12, Name = "Sunset Family Villa", Capacity = 4, BedType = "Two Kings", BasePrice = 2600m, Description = "A spacious villa designed for families and unforgettable island sunsets." },
+            new RoomType { Id = 34, HotelId = 13, Name = "London City Room", Capacity = 2, BedType = "Queen", BasePrice = 850m, Description = "A bright city room with practical comforts and quick transport connections." },
+            new RoomType { Id = 35, HotelId = 13, Name = "Thames Executive Suite", Capacity = 3, BedType = "King and Sofa Bed", BasePrice = 1450m, Description = "An elegant suite with a separate lounge near the River Thames." },
+            new RoomType { Id = 36, HotelId = 14, Name = "Piazza Classic Room", Capacity = 2, BedType = "Queen", BasePrice = 700m, Description = "A welcoming room close to Rome's historic piazzas and cafés." },
+            new RoomType { Id = 37, HotelId = 14, Name = "Roman Family Suite", Capacity = 4, BedType = "King and Sofa Bed", BasePrice = 1200m, Description = "A comfortable suite with extra living space for exploring Rome together." }
         };
 
         foreach (RoomType roomType in roomTypes)

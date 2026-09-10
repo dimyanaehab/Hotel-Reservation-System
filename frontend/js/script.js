@@ -12,6 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const today = new Date().toISOString().split('T')[0];
   checkInInput.min = today;
   checkOutInput.min = today;
+
+  document.querySelectorAll('.dest-tile[data-destination]').forEach((tile) => {
+    const searchDestination = () => {
+      document.querySelector('#destination').value = tile.dataset.destination;
+      document.querySelector('#searchForm').requestSubmit();
+    };
+
+    tile.addEventListener('click', searchDestination);
+    tile.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        searchDestination();
+      }
+    });
+  });
 });
 
 function updateGuestLabel() {
